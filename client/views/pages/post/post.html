@@ -1,0 +1,35 @@
+<template name="post">
+  <div class="item" style="margin:0em;box-shadow: 0px 0px 7px #00000069;">
+    <div class="image" style="cursor: pointer;">
+      <span class="ui label teal top left floated" style="position:absolute;border-radius: 0rem 0em 0.28571429rem 0em;">
+        <i class="clock outline icon"></i> {{DisplayTimeFrom created}}
+      </span>
+      <img src="{{imgFromBody this}}">
+    </div>
+    <div class="content" style="padding: 1em;">
+      <a href="#!/@{{author}}/{{permlink}}" class="header">{{title}}</a>
+      {{#if UsingSSio}}<br /><img width='90px' src='/images/postedon7.jpg' />{{/if}}
+      {{#if SetBeneficiary}}{{#unless UsingSSio}}<br />{{/unless}}<img width='90px' src='/images/beneficiary.jpg' /><br />{{/if}}
+      {{#unless SetBeneficiary}}<br />{{/unless}}
+      <div class="meta" style="cursor: pointer;">
+        <span class="category">
+          <a href="#!/@{{author}}">by {{author}} ({{displayReputation author_reputation}})</a>
+          {{#if isWhitelisted author}}<i class="ui icon star yellow"></i>{{/if}}
+        </span>
+      </div>
+      <div class="description" style="margin-bottom: 0.6em;">
+        {{shortDescription (xssShortFormatter (remarkableFormatter body))}}
+      </div>
+      <span class="tags" style="margin-top:10px;">
+        {{#each json_metadata.tags}}
+          {{#unless equals this 'steemstem'}}
+            <a href="#!/{{this}}" class="ui mini {{colorByCategory this}} label noradius">{{this}}</a>
+          {{/unless}}
+        {{/each}}
+      </span>
+    </div>
+  </div>
+  <div class="item" style="margin:0px;">
+    <div class="ui big label fluid noradius npdg">{{>upvote}}</div>
+  </div>
+</template>

@@ -1,0 +1,104 @@
+<template name="home">
+  <!-- promotion -->
+  {{#if equals currentSearch 'steemstem'}}
+    <div class="ui container fluid mtop3n">
+      <div class="ui three column grid padded large screen only">
+        {{ #each GetPromoted}}
+          <div class="column">
+            <div class="item" style="box-shadow: 0px 0px 5px #00000069;">
+              <div class="content" style="padding: 1em;">
+                <h3 class="top_news_title">
+                  <div class="ui small left floated image">
+                    <a href="#!/@{{author}}/{{permlink}}">
+                      <img style=" width:125px; height:65px;" src="{{imgFromBody this}}" />
+                    </a>
+                  </div>
+                  <a href="#!/@{{author}}/{{permlink}}">{{title}}</a>
+                  <div class="post_date"><span>by {{author}}</span></div>
+               </h3>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+
+  <!-- Main part -->
+  <div class="ui container mtop2">
+    <div class="ui two column stackable grid home mtop0">
+      <div class="twelve wide column">
+        <div class="ui top attached tabular menu borderless npdg">
+          <a class="item active" name="upvoted" data-tab="first">
+            {{#if unfiltered}}
+              All
+            {{else}}
+              Featured
+            {{/if}}
+          </a>
+          {{#if equals currentSearch 'steemstem'}}
+            <div class="ui left floated item"><h5>#steemstem</h5></div>
+          {{else}}
+            <div class="ui left floated item"><h5>#{{currentSearch}}</h5></div>
+          {{/if}}
+          <div class="item right floated" style="padding-right:0px;">
+            <div class="ui topposts checkbox" style="margin-right:2em;">
+              <input type="checkbox" name="topposts" id='topposts'>
+              <label><h5 class='tooltip'>
+                <span class="tooltiptext">All posts with a strong SteemSTEM support</span>
+                Top posts
+              </h5></label>
+            </div>
+            <div class="ui medposts checkbox" style="margin-right:2em;">
+              <input type="checkbox" name="medposts" id='medposts'>
+              <label><h5 class='tooltip'>
+                <span class="tooltiptext">All posts with an average SteemSTEM support</span>
+                Best posts
+              </h5></label>
+            </div>
+            <div class="ui filter checkbox">
+              <input type="checkbox" name="filter" id='filter'>
+              <label><h5 class='tooltip'>
+                <span class="tooltiptext">All posts carrying the SteemSTEM tag</span>
+                All posts
+              </h5></label>
+            </div>
+            {{#if isGridView}}
+              <div class="ui black icon button switch" style="margin-left:1em;margin-top: -18px;">
+                <i class="th list icon"></i>
+              </div>
+            {{else}}
+              <div class="ui black icon button switch" style="margin-left:1em;margin-top: -18px;">
+                <i class="grid layout icon"></i>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+        <div class="ui bottom cnt attached tab active borderless " style="padding:0px;" data-tab="first">
+          {{#if isGridView}}
+            {{>maincards}}
+          {{else}}
+            {{>mainlist}}
+          {{/if}}
+        </div>
+        {{#unless isSteemSTEMLoadedFull (NewSteemSTEMContent currentWeek)}}
+          <div class="ui container">
+            <div class="ui segment grid padded centered fluid borderless">
+              <div class="ui active dimmer inverted"><h4 class="ui text loader">Adding Content...</h4></div>
+            </div>
+          </div>
+        {{/unless}}
+      </div>
+      <div class="four wide column">
+        <div class="ui top attached tabular menu borderless">
+          <a class="item active" data-tab="fifth">Whitelisted</a>
+        </div>
+        <div class="ui bottom attached tab active borderless npdg" data-tab="fifth">
+          <div class="ui divided cards">
+            {{#each whitelistedContent}} {{> card}} {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

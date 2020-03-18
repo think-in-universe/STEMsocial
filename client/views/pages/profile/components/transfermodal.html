@@ -1,0 +1,82 @@
+<template name="transfermodal">
+  <div class="ui small segment transfer inverted modal">
+    <div class="ui segment inverted column">
+      <div class="row">
+        <h2 style="border-top:4px solid #db2828!important; padding-top: 0.5em;">{{OperationTitle}}</h2>
+        <h5>{{OperationDescr}}</h5>
+        <div class="ui divider"></div>
+      </div>
+      <form class="ui form inverted">
+        <div class="field">
+          <label>From</label>
+          <div class="ui left icon input">
+            <i class="at icon"></i>
+            <input type="text" name="from" readonly="true" value="{{mainuser.name}}">
+          </div>
+        </div>
+        {{#if NeedsTo}}
+          <div class="field">
+            <label>To</label>
+            <div class="ui left icon input">
+              <i class="at icon"></i>
+              <input id="to" type="text" name="to" placeholder="Account name">
+            </div>
+          </div>
+          <div class="ui mini to message green hidden"><p>Account is valid </p></div>
+          <div class="ui mini to message red   hidden"><p>Account not found</p></div>
+        {{/if}}
+        <div class="field">
+          <label>{{OperationAmountClass}}</label>
+          <input id="amount" type="number" name="amount" placeholder="Amount" disabled="true">
+          {{#if NeedsSteemBalance}}
+            {{#with mainuser}}
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{balance}} </div>
+            {{/with}}
+          {{else if NeedsSPBalance}}
+            {{#with mainuser}}
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{DisplayEffectiveSteemPower vesting_shares delegated 0}} (Undelegated SP)</div>
+            {{/with}}
+          {{else if NeedsSBDBalance}}
+            {{#with mainuser}}
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{sbd_balance}} </div>
+            {{/with}}
+          {{else if NeedsSBDSavingsBalance}}
+            {{#with mainuser}}
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{savings_sbd_balance}} </div>
+            {{/with}}
+          {{else if NeedsSteemSavingsBalance}}
+            {{#with mainuser}}
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{savings_balance}} </div>
+            {{/with}}
+          {{/if}}
+        </div>
+        {{#if NeedsSteemBalance}}
+          <div class="ui mini amount message red hidden"><p>Not enough STEEM in your wallet</p></div>
+        {{else if NeedsSPBalance}}
+          <div class="ui mini amount message red hidden"><p>Not enough SP in your account</p></div>
+        {{else if NeedsSBDBalance}}
+          <div class="ui mini amount message red hidden"><p>Not enough SBD in your wallet</p></div>
+        {{else if NeedsSBDSavingsBalance}}
+          <div class="ui mini amount message red hidden"><p>Not enough SBD in your savings account</p></div>
+        {{else if NeedsSteemSavingsBalance}}
+          <div class="ui mini amount message red hidden"><p>Not enough Steem in your savings account</p></div>
+        {{/if}}
+        {{#if NeedsMemo}}
+          <div class="field">
+            <label>Public memo</label>
+            <input id="memo" type="text" name="memo" placeholder="Memo" disabled="true">
+          </div>
+        {{/if}}
+        <div class='field'>
+          <div class="ui mini message yellow">
+            <p>Clicking on 'Confirm' will redirect you to SteemConnect to complete your transaction.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="actions" style="background: transparent;">
+      <div class="ui cancel red button">Cancel</div>
+      <div id="confirmtransfer" class="ui confirm green button disabled">Confirm</div>
+    </div>
+  </div>
+</template>

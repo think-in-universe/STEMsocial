@@ -1,0 +1,39 @@
+<template name="beneficiarymodal">
+  <div class="ui small segment beneficiary inverted modal">
+    <div class="ui segment inverted column">
+      <div class="row">
+        <h2 style="border-top:4px solid #db2828!important; padding-top: 0.5em;">Beneficiaries</h2>
+        <h5>Share the post rewards with another Steem user</h5>
+        <div class="ui divider"></div>
+      </div>
+      <form class="ui form inverted">
+        <div class="ui grid">
+          <div class="two wide column"></div>
+          <div class="six wide column">
+            <div class="field">
+              <label>Steem account</label>
+              <div class="ui left icon input">
+                <i class="at icon"></i>
+                <input id='my-beneficiary' type="text" name="my-beneficiary" placeholder='Account name'>
+              </div>
+            </div>
+            <div class="ui mini to message green hidden"><p>Account is valid </p></div>
+            <div class="ui mini to message red   hidden"><p>Account not found</p></div>
+          </div>
+          <div class="four wide column field">
+            <div class="field">
+              <label>Reward share (in %)</label>
+              <input id='shares' type="text" name='share' placeholder="value in %" disabled='true'>
+            </div>
+            <div class="ui mini shares message red hidden"><p>Invalid number of shares</p></div>
+          </div>
+          <div class="four wide column"></div>
+        </div>
+      </form>
+    </div>
+    <div class="actions" style="background: transparent;">
+      <div class="ui cancel red button">Cancel</div>
+      <div id="confirm-beneficiary" class="ui confirm green button disabled">{{AddButtonValue}}</div>
+    </div>
+  </div>
+</template>

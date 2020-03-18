@@ -1,0 +1,172 @@
+<template name="wallet">
+  {{#with currentAuthor}}
+  <div class="ui items">
+    {{#if equals currentAuthor.name mainuser.name}}
+      <div class="item">
+        {{#if pendingReward this}}
+          <button id="claim" class="ui fluid teal left labeled button icon">
+            <i class="money icon"></i> Claim : {{{displayReward this}}}
+          </button>
+        {{/if}}
+      </div>
+    {{/if}}
+    <div class="item">
+      <div class="middle aligned content">
+        <div class="ui left aligned header">STEEM Tokens</div>
+        <div class="ui dropdown balance right floated">
+          <a>{{balance}}</a>
+          {{#if equals currentAuthor.name mainuser.name}}
+            <input  id="operation-class" type="hidden">
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item transfer" data-value="steem-transfer">Transfer</div>
+              <div class="item transfer" data-value="steem-savingtransfer">Transfer to Savings</div>
+              <div class="item transfer" data-value="powerup">Power Up</div>
+            </div>
+            <script>
+              $('.ui.dropdown.balance').dropdown()
+            </script>
+          {{/if}}
+        </div>
+        <div class="ui message description">
+          <p><b>The primary token of the Steem blockchain.</b></p>
+          <ul style="list-style-type:circle">
+            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Steem accounts and
+              to financial exchanges.</li>
+            <li style="margin-bottom:10px; font-size:11pt">STEEM can also be converted to STEEM POWER, in a
+              process called powering up, to increase your influence over post payouts and earn more curation
+              rewards.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui divider"></div>
+
+    <div class="item">
+      <div class="middle aligned content">
+        <div class="ui left aligned header">STEEM POWER (SP)</div>
+        <div class="ui dropdown steempower right floated item">
+          <a>{{DisplaySteemPower vesting_shares}}</a>
+          {{#if equals currentAuthor.name mainuser.name}}
+            <input  id="operation-class-SP" type="hidden">
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item transferSP" data-value="powerdown">Power Down</div>
+              <div class="item transferSP" data-value="delegate">Delegate</div>
+            </div>
+            <script>$('.ui.dropdown.steempower').dropdown()</script>
+          {{/if}}
+        </div><br />
+        <span style="font-size:10pt">
+          [Delegated SP: <a>{{DisplayDelegatedSteemPower delegated_vesting_shares}}</a>;
+           Received SP: <a>{{DisplayReceivedSteemPower received_vesting_shares}}</a>;
+           Effective SP:
+          <a>{{DisplayEffectiveSteemPower vesting_shares delegated_vesting_shares received_vesting_shares}}</a> ]
+        </span>
+        <div class="ui message description">
+          <p><b>Influence tokens</b></p>
+          <ul style="list-style-type:circle">
+            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER gives control over post payouts and
+              allow to earn curation rewards.</li>
+            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER gives you bandwidth to act with the
+              blockchain.</li>
+            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER can be delegated to or from another
+              Steem account, respectively decreasing or increasing the effective STEEM POWER of the account.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui divider"></div>
+
+    <div class="item">
+      <div class="middle aligned content">
+        <div class="ui left aligned header">STEEM Dollars (SBD) Tokens</div>
+        <div class="ui dropdown balancesbd right floated">
+          <a>{{sbd_balance}}</a>
+          {{#if equals currentAuthor.name mainuser.name}}
+            <input id="operation-class-SBD" type="hidden">
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item transferSBD" data-value="sbd-transfer">Transfer</div>
+              <div class="item transferSBD" data-value="sbd-savingtransfer">Transfer to Savings</div>
+            </div>
+            <script>
+              $('.ui.dropdown.balancesbd').dropdown()
+            </script>
+          {{/if}}
+        </div>
+        <div class="ui message description">
+          <p><b>Second token connected to the Steem blockchain.</b></p>
+          <ul style="list-style-type:circle">
+            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Steem accounts and
+              to financial exchanges.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui divider"></div>
+
+    <div class="item">
+      <div class="middle aligned content">
+        <div class="ui left aligned header">SAVINGS</div>
+        <div class="ui right floated">
+          <div class="ui dropdown savings">
+            <a>{{savings_balance}}</a>
+            {{#if equals currentAuthor.name mainuser.name}}
+              <input  id="operation-class-savings" type="hidden">
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="item transfersavings" data-value="fromsavings-steem">Withdraw STEEM</div>
+              </div>
+              <script>
+                $('.ui.dropdown.savings').dropdown()
+              </script>
+            {{/if}}
+          </div><span style="display:inline-block; width:40px;"></span>
+          <div class="ui dropdown sbdsavings">
+            <a>{{savings_sbd_balance}}</a>
+            {{#if equals currentAuthor.name mainuser.name}}
+              <input  id="operation-class-sbdsavings" type="hidden">
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="item transfersbdsavings" data-value="fromsavings-sbd">Withdraw SBD</div>
+              </div>
+              <script>
+                $('.ui.dropdown.sbdsavings').dropdown()
+              </script>
+            {{/if}}
+          </div>
+        </div><br />
+        <div class="ui message description">
+          <p><b>Balances subject to a three-day withdraw waiting period.</b></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui divider"></div>
+
+    <div class="item">
+      <div class="middle aligned content">
+        <div class="ui left aligned header">ESTIMATED ACCOUNT VALUE</div>
+        <div class="ui dropdown account right floated">
+          <a class="text">{{EstimateAccount this}}$</a>
+        </div>
+        <div class="ui message description">
+          <p>The estimated value is based on an average value of STEEM in US dollars.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{/with}}
+
+  <div class="ui divider"></div>
+  <div class="item">
+    <div class="middle aligned content">
+      <div class="ui left aligned header">Previous transfers</div>
+      {{>usertransfer}}
+   </div>
+  </div>
+</template>

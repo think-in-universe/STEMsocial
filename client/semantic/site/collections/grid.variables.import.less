@@ -1,0 +1,38 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+.ui.grid > .column:not(.row),
+.ui.grid > .row > .column {
+  position: relative;
+  display: inline-block;
+
+  width: @oneWide;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  vertical-align: top;
+}
+.ui.grid > .column:not(.row), .ui.grid > .row > .column{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.ui.grid > .column:not(.row) {
+    padding-left: 0.5rem!important;
+    padding-right: 0.5rem!important;
+}
+
+
+.ui.grid > .column {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .ui.grid > .column:not(.row), .ui.grid > .row > .column{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+.ui.grid > * {
+  padding-left: (@gutterWidth / 2);
+  padding-right: (@gutterWidth / 2);
+}

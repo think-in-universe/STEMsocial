@@ -1,0 +1,1 @@
+Coins = new Mongo.Collection(null)

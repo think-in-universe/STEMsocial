@@ -1,0 +1,27 @@
+<template name="userrewards">
+    <div class="ui cards">
+        {{#each currentAuthorHistory}}
+        {{#if equals type 'claimreward'}}
+        <div class="ui fluid card">
+            <div class="content">
+                <div class="header">
+                    {{name}}                
+                    <span class="meta">
+                            claimed
+                        </span>
+                </div>
+
+                <div class="description">
+                    <a>{{reward_sbd}} - {{reward_steem}} - {{vestToSteemPower reward_vests}}</a>
+                </div>
+            </div>
+            <div class="extra content">
+                <div class="date">
+                        <i class="clock outline icon"></i> {{DisplayTimeFrom date}}
+                </div>
+            </div>
+        </div>
+        {{/if}}
+        {{/each}}
+    </div>
+</template>

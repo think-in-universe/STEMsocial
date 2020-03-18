@@ -1,0 +1,67 @@
+<template name="content">
+  {{#with currentArticle}}
+  <div class="ui cards">
+    <div class="ui card fluid borderless" >
+      <h1 class="steemstem title" >{{title}}</h1>
+      {{#if UsingSSio}}
+        {{#if SetBeneficiary}}
+            <p><img width='90px' src='/images/postedon7.jpg' />
+               <img width='90px' hspace="10" src='/images/beneficiary.jpg' /></p>
+        {{else}}
+          <p><img width='90px' src='/images/postedon7.jpg' /></p>
+        {{/if}}
+      {{else}}
+        {{#if SetBeneficiary}}
+          <p><img width='90px' src='/images/beneficiary.jpg' /></p>
+        {{/if}}
+      {{/if}}
+      <div class="ui top left attached teal label"><span>Published on : {{DisplayTimeCreated created}}</span></div>
+      {{#if HasTags json_metadata.tags}}
+        <span class="ui top right attached label childopacity">
+          {{#each json_metadata.tags}}
+            {{#unless equals this 'steemstem'}}
+              <a href="{{this}}" class="ui top mini {{colorByCategory this}} label noradius">{{this}}</a>
+            {{/unless}}
+          {{/each}}
+        </span>
+      {{/if}}
+      <div class="content">
+        <div class="description">
+          {{{DisplayPostBody}}}
+        </div>
+        <div style='padding-top: 10px; clear: both;'>
+          <div class="ui divider"></div>
+          {{#if equals currentAuthor.name mainuser.name}}
+            <div class="left floated">
+              <div class='actions'>
+                <a class="edit-action"><div class="ui button teal floated">Edit</div></a>
+              </div>
+            </div>
+          {{/if}}
+          <div class="right floated">
+              <div class="header">Share: {{>share}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="ui big label fluid npdg noradius">{{>upvote}}</div>
+      <div class="ui divider"></div>
+      {{#if GetBeneficiaries beneficiaries}}
+        <div class="row">
+          <div class="ui fluid container segment">
+            <h3 class="ui dividing header">Beneficiaries</h3>
+            <p style="font-size:10pt;">
+              {{#each beneficiary in GetBeneficiaries beneficiaries}}
+                <b>
+                  <a href="#!/@{{DisplayBeneficiary beneficiary}}">{{DisplayBeneficiary beneficiary}}</a>
+                </b>
+                {{DisplayShare beneficiary}}
+              {{/each}}
+            </p>
+          </div>
+        </div>
+        <div class="ui hidden divider"></div>
+      {{/if}}
+    </div>
+  </div>
+  {{/with}}
+</template>

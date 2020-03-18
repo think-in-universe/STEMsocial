@@ -1,0 +1,50 @@
+<template name="votemodal">
+    {{#with project}}
+    <div class="ui small segment vote inverted modal {{permlink}}">
+        <div class="ui segment inverted column">
+            <div class="row">
+                <h2 style="border-top:4px solid #db2828!important;    padding-top: 0.5em;">{{title}}</h2>
+                <div class="ui grid padded two column">
+                    <div class="four wide column" style="padding-left:0px!important;">
+                        <div class="ui image">
+                            {{#if imgFromBody this}}
+                            <img class="ui image" src="{{imgFromBody this}}"> {{/if}}
+                        </div>
+                    </div>
+                    <div class="twelve wide column">
+                        <p>{{shortDescription (xssShortFormatter body)}}</p>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+            </div>
+            <input type="rangeslide" />
+            <div class="ui four column grid centered padded">
+                <div class="ui column">
+                    <div class="ui red label tiny fluid">
+                        0-25% PASSABLE
+                    </div>
+                </div>
+                <div class="ui column">
+                    <div class="ui orange label tiny fluid">
+                        25-50% GOOD
+                    </div>
+                </div>
+                <div class="ui column">
+                    <div class="ui olive label tiny fluid">
+                        50-75% GREAT
+                    </div>
+                </div>
+                <div class="ui column">
+                    <div class="ui green label tiny fluid">
+                        75-100% AWESOME
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="actions" style="background: transparent;">
+           <div class="ui cancel red button">Cancel</div>
+           <div id="confirmbutton" data-author="{{author}}" data-permlink="{{permlink}}" class="ui confirm green button">Confirm</div>
+         </div>
+    </div>
+    {{/with}}
+</template>

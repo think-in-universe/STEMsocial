@@ -1,0 +1,91 @@
+<template name="topmenu">
+  <div class="ui main menu inverted">
+    <div class="ui container fluid">
+        <a id="display-menu" class="header item mn"><i class="content icon"></i></a>
+        <div class="ui grid logo padded computer only">
+          <a href="/" class="item"><img class="ui fluid small image" src="/images/banner/steemstemlogoback.png"></a>
+        </div>
+        <div class="ui grid inverted compact menu computer only">
+          <a id="tag" class="item steemstem red home top cat">home</a>
+          {{#each customTags}}
+            {{#if this.mainmenu}}
+              {{#if subcategories}}
+                <div class="ui pointing dropdown link item steemstem {{color}} {{category}} top cat">
+                  <span> {{category}}</span>
+                  <i class="dropdown icon"></i>
+                  <div class="ui labeled icon menu">
+                    <div class="item submenu cat" id="submenu">{{category}}</div>
+                    {{#each subcategories}}
+                      <div class="divider"></div>
+                      <a href="{{this}}" onclick="clickSubCat('{{this}}')" id="submenu" class="item submenu cat" name="{{this}}">{{this}}</a>
+                    {{/each}}
+                    <script>
+                      //TODO REMOVE THIS
+                      function clickSubCat(cat) {
+                        Session.set('currentSearch', cat)
+                      }
+                   </script>
+                  </div>
+                </div>
+              {{else}}
+                <a id="tag" class="item steemstem {{color}} {{category}} top cat">{{category}}</a>
+              {{/if}}
+            {{/if}}
+          {{/each}}
+        </div>
+        <div class="ui grid padded tablet only mobile only">
+          <div class="ui pointing dropdown link item steemstem {{color}} {{category}} top cat">
+            <span class="text cat">Menu</span>
+            <i class="dropdown icon"></i>
+            <div class="ui labeled icon menu">
+              <a id="tag" class="item steemstem red home top cat">home</a>
+              {{#each customTags}}
+                {{#if this.mainmenu}}
+                  <div class="divider"></div>
+                  <div id="tag" class="item cat" name="{{category}}">{{category}}</div>
+                {{/if}}
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+      <div class="right menu">
+        <div class="ui grid padded large screen only">
+          <div class="item">
+            {{bindsearch}}
+            <div class="ui search">
+              <div class="ui transparent inverted icon input">
+                <input class="prompt" type="text" placeholder="Search ...">
+                <i class="search link icon"></i>
+              </div>
+              <div class="results"></div>
+            </div>
+          </div>
+        </div>
+        <a class="item">
+          <div class="ui dropdown language inverted" style="width: 50px;">
+            <input type="hidden" name="language" placeholder="{{translator 'COMMON_SELECT_LANGUAGE'}}">
+            <i class="dropdown icon"></i>
+            <div class="default text"><i class="us flag"></i></div>
+            <div class="menu">
+              <div class="item" data-value="cn"><i class="cn flag"></i></div>
+              <div class="item" data-value="en"><i class="us flag"></i></div>
+              <div class="item" data-value="fr"><i class="fr flag"></i></div>
+              <div class="item" data-value="de"><i class="de flag"></i></div>
+              <div class="item" data-value="es"><i class="es flag"></i></div>
+              <div class="item" data-value="it"><i class="it flag"></i></div>
+              <div class="item" data-value="wf"><i class="wf flag"></i></div>
+            </div>
+          </div>
+        </a>
+        {{#unless mainuser}}
+          {{> dropdownlogin}}
+          <a id="signup" target="_blank" href="https://signup.steemit.com" class="item" style="margin-right:10px;">{{translator 'COMMON_SIGNUP'}}</a>
+        {{/unless}}
+        {{#with mainuser}}
+          {{> dropdownprofile}}
+        {{/with}}
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,0 +1,44 @@
+<template name="card">
+  <div class="card" style="box-shadow: 0px 0px 7px #00000069;">
+    <div class="image" style="cursor: pointer;"><img src="{{imgFromBody this}}"></div>
+    <span class="ui teal label top left attached" style="border-radius: 0rem 0em 0.28571429rem 0em;">
+      <i class="clock outline icon"></i> {{DisplayTimeFrom created}}
+    </span> 
+    <div class="content">
+      <a href="#!/@{{author}}/{{permlink}}" class="header">{{title}}</a>
+      <div class="meta" style="cursor: pointer;">
+        <span class="category">
+          <a class="author_name" href="#!/@{{author}}">
+            by {{author}} ({{displayReputation author_reputation}})
+          </a>
+          {{#if isWhitelisted author}}<i class="ui icon star yellow"></i>{{/if}}
+        </span>
+      </div>
+      <div class="description" style="margin-bottom: 0.5em;">
+        {{shortDescription (xssShortFormatter (remarkableFormatter body))}}
+      </div>
+      <span class="tags">
+        {{#each json_metadata.tags}}
+          {{#unless equals this 'steemstem'}}
+            <a href="#!/{{this}}" class="ui mini {{colorByCategory this}} label noradius">{{this}}</a>
+          {{/unless}}
+        {{/each}}
+      </span>
+      {{#if UsingSSio}}
+        {{#if SetBeneficiary}}
+          <p></p><p>
+            <img width='90px' src='images/postedon7.jpg' />
+            <img width='90px' src='images/beneficiary.jpg' />
+          </p>
+        {{else}}
+          <p></p><p><img width='90px' src='images/postedon7.jpg' /></p>
+        {{/if}}
+      {{else}}
+        {{#if SetBeneficiary}}
+          <p></p><p><img width='90px' src='images/beneficiary.jpg' /></p>
+        {{/if}}
+      {{/if}}
+    </div>
+    <div class="ui big label fluid npdg noradius">{{>upvote}}</div>
+  </div>
+</template>

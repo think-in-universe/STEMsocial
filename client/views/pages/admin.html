@@ -1,0 +1,23 @@
+<template name="admin">
+  <div class="ui container">
+      <p>
+          <button class="ui button" id="setJSON">LOAD SETTINGS</button>
+          <button class="ui button" id="getJSON">SAVE SETTINGS</button>
+          <form class="ui form">
+              <div class="field">
+                <div class="two fields">
+                  <div class="field">
+                    <input type="password" id="jsonactive" name="jsoneditor[activekey]" placeholder="ACTIVE KEY">
+                  </div>
+                  <div class="field">
+                    <input type="password" id="jsonmemo" value="STM8c6XcktcqC9x8mM5evWuHNTn992gRxe3hNGGAeENsMAqUzy2UV" name="jsoneditor[memokey]" placeholder="MEMO KEY">
+                  </div>
+                </div>
+              </div>
+          </form>
+        </p>
+        <div class="ui message hidden" id="errormessage"></div>
+        <div id="jsoneditor"></div>
+         
+         </div>
+</template>

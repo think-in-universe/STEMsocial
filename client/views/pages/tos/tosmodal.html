@@ -1,0 +1,19 @@
+<template name="tosmodal">
+  <div class="ui small segment tos modal">
+    {{{translator 'COMMON_TOS'}}}
+    <div class="actions" style="background: transparent;">
+      <div class="ui tos checkbox">
+        <input type="checkbox" name="tos">
+        <label><strong>I agree to the Terms of Service</strong></label>
+      </div>
+      <div class="ui cancel red button right" id='tosok'>Close</div>
+    </div>
+    <script>
+      $('.tos.checkbox')
+      .checkbox({
+        onChecked:   function() { sessionStorage.setItem('tos', true); },
+        onUnchecked: function() { sessionStorage.setItem('tos', false);}
+      });
+    </script>
+  </div>
+</template>

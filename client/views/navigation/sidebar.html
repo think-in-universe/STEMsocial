@@ -1,0 +1,128 @@
+<template name="sidebar">
+  <div class="ui sidebar inverted vertical menu">
+    <div class="item">
+      <img class="ui fluid small image" src="/images/banner/steemstemlogoback.png">
+    </div>
+
+    <a id="feed" href="/" class="item"><i class="home icon"></i> Home</a>
+
+    <div class="item">
+      {{#with guestuser}}<i href="#!/{{guestuser}}"></i>Welcome, {{guestuser}}{{/with}}
+      {{#with mainuser}}
+        Welcome, {{name}}
+        <div class="ui inverted vertical menu">
+          <a id="blog" href="#!/@{{name}}" class="item"> <i class="user icon"></i>My Blog</a>
+          <a id="comments" href="#!/@{{name}}/comments" class="item"> <i class="comment icon"></i>Comments</a>
+          <a id="replies" href="#!/@{{name}}/replies" class="item"> <i class="comments icon"></i>Replies</a>
+          <a id="rewards" href="#!/@{{name}}/rewards" class="item"> <i class="trophy icon"></i>Rewards</a>
+          <a id="wallet" href="#!/@{{name}}/wallet" class="item"> <i class="credit card outline icon"></i>Wallet</a>
+        </div>
+      {{/with}}
+    </div>
+
+    {{#with mainuser}}<a href="/create" class="item"><i class="pencil icon"></i> New post</a>{{/with}}
+    {{#unless mainuser}}
+      <div class="item">Login<br />
+        <div class="ui inverted vertical menu">
+          <a id="steemkeychain" class='item'>with SteemKeychain</a>
+          <a id="login" href="/signup" class='item'>with SteemConnect</a>
+        </div>
+      </div>
+      <div class="item">
+        <a id="signup" href="/signup.steemit.com" target="_blank">{{translator 'COMMON_SIGNUP'}}</a>
+      </div>
+<!--      {{#if guestuser}}
+        <a class="item" id="guest-logout">Quit Guest Mode</a>
+      {{else}}
+        <a class="item" id="guest-login">Continue as Guest</a>
+      {{/if}} -->
+    {{/unless}}
+
+<!--
+    <div class="item">
+      {{bindsearch}}
+      <div class="ui right aligned category search item">
+        <div class="ui transparent inverted icon input">
+          <input class="prompt" type="text" placeholder="Search ...">
+          <i class="search link icon"></i>
+        </div>
+        <div class="results"></div>
+      </div>
+    </div>
+-->
+
+    {{#with mainuser}}
+      <div class="item"> <a id="logout"><i class="external icon"></i> {{translator 'COMMON_LOGOUT'}}</a></div>
+    {{/with}}
+
+    <div class="item">
+      Categories<br /><br />
+      {{#each customTags}}
+        {{#if inequals category more}}
+          <div><p><a href="/{{category}}" id="tag"># {{category}}</a></p></div>
+        {{/if}}
+        {{#if subcategories}}
+          {{#each subcategory in subcategories}}
+            <div><p><a href="/{{subcategory}}" id="tag"># {{subcategory}}</a></p></div>
+          {{/each}}
+        {{/if}}
+      {{/each}}
+    </div>
+
+    <div class='item'>
+      More about steemstem.io
+      <div class="ui inverted vertical menu">
+        <a class='item' href="/aboutus">About Us</a>
+        <a class='item' href="/faq">FAQ</a>
+        <a class='item' href="/tos">Terms of Service</a>
+      </div>
+    </div>
+
+    <div class="item" style="bottom: 0px;">
+      Supported by
+      <div class="ui inverted vertical menu">
+        <a class='item' target="_blank" href="https://fundition.io">
+          <img align='left' style="padding-right:8px;"
+            width="16" height="16" src="/images/fundition.png" />
+          Fundition
+        </a>
+        <a class='item' target="_blank" href="http://curiesteem.com/">
+          <img align='left' style="border-radius:50%; padding-right:8px;"
+            width="16" height="16" src="/images/curie.jpg" />
+          Curie
+        </a>
+      </div>
+    </div>
+
+
+    <div class="item" style="bottom: 0px;">
+      Listed on
+      <div class="ui inverted vertical menu">
+        <a class='item' target="_blank" href="https://www.dapp.com/dapp/steemstem">
+          <img align='left' style='padding-right:4px' width="20" height="20" src="/images/dappcom.png" />
+          Dapp.com
+        </a>
+        <a class='item' target="_blank" href="https://www.stateofthedapps.com/dapps/steemstem">
+          <img align='left' style='padding-right:4px' width="20" height="20" src="/images/sdapps.png" />
+          State of the DApps
+        </a>
+        <a class='item' target="_blank" href="https://steemapps.com/apps/steemstem">
+          <img align='left' style="padding-right:8px;"
+            width="16" height="16" src="/images/sapps.png" />
+          Steem Apps
+        </a>
+        <a class='item' target="_blank" href="https://steemappsdb.com/">
+          <img align='left' style="border-radius:50%; padding-right:8px;"
+            width="16" height="16" src="/images/sadb.jpg" />
+          Steem Apps Explorer
+        </a>
+        <a class='item' target="_blank" href="https://steemprojects.com/projects/p/steemstem">
+          <img align='left' style="border-radius:50%; padding-right:8px;"
+            width="16" height="16" src="/images/steemproj.ico" />
+          Steem Projects
+        </a>
+      </div>
+    </div>
+
+  </div>
+</template>

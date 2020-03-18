@@ -1,0 +1,127 @@
+<template name="profile">
+  <div class="ui container">
+    <!-- don't displa backlisted people -->
+    {{#if isBlacklisted currentAuthor.name}}
+      <div class="ui grid centered column stackable padded" style="margin-top:3em;">
+        <h4>This user is blacklisted</h4>
+      </div>
+
+    <!-- if not blacklisted, display the page -->
+    {{else}}
+      <div class="ui grid two column stackable padded">
+        <!-- the profile card part -->
+        <div class="three wide column">
+          {{#with currentAuthor}}
+            {{>profilecard}}
+            {{>personalfeed}}
+          {{/with}}
+        </div>
+
+        <!-- the blog part -->
+        <div id="articleside" class="nine wide column">
+          <div class="ui top attached tabular menu profile borderless">
+            <a id="blog" class="active item" data-tab="first">Blog</a>
+            <a id="comments" class="item" data-tab="second">Comments</a>
+            <a id="replies" class="item" data-tab="third">Replies</a>
+            <a id="rewards" class="item" data-tab="fourth">Rewards</a>
+            <a id="wallet" class="item" data-tab="fifth">Wallet</a>
+          </div>
+          <div class="ui bottom attached active tab borderless blog" data-tab="first" style="padding-top: 0px;">
+            {{#if currentAuthorBlog ToPass}}
+              {{#each GetToPass}}
+                <a class="go-to go-to-{{this}}">
+                  {{#if MyPage}}
+                    <div id='go-to-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
+                  {{else}}
+                    <div id='go-to-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
+                  {{/if}}
+                </a>
+              {{/each}}
+              <div class="ui items blog">
+                {{#each currentAuthorBlog ToPass}}
+                  {{#if equals author currentAuthor.name}}
+                    {{>post}}
+                  {{else}}
+                    <div style="float:right;margin-right: -1px;" class="ui mini teal button">
+                      <i class="share icon"></i>ReSteem / Shared
+                    </div>
+                    {{>post}}
+                  {{/if}}
+                  <div class="ui divider"></div>
+                {{/each}}
+              </div>
+              {{#unless isLoadedFull currentAuthorBlog ToPass}}
+                {{#if NotFullBlogLoaded}}
+                  <div class="ui container">
+                    <div class="ui segment grid padded centered fluid borderless">
+                      <div class="ui active dimmer inverted">
+                        <h4 class="ui text loader">Adding Content...</h4>
+                      </div>
+                    </div>
+                  </div>
+                {{/if}}
+              {{else if NotFullBlogLoaded}}
+                <a class="load-more">
+                  <div id='load-more' class="ui mini button teal floated">Load more posts</div>
+                </a>
+              {{/unless}}
+              {{#each GetToPass}}
+                <a class="go-to go-to-{{this}}">
+                  {{#if MyPage}}
+                    <div id='go-to-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
+                  {{else}}
+                    <div id='go-to-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
+                  {{/if}}
+                </a>
+              {{/each}}
+            {{else}}
+              <div class="ui large centered inline text loader visible">
+                Loading content...
+              </div>
+            {{/if}}
+          </div>
+          <div class="ui bottom attached tab borderless" data-tab="second">
+            {{>usercomments}}
+          </div>
+          <div class="ui bottom attached tab borderless" data-tab="third">
+            {{>userreplies}}
+          </div>
+          <div class="ui bottom attached tab borderless" data-tab="fourth">
+            {{>userrewards}}
+          </div>
+          <div class="ui bottom attached tab borderless" data-tab="fifth">
+            {{>wallet}}
+          </div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="four wide column">
+          <div class="ui top attached tabular menu borderless" style="height: 43px;">
+            <a class="item active" data-tab="sixth">
+              {{#if currentSuggestions}}
+                <h5>Popular from this author</h5>
+              {{else}}
+                <h5>Our suggestions</h5>
+              {{/if}}
+            </a>
+          </div>
+          <div class="ui bottom attached tab active borderless npdg" data-tab="sixth">
+            <div class="ui divided cards">
+              {{#if currentSuggestions}}
+                {{#each currentSuggestions}}
+                  {{#unless equals this.permlink currentArticle.permlink}}
+                    {{> card}}
+                  {{/unless}}
+                {{/each}}
+              {{else}}
+                {{#each whitelistedContent}}
+                  {{> card}}
+                {{/each}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</template>

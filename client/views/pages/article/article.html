@@ -1,0 +1,157 @@
+<template name="article">
+  <div class="ui container">
+    {{#if isOnEdit}}
+      <div class="ui grid two column stackable padded">
+
+        <!--- ARTICLE SIDE -->
+        <div id="articleside" class="eight wide column">
+          <form id="newarticle" class="ui form">
+
+            <!-- TITLE -->
+            <div class="field mfield">
+              <label>TITLE</label>
+              <input type="text" id='title' name="title" value="{{currentArticle.title}}">
+            </div>
+
+            <!-- BODY -->
+            <div class="field">
+              <label>ARTICLE</label>
+              <textarea id="summernote" type="text" name="body"></textarea>
+            </div>
+
+            <!-- TAGS -->
+            <div class="field mfield">
+              <label>TAGS</label>
+                <div class="ui fluid multiple search selection dropdown">
+                  <input id="tags" name="tags" type="hidden">
+                  <div class="text"></div>
+                </div>
+            </div>
+            <div class="ui mini to message yellow hidden">
+              Reaching the tag number limit:
+              the (automatically omitted) #steemstem tag
+              plus nine user-defined tags. <br /><br />
+              Any extra tag to be added will be ignored.
+            </div>
+
+          <!-- MESSAGES AND BUTTONS (beneficiaries ignored as can't be edited) -->
+            <div class="ui field">
+              <div class="ui error message"></div>
+            </div>
+          </form>
+          {{loadNote currentArticle.title currentArticle.body currentArticle.json_metadata.tags currentArticle.beneficiaries}}
+          <div class="ui grid padded two column">
+            <div class="column">
+              <div class="ui button reset red left floated">CANCEL</div>
+            </div>
+            <div class="column submit-article-action">
+              <div id='submit-article-button' class="ui button submit teal right floated">SUBMIT</div>
+            </div>
+          </div>
+          <div id="postprob" class="ui red message hidden"></div>
+
+          <!-- COMMENTS -->
+          <div id="commentsside" class="row">
+            <div class="ui comments segment container">
+              <h3 class="ui dividing header">Comments</h3>
+              {{#if loadComments }}
+                {{#each loadComments}}
+                  {{>comment}} <br />
+                {{/each}}
+              {{else}}
+                No comment has been written yet.<br />
+              {{/if}}
+            </div>
+          </div>
+        </div>
+
+        <!-- preview part -->
+        <div id="previewside" class="eight wide column">
+          <h2 class="ui dividing header">Post preview</h2>
+
+          <!-- TITLE -->
+          <h2 class="ui header">{{DisplayPostTitle}}</h2>
+
+          <!-- BODY  -->
+          <div class='content'>
+            <div class="description">
+              {{{DisplayPostBody}}}
+            </div>
+          </div>
+
+          <!-- TAGS -->
+          <div style='padding-top: 10px; clear: both;'>
+            <div class="ui divider"></div>
+            <h4>
+              Tags:
+              {{#if DisplayPostTags}}
+                {{#each DisplayPostTags}}
+                  <button class="ui mini disabled button grey"> {{this}}</button>
+                {{/each}}
+              {{/if}}
+            </h4>
+          </div>
+
+          <!-- Beneficiaries -->
+          <div class="ui divider"></div>
+          <h4>
+              {{#if loadBeneficiaries}}
+                <p style="font-size:11pt;">
+                  Beneficiaries:
+                  {{#each beneficiary in loadBeneficiaries}}
+                    <b>
+                      <a href="#!/@{{DisplayBeneficiary beneficiary}}">{{DisplayBeneficiary beneficiary}}</a>
+                    </b>
+                    {{DisplayShare beneficiary}}
+                  {{/each}}
+                </p>
+                <div class="ui divider"></div>
+              {{/if}}
+          </h4>
+
+        </div>
+
+      </div>
+
+    {{else}}
+
+      <div class="ui grid two column stackable">
+        <div class="three wide column">
+          {{#with currentAuthor}}
+            {{>profilecard}}
+          {{/with}}
+        </div>
+        <div id="articleside" class="nine wide column">
+          {{>content}}
+          <div class="row">
+            {{>comments}}
+          </div>
+        </div>
+        <div class="four wide column">
+          <div class="ui top attached tabular menu borderless">
+            <a class="item active" data-tab="seventh">
+              {{#if currentSuggestions}} <h5>Popular from this author</h5>
+              {{else}} <h5>Our suggestions</h5>
+              {{/if}}
+            </a>
+          </div>
+          <div class="ui bottom attached tab active borderless npdg" data-tab="seventh">
+            <div class="ui divided cards">
+              {{#if currentSuggestions}}
+                {{#each currentSuggestions}}
+                  {{#unless equals this.permlink currentArticle.permlink}}
+                    {{> card}}
+                  {{/unless}}
+                {{/each}}
+              {{else}}
+                {{#each whitelistedContent}}
+                  {{> card}}
+                {{/each}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</template>

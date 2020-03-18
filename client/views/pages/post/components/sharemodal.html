@@ -1,0 +1,23 @@
+<template name="sharemodal">
+  {{#with project}}
+    <div class="ui small share modal {{permlink}}">
+      <div class="header">{{title}}</div>
+      <div class="ui two column grid padded">
+        <div class="four wide column">
+          <div class="ui image">
+            {{#if imgFromBody this}}<img class="ui image" src="{{imgFromBody this}}">{{/if}}
+          </div>
+        </div>
+        <div class="twelve wide column">
+          <div class="content">
+            <p>{{shortDescription (xssShortFormatter body)}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="ui cancel red button">Cancel</div>
+        <div id='resteem' class="ui approve steem button">Share on Steem</div>
+      </div>
+    </div>
+  {{/with}}
+</template>

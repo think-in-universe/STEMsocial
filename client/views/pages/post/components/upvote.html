@@ -1,0 +1,41 @@
+<template name="upvote">
+  {{#if equals active_votes.length 0}}
+    <span class="ui button icon left floated" style="margin-left: 0px;">
+      <i class="dollar icon"></i> {{displayPayout pending_payout_value total_payout_value curator_payout_value}}
+    </span>
+  {{else}}
+  <span class="ui button icon left floated upvote">
+    <i class="dollar icon"></i> {{displayPayout pending_payout_value total_payout_value curator_payout_value}}</span>
+    <div class="ui upvote popup center large left">
+      <div class='ui mini middle aligned divided list'>
+        {{#each displayVotersTop active_votes 0}}
+          <div class='ui item'>
+            <a href='/c/{{voter}}'>
+              <div class='content'>
+                <div class='header'>
+                  {{voter}}
+                  <span> (${{displayPayoutUpvote rsharespercent (displayPayout ../pending_payout_value ../total_payout_value ../curator_payout_value)}})</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  {{/if}}
+  {{#if mainuser}}
+    {{#if MainUserRate this}}
+      <span class="ui teal button icon upvote right floated nmr" data-tooltip="You have already upvoted this content!">
+        Vote: <i class="rocket icon"></i>{{active_votes.length}}
+      </span>
+    {{else}}
+      <span id="vote" class="ui button icon upvote right floated nmr">
+        Vote: <i class="rocket icon"></i>{{active_votes.length}}
+      </span>
+    {{/if}}
+  {{else}}
+    <span class="ui button icon upvote right floated nmr" data-tooltip="You need a Steem account for upvoting this content!">
+      Vote: <i class="rocket outline icon"></i>{{active_votes.length}}
+    </span>
+  {{/if}}
+</template>

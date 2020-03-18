@@ -1,0 +1,60 @@
+<template name="profilecard">
+  <div class="ui top attached tabular menu borderless">
+    <a class="item active"  data-tab="eight">Author</a>
+  </div>
+  <div class="ui tab active borderless npdg" data-tab="eight">
+    <div class="ui cards">
+      <div class="ui card" style="box-shadow: 0px 0px 7px #00000069;">
+        <div class="container">
+          <div class="control"><div id="shape"></div></div>
+        </div>
+        <div class="content">
+          <a href="#!/@{{name}}" class="header name">
+            {{#if isWhitelisted name}}
+              @{{name}} <i class="ui icon star yellow"></i>
+            {{else}}
+              @{{name}}
+            {{/if}}
+          </a>
+          <div class="date"> Reputation: {{displayReputation reputation}}</div>
+          <div class="date">{{follower_count}} Followers</div>
+          <div class="date">{{following_count}} Following</div>
+          <div class="ui divider"></div>
+          <div class="date">Joined on : {{DisplayTimeCreated created}}</div>
+          <div class="date">Last vote : {{DisplayTimeFrom last_vote_time}}</div>
+          <script type="text/javascript">
+            $(document).ready(function () {
+              $("#shape").roundSlider({
+                value: '{{DisplayVotingPower voting_power last_vote_time 2}}',
+                sliderType: "min-range",
+                readOnly: true,
+                editableTooltip: false,
+                handleShape: "dot",
+                handleSize: "+6",
+                tooltipFormat: function (e)
+                   {return '{{DisplayVotingPower voting_power last_vote_time 2}}' + ' %';}
+              });
+              $(".rs-inner").css('background', 'url(https://steemitimages.com/u/{{name}}/avatar) no-repeat').css('background-size', 'cover');
+            });
+          </script>
+          <div class="ui divider"></div>
+          <div class="description">
+            {{#if json_metadata.profile.about}}
+              {{json_metadata.profile.about}}
+            {{/if}}
+          </div>
+          <div class="ui divider"></div>
+          {{#if inequals mainuser.name name}}
+            {{#if isFollowing name}}
+              <a style="display:none" class="follow-action ui mini button teal fluid follow">Follow</a>
+              <a class="unfollow-action ui mini button black fluid unfollow">Unfollow</a>
+            {{else}}
+              <a class="follow-action ui mini button teal fluid follow">Follow</a>
+              <a style="display:none" class="unfollow-action ui mini button black fluid unfollow">Unfollow</a>
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

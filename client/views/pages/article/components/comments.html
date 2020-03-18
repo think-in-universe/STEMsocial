@@ -1,0 +1,14 @@
+<template name="comments">
+  <div class="ui comments segment container">
+    <h3 class="ui dividing header">Comments</h3>
+    {{#if currentArticleComments}}
+      {{>reply data=this isRootComment=false}}
+      {{#each currentArticleComments}}
+        {{>comment}} 
+      {{/each}} 
+    {{else}} 
+      {{>reply data=this isRootComment=true}} 
+    {{/if}}
+  </div>
+  <br>
+</template>

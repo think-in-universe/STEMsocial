@@ -1,0 +1,85 @@
+<template name="comment">
+  <div style='padding-top: 10px; clear: both;' class="ui comments">
+    <div class="comment">
+
+      <!-- Author avatar -->
+      <a href="/#!/@{{author}}" class="avatar"><img src="https://steemitimages.com/u/{{author}}/avatar/"></a>
+
+      <!-- Main comment body -->
+      <div class="content">
+
+        <!-- Author avatar  + date/time -->
+        <a href="/#!/@{{author}}" class="author">{{author}}</a>
+        <div class="metadata"><div class="date">{{DisplayTimeCreated created}}</div></div>
+
+        <!-- The comment main body -->
+        <div class="text">
+          <!-- displaying the comment (visible by default) -->
+          <div id='comment-{{author}}-{{permlink}}'> {{{DisplayCommentBody}}} </div>
+
+          <!-- Editing form (invisible by default) -->
+          <div id='comment-edit-{{author}}-{{permlink}}' style="display:none">
+            <form class="ui comment-form-{{author}}-{{permlink}} form commentform">
+              <i class="commentedit window close outline icon"></i>
+              <div class="field"><textarea id="comment-edit-content-{{author}}-{{permlink}}">{{body}}</textarea></div>
+              <!-- preview part -->
+              <h3 class="ui header">Preview</h3>
+              <div class='comment'><div class='content'><div class="text">
+                <p style="margin-top:-30px;"> {{{DisplayCommentEditBody}}} </p>
+              </div></div></div>
+            </form>
+          </div>
+
+          <!-- likes, rewards, upvotes  -->
+          <span class="ui left commentvotes-{{permlink}}">
+            <i style="margin-top:5px;" class="dollar sign icon"></i>
+            {{displayPayout pending_payout_value total_payout_value curator_payout_value}}
+          </span>
+          {{#if GetCommentVotes}}
+            <div class="ui commentvotes popup center large left">
+              <div class='ui mini middle aligned divided list'>
+                {{#each GetCommentVotes}}
+                  <div class='ui item'>
+                    <a href='/c/{{voter}}'><div class='content'><div class='header'>
+                      {{voter}}&nbsp;<span>(${{DisplayCommentPayout rshares (TotalRShares ..) (displayPayout ../pending_payout_value ../total_payout_value ../curator_payout_value)}})</span>
+                      </div></div></a>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/if}}
+          {{#if mainuser}}
+            <span class="right floated">
+              {{#if equals net_votes 0}}
+                <i id="vote" class="heart outline icon"></i>{{net_votes}} like
+              {{else if equals net_votes 1}}
+                <i id="vote" class="heart icon"></i>{{net_votes}} like
+              {{else}}
+                <i id="vote" class="heart icon"></i>{{net_votes}} likes
+              {{/if}}
+            </span>
+          {{else}}
+            <span class="right floated" data-tooltip="You need a Steem account for this!">
+              {{#if equals net_votes 0}}
+                <i class="heart outline icon"></i>{{net_votes}} like
+              {{else if equals net_votes 1}}
+                <i class="heart icon"></i>{{net_votes}} like
+              {{else}}
+                <i class="heart icon"></i>{{net_votes}} likes
+              {{/if}}
+            </span>
+          {{/if}}
+
+          <!-- reply part -->
+          {{>reply data=this isRootComment=false }}
+        </div>
+        <div class="comments">
+          {{#each currentCommentsSubcomments this}} {{>comment}} {{/each}}
+        </div>
+      </div>
+    </div>
+    <div class="ui divider hidden"></div>
+  </div>
+</template>
+
+

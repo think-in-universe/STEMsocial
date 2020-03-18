@@ -1,0 +1,28 @@
+<template name="userreplies">
+        <div class="ui cards">
+            {{#each currentAuthorHistory}}
+            {{#if equals type 'replies'}}
+            <div class="ui fluid card">
+                    <div class="content">
+                        <div class="header">
+                                {{name}}                
+                                <span class="meta">
+                                        replied to
+                                    </span>
+                            </div>
+                        <div class="description shorter">
+                            <a  href="#!/@{{name}}/{{parent_permlink}}" class="user shorter">
+                                @{{name}}/{{parent_permlink}}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <div class="date">
+                                <i class="clock outline icon"></i>  {{DisplayTimeFrom date}}
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+            {{/each}}
+        </div>
+    </template>

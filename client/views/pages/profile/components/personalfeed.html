@@ -1,0 +1,52 @@
+<template name="personalfeed">
+        <div class="ui cards">
+            {{#each currentAuthorHistory 10}} 
+           {{#if equals type 'vote'}}
+            <div class="card">
+                <div class="content">
+                  <img class="right floated mini ui image" src="https://steemitimages.com/u/{{name}}/avatar">
+                  <div class="header">
+                    {{name}}
+                  </div>
+                  <div class="meta">
+                    voted at {{weight}}% for
+                  </div>
+                  <div class="description">
+                    <a href="#!/@{{author}}/{{permlink}}" class="user shorter">
+                        {{author}}/{{permlink}}
+                    </a>
+                  </div>
+                </div>
+                <div class="extra content">
+                    <div class="date">
+                        {{DisplayTimeFrom date}}
+                     </div>
+                </div>
+              </div>
+            {{/if}}
+             {{#if equals type 'comment'}}
+             <div class="card">
+                <div class="content">
+                  <img class="right floated mini ui image" src="https://steemitimages.com/u/{{name}}/avatar">
+                  <div class="header">
+                    {{name}}
+                  </div>
+                  <div class="meta">
+                    commented on
+                  </div>
+                  <div class="description">
+                    <a href="#!/{{parent_permlink}}/{{permlink}}" class="user shorter">
+                        {{parent_permlink}}/{{permlink}}
+                    </a>
+                  </div>
+                </div>
+                <div class="extra content">
+                    <div class="date">
+                        {{DisplayTimeFrom date}}
+                    </div>
+              </div>
+            </div>
+            {{/if}} 
+            {{/each}}
+        </div>
+    </template>

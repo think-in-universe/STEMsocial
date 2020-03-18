@@ -1,0 +1,86 @@
+<template name="maincards">
+  {{#if NewSteemSTEMContent currentWeek}}
+
+    <!-- Menu to navigate between weeks -->
+    {{#each GetToLoad}}
+      <a class="go-to-wk go-to-wk-{{this}}">
+        {{#if MyWeek}}
+          <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated disabled">Week #{{Crop this}}</div>
+        {{else}}
+          <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated">Week #{{Crop this}}</div>
+        {{/if}}
+      </a>
+    {{/each}}
+    <a class='load-more-weeks'>
+      <div id='load-more-weeks' class="ui mini button teal floated">Older</div>
+    </a>
+    <div class="ui divider hidden"></div>
+
+    <!-- Cards with the posts -->
+    <div class="ui two cards" style=" margin-left: -1em; margin-right: -1em;">
+      {{#each NewSteemSTEMContent currentWeek}}
+        {{>card}}
+        <div class="ui divider"></div>
+      {{/each}}
+    </div>
+    <div class="ui divider hidden"></div>
+
+    <!-- Menu to navigate between weeks -->
+    {{#each GetToLoad}}
+      <a class="go-to-wk go-to-wk-{{this}}">
+        {{#if MyWeek}}
+          <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated disabled">Week #{{Crop this}}</div>
+        {{else}}
+          <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated">Week #{{Crop this}}</div>
+        {{/if}}
+      </a>
+    {{/each}}
+    <a class='load-more-weeks'>
+      <div id='load-more-weeks' class="ui mini button teal floated">Older</div>
+    </a>
+
+  <!-- If there is no posts to show -->
+  {{else}}
+    {{#if IsNotLoaded}}
+      <div class="ui container">
+        <div class="ui segment grid padded centered fluid borderless" style="height: 600px;">
+          <div class="ui active dimmer inverted"><h4 class="ui text loader">Loading...</h4></div>
+        </div>
+      </div>
+    {{else if equals currentSearch 'steemstem'}}
+      {{#each GetToLoad}}
+        <a class="go-to-wk go-to-wk-{{this}}">
+          {{#if MyWeek}}
+            <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated disabled">Week #{{Crop this}}</div>
+          {{else}}
+            <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated">Week #{{Crop this}}</div>
+          {{/if}}
+        </a>
+      {{/each}}
+      <a class='load-more-weeks'>
+        <div id='load-more-weeks' class="ui mini button teal floated">Older</div>
+      </a>
+      <div class="ui segment grid padded centered fluid borderless">
+        <h3>There is no supported content this week (yet).</h3>
+      </div>
+    {{else}}
+      {{#each GetToLoad}}
+        <a class="go-to-wk go-to-wk-{{this}}">
+          {{#if MyWeek}}
+            <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated disabled">Week #{{Crop this}}</div>
+          {{else}}
+            <div id='go-to-wk-button-{{this}}' class="ui mini button teal floated">Week #{{Crop this}}</div>
+          {{/if}}
+        </a>
+      {{/each}}
+      <a class='load-more-weeks'>
+        <div id='load-more-weeks' class="ui mini button teal floated">Older</div>
+      </a>
+      <div class="ui container">
+        <div class="ui segment grid padded centered fluid borderless">
+          <h3>There is no content related to "{{currentSearch}}" this week</h3>
+        </div>
+      </div>
+    {{/if}}
+  {{/if}}
+</template>

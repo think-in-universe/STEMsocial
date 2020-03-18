@@ -1,0 +1,27 @@
+<template name="dropdownprofile">
+    {{#with mainuser}}
+    <!-- <div class="ui grid item padded computer only">
+    <a href="/create" class="item">
+        <i class="icon edit"></i>{{translator 'COMMON_NEW_POST'}}
+    </a>
+</div> -->
+    <div class="ui divider"></div>
+    <div class="ui item dropdown profile right floated">
+        <div class="ui avatar image">
+            <img src="https://steemitimages.com/u/{{name}}/avatar/">
+        </div>
+        <!-- <div class="message logout">{{translator 'COMMON_LOGOUT'}}</div> -->
+        <i class="dropdown icon"></i>
+        <div class="ui vertical menu">
+            <a id="create" href="#!/create" class="item"> <i class="pencil alternate icon"></i>New post</a>
+            <a id="blog" href="#!/@{{name}}" class="item"> <i class="user icon"></i>My Blog</a>
+            <a id="comments" href="#!/@{{name}}/comments" class="item"> <i class="comment icon"></i>Comments</a>
+            <a id="replies" href="#!/@{{name}}/replies" class="item"> <i class="comments icon"></i>Replies</a>
+            <a id="rewards" href="#!/@{{name}}/rewards" class="item"> <i class="trophy icon"></i>Rewards</a>
+            <a id="wallet" href="#!/@{{name}}/wallet" class="item"> <i class="credit card outline icon"></i>Wallet</a>
+            <!-- <a id="settings" href="/@{{name}}/settings" class="item">Settings</a> -->
+            <div id="logout" class="item logout"> <i class="sign out icon"></i>{{translator 'COMMON_LOGOUT'}}</div>
+        </div>
+    </div>
+    {{/with}}
+</template>

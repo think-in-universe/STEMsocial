@@ -1,0 +1,125 @@
+<template name="create">
+  <div class="ui container">
+
+    <!-- DRAFTS AND RECOMMENDATIONS -->
+    {{>drafts}}
+
+    <div class="ui grid two column stackable padded">
+
+    <!--- ARTICLE SIDE -->
+      <div id="articleside" class="eight wide column">
+        <h2 class="ui dividing header">Write a new post</h2>
+        <form id="newarticle" class="ui form">
+          <!-- TITLE -->
+          <div class="field mfield">
+            <label>TITLE</label>
+            <input id = 'title' type="text" name="title" placeholder="Type your title">
+          </div>
+
+          <!-- BODY-->
+          <div class="field">
+            <label>ARTICLE</label>
+            <textarea id="summernote" type="text"  name="body"></textarea>
+          </div>
+
+          <!-- TAGS -->
+          <div class="field mfield">
+            <label>TAGS</label>
+            <div class="ui fluid multiple search selection dropdown">
+              <input id="tags" name="tags" type="hidden">
+              <div class="default text">Set tags...</div>
+            </div>
+          </div>
+          <div class="ui mini to message yellow hidden">
+            Reaching the tag number limit:
+            the (potentially automatically added) #steemstem tag
+            plus nine user-defined tags. <br /><br />
+            Any extra tag will be ignored.
+          </div>
+
+          <!-- BENEFICIARIES -->
+          <div class="field mfield">
+            <div class="ui button add-beneficiary gray right floated"><i class="user icon"></i>Add a beneficiary</div>
+            <label>BENEFICIARIES (optional).</label>
+            <p style="font-size:10pt; margin-top:-5px;">
+              Do not hesitate to share with SteemSTEM a fraction of the rewards of this post.
+            </p>
+            <input id="beneficiaries" name="beneficiaries" type="hidden">
+            {{#if loadBeneficiaries}}
+              {{#each beneficiary in loadBeneficiaries}}
+                <div class="ui compact medium message teal floated">
+                  {{DisplayBeneficiary beneficiary}}:
+                  <b>{{DisplayShare beneficiary}}</b><i class="percent icon"></i>
+                  <i id='edit-beneficiary' aria-hidden="true" class="fitted link edit outline icon" name={{DisplayBeneficiary beneficiary}}-{{DisplayShare beneficiary}}></i>
+                  <i id='remove-beneficiary' aria-hidden="true" class="fitted link trash alternate outline icon" name={{DisplayBeneficiary beneficiary}}></i>
+                </div>
+              {{/each}}
+            {{else}}
+               No added beneficiary.<br />
+            {{/if}}
+          </div>
+          <div class="ui mini maxbeneficiaries message yellow hidden">
+            More than 100% of the post rewards are to be shared. The amounts will be scaled down to 100%.
+          </div>
+
+          <!-- MESSAGES AND BUTTONS-->
+          <div class="ui field">
+            <div class="ui error message"></div>
+          </div>
+        </form>
+        <div class="ui grid padded two column">
+          <div class="column">
+<!--            <div class="ui button save blue left floated">SAVE AS DRAFT</div>-->
+          </div>
+          <div class="column">
+            <div class="ui button submit teal right floated">SUBMIT</div>
+          </div>
+        </div>
+        <div id="postprob" class="ui red message hidden"></div>
+      </div>
+
+      <!-- preview part -->
+      <div id="previewside" class="eight wide column">
+        <h2 class="ui dividing header">Post preview</h2>
+
+        <!-- TITLE -->
+        <h2 class="ui header">{{DisplayPostTitle}}</h2>
+
+        <!-- BODY -->
+        <div class='content'>
+          <div class="description">
+            {{{DisplayPostBody}}}
+          </div>
+        </div>
+
+        <!-- TAGS -->
+        <div style='padding-top: 10px; clear: both;'>
+          <div class="ui divider"></div>
+          <h4>
+            Tags:
+            {{#if DisplayPostTags}}
+              {{#each DisplayPostTags}}
+                <button class="ui mini disabled button grey"> {{this}}</button>
+              {{/each}}
+            {{/if}}
+          </h4>
+        </div>
+
+        <!-- Beneficiaries -->
+        <div class="ui divider"></div>
+        <h4>
+          Beneficiaries:
+            {{#if loadBeneficiaries}}
+              {{#each beneficiary in loadBeneficiaries}}
+                {{DisplayBeneficiary beneficiary}}
+                ({{DisplayShare beneficiary}}<i class="percent icon"></i>)
+              {{/each}}
+            {{else}}
+               No added beneficiary.<br />
+            {{/if}}
+        </h4>
+
+      </div>
+    </div>
+  </div>
+</template>

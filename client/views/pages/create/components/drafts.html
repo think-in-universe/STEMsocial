@@ -1,0 +1,42 @@
+<template name="drafts">
+    <div class="ui message">
+        <h4>SteemSTEM Recommendations</h4>
+        <ul style="list-style-type:circle">
+            <li style="margin-bottom:10px">Remember to credit your images and cite your sources.</li>
+            <li style="margin-bottom:10px">Images must be copyrighted for commercial use.</li>
+            <li style="margin-bottom:10px">Be original: re-phrasing other websites is rarely considered valuable.</li>
+            <li style="margin-bottom:10px">Markdown is supported.</li>
+            <li style="margin-bottom:10px">In case the post contains some HTML/markdown pieces of code, please
+               click on the code icon (<i class="code icon"></i>) to input it. Click a second time to generate the preview.</li>
+        </ul>
+    </div>
+    {{#if drafts}}
+    <div class="ui message items">
+       <h4> Saved Drafts </h4>
+       <div class="ui grid three column stackable padded">
+       {{#each drafts}}
+        <div class="ui five column wide item draft">
+            <div class="ui tiny image">
+                {{#if imgFromBody this}}
+                <img data-src="{{imgFromBody this}}">
+                {{/if}}
+            </div>
+            <div class="content">
+                <div class="header">
+                  <a>{{title}}</a>
+                    <i id='remove-draft' aria-hidden="true" class="teal fitted link icon trash alternate outline"></i>
+                </div>
+                <div class="meta">
+                    Updated :
+                    <a>{{DisplayTimeCreated last_update}}</a>
+                </div>
+                <div class="description post h {{permlink}}">
+                    {{xssShortFormatter body}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        </div>
+    </div>
+    {{/if}}
+</template>
