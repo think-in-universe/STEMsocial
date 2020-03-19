@@ -487,6 +487,21 @@ Template.registerHelper('customTags', function (array) {
 });
 
 
+// Dates
+Template.registerHelper('Timestamp', function(mydate)
+{
+  // date to translate
+  let now=new Date(mydate);
+  if(mydate=='') now=new Date();
+
+  // Compute the timestamp
+  let nDay = (now.getDay() + 6) % 7; now.setDate(now.getDate() - nDay + 3);
+  let n1stThursday = now.valueOf(); now.setMonth(0, 1);
+  if (now.getDay() !== 4) { now.setMonth(0, 1 + ((4 - now.getDay()) + 7) % 7); }
+  let week = 1 + Math.ceil((n1stThursday - now) / 604800000);
+  return week + 100*(now.getFullYear()-2000);
+});
+
 // Formatting: from markdown to HTML
 Template.registerHelper('ToHTML', function(text)
 {

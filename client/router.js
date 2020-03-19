@@ -159,16 +159,20 @@ FlowRouter.route('/@:user',
 {
   name: 'profile',
   action: function (params, queryParams) {
-    DocHead.removeDocHeadAddedTags()
+    DocHead.removeDocHeadAddedTags();
     BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
-    Session.set('user', params.user)
-    Session.set('currentprofiletab','blog')
-    Session.set('ToPass',0)
-    Session.set('MaxToPass',0)
-    Session.set('Queried','')
-    Session.set('Query-done',false)
-    Session.set('more-blogs',true)
-    User.add(params.user, function (error) { if (error) { console.log(error) } })
+    Session.set('user', params.user);
+    Session.set('currentprofiletab','blog');
+    Session.set('ToPass',0);
+    Session.set('MaxToPass',0);
+    Session.set('Queried','');
+    Session.set('Query-done',false);
+    Session.set('more-blogs',true);
+
+    // User to process
+    User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+
     if(!PersonalHistory.findOne({author:params.user}))
       PersonalHistory.getPersonalHistory(params.user,100, function (error) {
             if (error) { console.log(error) }

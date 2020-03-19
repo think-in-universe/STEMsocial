@@ -6,14 +6,15 @@ Template.mainlist.rendered = function () {
 Template.mainlist.events({
   // Navigation between the weeks
   'click .go-to-wk': function(event) {
-    Session.set('visiblecontent',20)
+    Session.set('visiblecontent',Session.get('visiblecontentlimit'));
     Session.set('current_week', parseInt(this))
-    if((parseInt(this)-3)<Session.get('loaded_week'))
-      { Session.set('loaded_week', (parseInt(this)-3)); AccountHistory.getVotes(); }
+    AccountHistory.GetContent(5);
+    if((parseInt(this)-2)<Session.get('loaded_week'))
+      { Session.set('loaded_week', (parseInt(this)-2)); AccountHistory.getVotes(true); }
     $('html,body').scrollTop(0);
   },
   'click .load-more-weeks': function(event)
-    { Session.set('loaded_week', Session.get('loaded_week')-2); AccountHistory.getVotes(); }
+    { Session.set('loaded_week', Session.get('loaded_week')-1); AccountHistory.getVotes(); }
 })
 
 // Helpers

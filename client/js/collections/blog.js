@@ -7,6 +7,7 @@ Blog.getContentByBlog = function (name, limit, type, cb, link='', author='') {
   if(Blog.find( { type:type, from: name}).fetch().length>50 && link=='' && author=='') return;
   var query = { tag: name, limit: limit };
   if(link!='' && author!='') {query = {  tag: name, limit: limit, start_author:author, start_permlink:link } }
+//  query = {  tag: name, limit: limit, start_author:author, start_permlink:link }
 
   // Getting the content
   steem.api.getDiscussionsByBlog(query, function (error, result) {

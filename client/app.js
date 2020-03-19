@@ -7,6 +7,8 @@ import steem from 'steem';
 import sc2sdk from 'sc2-sdk';
 
 // Pause the routing
+steem.api.setOptions({useAppbaseApi:true, url:'https://api.hive.blog'});
+//steem.api.setOptions({useAppbaseApi:true, url:'https://api.steemit.com'});
 FlowRouter.wait();
 
 // Setup
@@ -36,9 +38,8 @@ else
 window.sc2 = sc2
 window.steem = steem;
 
-Session.set('settings', false)
-
 // steemstem setup
+Session.set('settings', false)
 steem.api.getAccounts(['steemstem.setup'], function (error, result)
 {
   if (!result) { return; }
@@ -77,20 +78,20 @@ steem.api.getAccountHistory('steemstem-io', -1, 500, function(error, result)
   Session.set('Promoted', promoted);
 });
 
-// To be added to the promotion list (if the list is empty)
-steem.api.getDiscussionsByBlog({tag:'lemouth-dev', limit:1}, function (error, result)
-{
-  if (!result) { console.log(" error = ", error); return; }
-  if(Content.findOne({permlink:result[0].permlink})) { return;}
-  result = AccountHistory.UpgradeInfo(result[0],100);
-  Content.upsert({ _id: result._id }, result)
-});
+// To be reinitiated later (bug with the RPC)
+//steem.api.getDiscussionsByBlog({tag:'lemouth-dev', limit:1}, (error, result)=>
+//{
+//  if (!result || result.length==0) { console.log(" error = ", error); return; }
+//  if(Content.findOne({permlink:result[0].permlink})) { return;}
+//  result = AccountHistory.UpgradeInfo(result[0],100);
+//  Content.upsert({ _id: result._id }, result)
+//});
 
 // LOAD SETTINGS
 function Setup(api_name,sendDate,res)
 {
   let responseTimeMs = (new Date()).getTime() - sendDate;
-  console.log('Global Properties loaded from ' + api_name + 'in ' + responseTimeMs + "ms");
+  console.log('Global Properties loaded from ' + api_name + ' in ' + responseTimeMs + "ms");
   localStorage.setItem('steemProps', JSON.stringify(res));
 }
 
@@ -98,16 +99,12 @@ function Setup(api_name,sendDate,res)
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c HiveStem OpenSource v0.10.1: https://github.com/BFuks/hivestem`,
+  console.log(`%c HiveStem OpenSource v0.10.2: https://github.com/BFuks/hivestem`,
     "font-size: 11px; padding: 1px 1px;");
-  console.log(`%c More informations on : https://steemstem.io/aboutus`,
+  console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c Maintained and developed by @lemouth.`,
     "font-size: 11px; padding: 1px 1px;");
-
-  // CoinMarket and order books to get the steem and sbd values
-  coinmarket.steemdollars()
-  coinmarket.steem()
 
   //  SBD/Steem
   steem.api.getOrderBook(1, function (err, result) { if (!err) { Session.set("sbdmarketprice", Number(result.asks[0].real_price).toFixed(2)); } });
@@ -127,61 +124,31 @@ Meteor.startup(function ()
   }
 
   // Setting up the week numbering
-  let now=new Date();
-  let nDay = (now.getDay() + 6) % 7; now.setDate(now.getDate() - nDay + 3);
-  let n1stThursday = now.valueOf(); now.setMonth(0, 1);
-  if (now.getDay() !== 4) { now.setMonth(0, 1 + ((4 - now.getDay()) + 7) % 7); }
-  let week = 1 + Math.ceil((n1stThursday - now) / 604800000);
+  let timestamp = Blaze._globalHelpers['Timestamp']('');
 
-  Session.set('this_week', (now.getFullYear()-2000)*100+week)
-  Session.set('current_week', (now.getFullYear()-2000)*100+week)
-  Session.set('loaded_week', (now.getFullYear()-2000)*100+week-3)
-  Session.set('last_loaded_post','')
-  Session.set('last_loaded_vote',-1)
-  Session.set('last_loaded_vote_stamp',2100)
+  Session.set('this_week', timestamp);
+  Session.set('current_week', timestamp)
   Session.set('whitelisted', [])
   Session.set('promolisted', [])
   Session.set('N_whitelist', 0)
   Session.set('N_promolist', 0)
   Session.set('currentVotingPercentage', 50)
-  Session.set('visiblecontent', 12)
   if (localStorage.guestuser) { Session.set('guestuser', localStorage.guestuser) }
 
   //Load global properties
   let sendDate = (new Date()).getTime();
-  steem.api.setOptions({url:  'https://api.steemit.com' });
-  steem.api.getDynamicGlobalProperties(function (err, result)
-  {
-    if (result) { Setup('api.steemit.com',sendDate,result); }
-    else
-    {
-      steem.api.setOptions({ url: 'https://steemd.minnowsupportproject.org' });
-      steem.api.getDynamicGlobalProperties(function (err, result)
-      {
-        if (result) { Setup('steemd.minnowsupportproject.org',sendDate,result); }
-        else
-        {
-          steem.api.setOptions({ url: 'https://steemd.privex.io' });
-          steem.api.getDynamicGlobalProperties(function (err, result)
-          {
-            if(result) { Setup('steemd.privex.io',sendDate,result); }
-            else
-            {
-              steem.api.setOptions({ url: 'https://anyx.io' });
-              steem.api.getDynamicGlobalProperties(function (err, result)
-              {
-                if (result) { Setup('anyx.io',sendDate,result); }
-              });
-            }
-          });
-        }
-      });
-    }
-  });
-
-//  while(!Session.get('settings')) { continue;}
+  steem.api.getDynamicGlobalProperties(
+  function (err, res)
+    { if (res) { Setup('https://api.hive.blog',sendDate,res); } else console.log('Cannot connect to the HIVE API:', err); });
 
   // Get votes
+  Session.set('visiblecontentlimit',    5);
+  Session.set('loaded_week',            timestamp-2);
+  Session.set('last_loaded_vote_stamp', 2100);
+  Session.set('last_loaded_vote',       -1);
+  Session.set('last_loaded_post',       '');
+  Session.set('load_post_charge',       100);
+  Session.set('visiblecontent',         5);
   AccountHistory.getVotes();
 
   // Language

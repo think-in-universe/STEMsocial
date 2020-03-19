@@ -79,9 +79,9 @@ Template.home.rendered = function () {
       document.getElementById("filter").checked = false;
       Session.set('superfilter','top');
       Session.set('unfiltered',false);
-      Session.set('visiblecontent',12);
+      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',12); }
+    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',5); }
   });
   $('.menu .item').tab()
   $('.medposts.checkbox')
@@ -93,9 +93,9 @@ Template.home.rendered = function () {
       document.getElementById("topposts").checked = false;
       Session.set('superfilter','medium');
       Session.set('unfiltered',false);
-      Session.set('visiblecontent',12);
+      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',12); }
+    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',5); }
   });
   $('.menu .item').tab()
   $('.filter.checkbox')
@@ -107,21 +107,22 @@ Template.home.rendered = function () {
       document.getElementById("topposts").checked = false;
       Session.set('superfilter','');
       Session.set('unfiltered',true);
-      Session.set('visiblecontent',12);
+      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('unfiltered',false);  Session.set('visiblecontent',12); }
+    onUnchecked: function() { Session.set('unfiltered',false);  Session.set('visiblecontent',5); }
   });
 
 
   // Other options
   Session.set('gridview',false)
-  Session.set('visiblecontent',12)
+  Session.set('visiblecontent',5)
   $('.ui.bottom.cnt')
   .visibility({
       once: false,
       observeChanges: true,
       onBottomVisible: function () {
-              Session.set('visiblecontent', Session.get('visiblecontent') + 8)
+        Session.set('visiblecontent', Session.get('visiblecontent') + Session.get('visiblecontentlimit'));
+        AccountHistory.GetContent(5);
       }
   })
 }
