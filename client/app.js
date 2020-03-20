@@ -7,7 +7,9 @@ import steem from 'steem';
 import sc2sdk from 'sc2-sdk';
 
 // Pause the routing
-steem.api.setOptions({useAppbaseApi:true, url:'https://api.hive.blog'});
+//let myurl = 'https://api.hive.blog';
+let myurl = 'https://anyx.io';
+steem.api.setOptions({useAppbaseApi:true, url:myurl});
 //steem.api.setOptions({useAppbaseApi:true, url:'https://api.steemit.com'});
 FlowRouter.wait();
 
@@ -99,7 +101,7 @@ function Setup(api_name,sendDate,res)
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c HiveStem OpenSource v0.10.2: https://github.com/BFuks/hivestem`,
+  console.log(`%c HiveStem OpenSource v0.10.4: https://github.com/BFuks/hivestem`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");
@@ -125,9 +127,8 @@ Meteor.startup(function ()
 
   // Setting up the week numbering
   let timestamp = Blaze._globalHelpers['Timestamp']('');
-
   Session.set('this_week', timestamp);
-  Session.set('current_week', timestamp)
+
   Session.set('whitelisted', [])
   Session.set('promolisted', [])
   Session.set('N_whitelist', 0)
@@ -139,10 +140,11 @@ Meteor.startup(function ()
   let sendDate = (new Date()).getTime();
   steem.api.getDynamicGlobalProperties(
   function (err, res)
-    { if (res) { Setup('https://api.hive.blog',sendDate,res); } else console.log('Cannot connect to the HIVE API:', err); });
+    { if (res) { Setup(myurl,sendDate,res); } else console.log('Cannot connect to the HIVE API:', err); });
 
   // Get votes
   Session.set('visiblecontentlimit',    5);
+  Session.set('current_week',           timestamp);
   Session.set('loaded_week',            timestamp-2);
   Session.set('last_loaded_vote_stamp', 2100);
   Session.set('last_loaded_vote',       -1);
@@ -150,6 +152,9 @@ Meteor.startup(function ()
   Session.set('load_post_charge',       100);
   Session.set('visiblecontent',         5);
   AccountHistory.getVotes();
+
+  // Profile configuration
+  Session.set('blogs_per_page', 50);
 
   // Language
   window.loadLanguage(function (result) { if (result) { console.log(result) } });

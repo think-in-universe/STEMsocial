@@ -163,23 +163,21 @@ FlowRouter.route('/@:user',
     BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
     Session.set('user', params.user);
     Session.set('currentprofiletab','blog');
-    Session.set('ToPass',0);
-    Session.set('MaxToPass',0);
-    Session.set('Queried','');
-    Session.set('Query-done',false);
-    Session.set('more-blogs',true);
 
     // User to process
     User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
 
+    // Get the user account history
+    if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
 
-    if(!PersonalHistory.findOne({author:params.user}))
-      PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) { console.log(error) }
-      })
-    Followers.loadFollowers(params.user, function (error) { if (error) { console.log(error) } })
-    Blog.getContentByBlog(params.user, 51, 'blog', function (error) { if (error) { console.log(error) } })
-    $('.menu.profile .item').tab('change tab', 'first')
+    // Blog posts
+    Session.set('visiblecontent', 5);
+    Session.set('blog_loaded',    false);
+    Session.set('current-page',   1);
+    Blog.getContentByBlog(params.user, 2*Session.get('blogs_per_page'), 'blog');
+
+    // tab
+    $('.menu.profile .item').tab('change tab', 'first');
   }
 });
 FlowRouter.route('//@:user', {action: function(params, queryParams) { FlowRouter.go('/@'+params.user) }});
@@ -190,27 +188,19 @@ FlowRouter.route('//@:user', {action: function(params, queryParams) { FlowRouter
 FlowRouter.route('/@:user/comments', {
     name: 'profile',
     action: function (params, queryParams) {
-        DocHead.removeDocHeadAddedTags()
-        BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
-        Session.set('user', params.user)
-        Session.set('currentprofiletab','comments')
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        if(!PersonalHistory.findOne({author:params.user}))
-        PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Followers.loadFollowers(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        $('.menu.profile .item').tab('change tab', 'second')
+      DocHead.removeDocHeadAddedTags()
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
+      Session.set('user', params.user)
+      Session.set('currentprofiletab','comments')
+
+      // User to process
+      User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+      // Get the user account history
+      if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
+
+      // tab
+      $('.menu.profile .item').tab('change tab', 'second');
     }
 });
 FlowRouter.route('//@:user/comments', {action: function(params, queryParams) { FlowRouter.go('/@'+params.user+'/comments') }});
@@ -220,27 +210,19 @@ FlowRouter.route('//@:user/comments', {action: function(params, queryParams) { F
 FlowRouter.route('/@:user/replies', {
     name: 'profile',
     action: function (params, queryParams) {
-        DocHead.removeDocHeadAddedTags()
-        BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
-        Session.set('user', params.user)
-        Session.set('currentprofiletab','replies')
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        if(!PersonalHistory.findOne({author:params.user}))
-        PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Followers.loadFollowers(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        $('.menu.profile .item').tab('change tab', 'third')
+      DocHead.removeDocHeadAddedTags()
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
+      Session.set('user', params.user)
+      Session.set('currentprofiletab','replies')
+
+      // User to process
+      User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+      // Get the user account history
+      if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
+
+      // tab
+      $('.menu.profile .item').tab('change tab', 'third');
     }
 });
 FlowRouter.route('//@:user/replies', {action: function(params, queryParams) { FlowRouter.go('/@'+params.user+'/replies') }});
@@ -250,27 +232,18 @@ FlowRouter.route('//@:user/replies', {action: function(params, queryParams) { Fl
 FlowRouter.route('/@:user/rewards', {
     name: 'profile',
     action: function (params, queryParams) {
-        DocHead.removeDocHeadAddedTags()
-        BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
-        Session.set('user', params.user)
-        Session.set('currentprofiletab','rewards')
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        if(!PersonalHistory.findOne({author:params.user}))
-        PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Followers.loadFollowers(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        $('.menu.profile .item').tab('change tab', 'fourth')
+      DocHead.removeDocHeadAddedTags()
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
+      Session.set('user', params.user)
+      Session.set('currentprofiletab','rewards')
+      // User to process
+      User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+      // Get the user account history
+      if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
+
+      // tab
+      $('.menu.profile .item').tab('change tab', 'fourth')
     }
 });
 FlowRouter.route('//@:user/rewards', {action: function(params, queryParams) { FlowRouter.go('/@'+params.user+'/rewards') }});
@@ -280,27 +253,19 @@ FlowRouter.route('//@:user/rewards', {action: function(params, queryParams) { Fl
 FlowRouter.route('/@:user/wallet', {
     name: 'profile',
     action: function (params, queryParams) {
-        DocHead.removeDocHeadAddedTags()
-        BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
-        Session.set('user', params.user)
-        Session.set('currentprofiletab','wallet')
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        if(!PersonalHistory.findOne({author:params.user}))
-        PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Followers.loadFollowers(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        $('.menu.profile .item').tab('change tab', 'fifth')
+      DocHead.removeDocHeadAddedTags()
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "profile", topmenu: "topmenu" });
+      Session.set('user', params.user)
+      Session.set('currentprofiletab','wallet')
+
+      // User to process
+      User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+      // Get the user account history
+      if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
+
+      // tab
+      $('.menu.profile .item').tab('change tab', 'fifth')
     }
 });
 FlowRouter.route('//@:user/wallet', {action: function(params, queryParams) { FlowRouter.go('/@'+params.user+'/wallet') }});
@@ -350,22 +315,17 @@ FlowRouter.route('/@:user/:permlink', {
              DocHead.addMeta({property: 'description', content: desc})
           }
         })
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Blog.getContentByBlog(params.user, 20, 'blog', function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        window.scrollTo(0,0)
-        Followers.loadFollowers(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
+
+        // User to process
+        User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+        // Blog posts
+        Session.set('visiblecontent', 5);
+        Session.set('blog_loaded',    false);
+        Session.set('current-page',   1);
+        Blog.getContentByBlog(params.user, 10, 'blog');
+
+        window.scrollTo(0,0);
     }
 })
 
@@ -374,45 +334,27 @@ FlowRouter.route('/@:user/:permlink', {
 FlowRouter.route('//@:user/:permlink', {
     name: 'project',
     action: function (params, queryParams) {
-        DocHead.removeDocHeadAddedTags()
-        BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "article", topmenu: "topmenu" });
-        Session.set('user', params.user)
-        Session.set('article', params.permlink)
-        if (!Content.findOne({ permlink: params.permlink })) {
-            Content.getContent(params.user, params.permlink,"article", function (error) {
-                if (error) {
-                    console.log(error)
-                }
-            })
-        }
-        if (!Comments.findOne({ permlink: params.permlink })) {
-            Comments.loadComments(params.user, params.permlink, function (error) {
-                if (error) {
-                    console.log(error)
-                }
-            })
-        }
-        User.add(params.user, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        PersonalHistory.getPersonalHistory(params.user,100, function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
-        Blog.getContentByBlog(params.user, 20, 'blog', function (error) {
-            if (error) {
-                console.log(error)
-            }
-        })
+      DocHead.removeDocHeadAddedTags()
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "article", topmenu: "topmenu" });
+      Session.set('user', params.user)
+      Session.set('article', params.permlink)
+      if (!Content.findOne({ permlink: params.permlink }))
+        Content.getContent(params.user, params.permlink,"article", function (error) { if (error) { console.log(error); }});
 
-        // Content.getContentByAuthor(params.user, "", function (error) {
-        //     if (error) {
-        //         console.log(error)
-        //     }
-        // })
+      if (!Comments.findOne({ permlink: params.permlink }))
+        Comments.loadComments(params.user, params.permlink, function (error) { if (error) { console.log(error); } });
+
+      // User to process
+      User.add(params.user, (error) => { if (error) { console.log('ERROR in adding a user to the DB:', error); } });
+
+      // Get the user account history
+      if(!PersonalHistory.findOne({author:params.user})) PersonalHistory.getPersonalHistory(params.user,500);
+
+      // Blog posts
+      Session.set('visiblecontent', 5);
+      Session.set('blog_loaded',    false);
+      Session.set('current-page',   1);
+      Blog.getContentByBlog(params.user, 10, 'blog');
     }
 });
 

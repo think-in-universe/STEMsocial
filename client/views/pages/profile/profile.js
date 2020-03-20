@@ -24,13 +24,15 @@ Template.profile.rendered = function () {
         $('.menu.profile .item').tab('change tab', 'first')
     }
   }
-  Session.set('visiblecontent',1)
+  Session.set('visiblecontent',5)
   $('.ui.blog.bottom')
   .visibility({
     once: false,
     observeChanges: true,
-    onBottomVisible: function () {
-      Session.set('visiblecontent', Math.min(Session.get('visiblecontent') + 25,76))
+    onBottomVisible: function ()
+    {
+      Session.set('visiblecontent', Math.min(Session.get('blogs_per_page'),
+        Session.get('visiblecontent') + Session.get('visiblecontentlimit')));
     }
   })
 }
@@ -38,28 +40,35 @@ Template.profile.rendered = function () {
 
 // Helpers
 Template.profile.helpers({
-  // Get the number of posts to skip in an author blog
-  ToPass: function() { return Session.get('ToPass'); },
-
-  // Get the number of pages for the user blog
-  GetToPass: function()
+  // Empty blog
+  EmptyBlog: function(author)
   {
-    max = Session.get('MaxToPass')
-    if(max==0) { return [] }
-    return Array.from({length: 1+max/76}, (v, k) => k+1)
+    if(Session.get('blog_loaded') && Blog.find({from:author}).fetch().length==0) return true;
+    else return false;
+  },
+
+  // Is Blog Loaded
+  NotBlogLoaded: function(author)
+  {
+    if(Blog.find({from:author}).fetch().length==0 || Session.get('blog_loaded')) return false;
+    else return true;
+  },
+
+  // Get the number of blog pages to display
+  BlogToLoad: function(author)
+  {
+    nblogs = Blog.find({from:author}).fetch().length;
+    if(nblogs<=Session.get('blogs_per_page')) return [];
+    return Array.from({length: Math.ceil(nblogs/Session.get('blogs_per_page'))}, (v, k) => k+1);
   },
 
   // Is it the current page?
   MyPage: function()
   {
-    if((this.valueOf()-1)==Session.get('ToPass')/76) { return true }
-    else { return false}
-  },
-
-  //Testing whether the user blog is fully loaded
-  NotFullBlogLoaded: function()
-   { return Session.get('more-blogs'); }
-})
+    if( this.valueOf()==Session.get('current-page')) return true;
+    else { return false;}
+  }
+});
 
 
 // Clickable buttons
@@ -95,19 +104,18 @@ Template.profile.events({
   },
 
   // Loadin a new page og blog posts
-  'click #load-more': function(event) {
-    Session.set('MaxToPass', Session.get('MaxToPass')+76)
-    Session.set('ToPass', Session.get('ToPass')+76)
-    Session.set('visiblecontent',1)
-    $('html,body').scrollTop(0);
+  'click .load-more': function(event) {
+    Session.set('visiblecontent',Session.get('visiblecontentlimit'));
+    Blog.UpdateBlog(-1);
   },
 
   // Navigation between pages of blog posts
-  'click .go-to': function(event) {
-    Session.set('MaxToPass', Math.max(Session.get('MaxToPass'), Session.get('ToPass')))
-    Session.set('ToPass', (this.valueOf()-1)*76)
-    Session.set('visiblecontent',1)
+  'click .go-to-page': function(event)
+  {
+    Session.set('visiblecontent',Session.get('visiblecontentlimit'));
+    Session.set('current-page', parseInt(this));
     $('html,body').scrollTop(0);
-  }
+    Blog.UpdateBlog(parseInt(this));
+ }
 
 })

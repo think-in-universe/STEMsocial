@@ -115,21 +115,16 @@ Template.registerHelper('currentAuthorHistory', function (limit) {
 })
 
 // Get all blog posts from an author
-Template.registerHelper('currentAuthorBlog', function (stop=0) {
-  var author  = Session.get('user');
-  var lim     = Session.get('visiblecontent');
-  var content = Blog.find({from:author}, {sort:{created:-1}, skip:stop, limit:lim}).fetch();
-  var last    = Blog.find({from:author}, {sort:{created:1}, limit:1}).fetch()
-  if((stop+content.length)==Blog.find({from:author}).fetch().length && Session.get('Query-done'))
-    Session.set('more-blogs',false)
-  if(content.length<lim && last.length>0)
-  {
-    if(Session.get('Queried')!=last[0].permlink && !Session.get('Query-done'))
-    {
-      Blog.getContentByBlog(author,51,'blog',function(error){if(error) {console.log(error)}},
-        last[0].permlink, last[0].author);
-      Session.set('Queried', last[0].permlink)
-    }
-  }
+Template.registerHelper('currentAuthorBlog', function()
+{
+  // Some variables
+  let author  = Session.get('user');
+  let to_skip = (Session.get('current-page')-1)*Session.get('blogs_per_page');
+
+  // Get the post to show
+  let content = Blog.find({from:author}, {sort:{created:-1}, skip:to_skip, limit:Session.get('visiblecontent')}).fetch();
+  let last    = Blog.find({from:author}, {sort:{created:1}, limit:1}).fetch();
+
+  // Exit
   return content;
 })

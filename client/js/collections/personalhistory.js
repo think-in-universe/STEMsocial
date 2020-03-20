@@ -1,18 +1,18 @@
-PersonalHistory = new Mongo.Collection(null)
-var moment = require('moment')
+PersonalHistory = new Mongo.Collection(null);
+var moment = require('moment');
 
-PersonalHistory.getPersonalHistory = function (username,limit, cb) {
-        steem.api.getAccountHistory(username, -1, limit, function (error, result) {
-            if (result) {
-                for (i = 0; result.length > i; i++) {
-                    PersonalHistory.filterhistory(result[i], username)
-                }
-                cb(null)
-            }
-            else {
-                cb(true)
-            }
-        })
+// Get the user account history
+PersonalHistory.getPersonalHistory = function (username, limit)
+{
+  // Getting the last transactions of the account
+  steem.api.getAccountHistory(username, -1, limit, (err, res) =>
+  {
+    // Error
+    if (!res) {console.log('steem API error (account history): ', err); return; }
+
+    // Everything is fine
+    for (let i=0; i<res.length; i++) { PersonalHistory.filterhistory(res[i], username); }
+  });
 }
 
 

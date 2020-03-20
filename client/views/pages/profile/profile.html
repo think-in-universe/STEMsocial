@@ -27,18 +27,28 @@
             <a id="wallet" class="item" data-tab="fifth">Wallet</a>
           </div>
           <div class="ui bottom attached active tab borderless blog" data-tab="first" style="padding-top: 0px;">
-            {{#if currentAuthorBlog ToPass}}
-              {{#each GetToPass}}
-                <a class="go-to go-to-{{this}}">
+            {{#if EmptyBlog currentAuthor.name}}
+              <br />
+              <div class="ui teal message float">
+                <div class="header">@{{currentAuthor.name}} has not started to blog on HiveSTEM.</div>
+              </div>
+            {{else}}
+              {{#each BlogToLoad currentAuthor.name}}
+                <a class="go-to-page go-to-page-{{this}}">
                   {{#if MyPage}}
-                    <div id='go-to-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
+                    <div id='go-to-page-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
                   {{else}}
-                    <div id='go-to-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
+                    <div id='go-to-page-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
                   {{/if}}
                 </a>
               {{/each}}
+              {{#if NotBlogLoaded currentAuthor.name}}
+                <a class="load-more">
+                  <div id='load-more' class="ui mini button teal floated">More posts</div>
+                </a>
+              {{/if}}
               <div class="ui items blog">
-                {{#each currentAuthorBlog ToPass}}
+                {{#each currentAuthorBlog}}
                   {{#if equals author currentAuthor.name}}
                     {{>post}}
                   {{else}}
@@ -50,34 +60,20 @@
                   <div class="ui divider"></div>
                 {{/each}}
               </div>
-              {{#unless isLoadedFull currentAuthorBlog ToPass}}
-                {{#if NotFullBlogLoaded}}
-                  <div class="ui container">
-                    <div class="ui segment grid padded centered fluid borderless">
-                      <div class="ui active dimmer inverted">
-                        <h4 class="ui text loader">Adding Content...</h4>
-                      </div>
-                    </div>
-                  </div>
-                {{/if}}
-              {{else if NotFullBlogLoaded}}
-                <a class="load-more">
-                  <div id='load-more' class="ui mini button teal floated">Load more posts</div>
-                </a>
-              {{/unless}}
-              {{#each GetToPass}}
-                <a class="go-to go-to-{{this}}">
+              {{#each BlogToLoad currentAuthor.name}}
+                <a class="go-to-page go-to-page-{{this}}">
                   {{#if MyPage}}
-                    <div id='go-to-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
+                    <div id='go-to-page-button-{{this}}' class="ui mini button teal floated disabled">Page {{this}}</div>
                   {{else}}
-                    <div id='go-to-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
+                    <div id='go-to-page-button-{{this}}' class="ui mini button teal floated">Page {{this}}</div>
                   {{/if}}
                 </a>
               {{/each}}
-            {{else}}
-              <div class="ui large centered inline text loader visible">
-                Loading content...
-              </div>
+              {{#if NotBlogLoaded currentAuthor.name}}
+                <a class="load-more">
+                  <div id='load-more' class="ui mini button teal floated">More posts</div>
+                </a>
+              {{/if}}
             {{/if}}
           </div>
           <div class="ui bottom attached tab borderless" data-tab="second">
