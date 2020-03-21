@@ -79,9 +79,8 @@ Template.home.rendered = function () {
       document.getElementById("filter").checked = false;
       Session.set('superfilter','top');
       Session.set('unfiltered',false);
-      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',5); }
+    onUnchecked: function() { Session.set('superfilter',''); }
   });
   $('.menu .item').tab()
   $('.medposts.checkbox')
@@ -93,9 +92,8 @@ Template.home.rendered = function () {
       document.getElementById("topposts").checked = false;
       Session.set('superfilter','medium');
       Session.set('unfiltered',false);
-      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('superfilter',''); Session.set('visiblecontent',5); }
+    onUnchecked: function() { Session.set('superfilter',''); }
   });
   $('.menu .item').tab()
   $('.filter.checkbox')
@@ -107,15 +105,13 @@ Template.home.rendered = function () {
       document.getElementById("topposts").checked = false;
       Session.set('superfilter','');
       Session.set('unfiltered',true);
-      Session.set('visiblecontent',5);
     },
-    onUnchecked: function() { Session.set('unfiltered',false);  Session.set('visiblecontent',5); }
+    onUnchecked: function() { Session.set('unfiltered',false); }
   });
 
 
   // Other options
   Session.set('gridview',false)
-  Session.set('visiblecontent',5)
   $('.ui.bottom.cnt')
   .visibility({
       once: false,

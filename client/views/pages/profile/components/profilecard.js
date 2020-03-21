@@ -12,7 +12,7 @@ Template.profilecard.events(
     if (localStorage.kc)
     {
       let json = JSON.stringify(['follow', { follower: localStorage.username, following: this.name, what:["blog"]}]);
-      window.steem_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
+      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
       {
         $('.ui.button.follow').removeClass('loading');
         document.getElementsByClassName('follow-action')[0].style.display = "none";
@@ -40,7 +40,7 @@ Template.profilecard.events(
     if (localStorage.kc)
     {
       let json = JSON.stringify(['follow', { follower: localStorage.username, following: this.name, what:[]}]);
-      window.steem_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
+      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
       {
         $('.ui.button.follow').removeClass('loading');
         document.getElementsByClassName('unfollow-action')[0].style.display = "none";

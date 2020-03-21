@@ -1,21 +1,21 @@
-<template name="steemkeychainmodal">
-  <div class="ui small segment steemkeychain inverted modal">
+<template name="hivekeychainmodal">
+  <div class="ui small segment hivekeychain inverted modal">
     <div class="ui segment inverted column">
       <div class="row">
         <h2 style="border-top:4px solid #db2828!important; padding-top: 0.5em;">Login</h2>
-        <h5>Steem Keychain is a Chrome/Firefox extension allowing to interact easily with the
-          Steem blockchain. More information is available from
-          <a href='https://github.com/MattyIce/steem-keychain'>here</a>.
+        <h5>Hive-Keychain is a Chrome/Firefox extension allowing to interact easily with the
+          Hive blockchain. More information is available from
+          <a href='https://github.com/stoodkev/hive-keychain'>here</a>.
         </h5>
       </div>
-      {{#if SteemKeychain}}
+      {{#if HiveKeychain}}
         <form class="ui form inverted">
           <div class="ui divider"></div>
           <div class="field">
             <label>Username</label>
             <div class="ui left icon input">
               <i class="at icon"></i>
-              <input id = 'steem_id' type="text" name="steem_id" placeholder="Account name">
+              <input id = 'hive_id' type="text" name="hive_id" placeholder="Account name">
             </div>
           </div>
           <div class="ui mini to message green hidden"><p>Account is valid </p></div>
@@ -23,10 +23,10 @@
         </form>
       {{else}}
         <br />
-        <label>Steem Keychain not installed. Please see <a href='https://github.com/MattyIce/steem-keychain'>here</a>.</label>
+        <label>Hive-Keychain not installed. Please see <a href='https://github.com/stoodkev/hive-keychain'>here</a>.</label>
       {{/if}}
     </div>
-    {{#if SteemKeychain}}
+    {{#if HiveKeychain}}
       <div class="actions" style="background: transparent;">
         <div class="ui cancel red button">Cancel</div>
         <div id="confirmlogin" class="ui confirm green button disabled">LOGIN</div>

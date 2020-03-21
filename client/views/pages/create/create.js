@@ -267,7 +267,7 @@ Template.create.createProject = function(form)
   if(sessionStorage.editpermlink)
   {
     permlink =  sessionStorage.editpermlink
-    var percent_steem_dollars = 10000
+    var percent_hive_dollars = 10000
     var project_to_publish = [
       ['comment',
         {
@@ -285,7 +285,7 @@ Template.create.createProject = function(form)
   }
   else
   {
-    var percent_steem_dollars = 10000
+    var percent_hive_dollars = 10000
     if(beneficiaries_dico.length==0)
     {
       project_to_publish = [
@@ -298,7 +298,7 @@ Template.create.createProject = function(form)
         ['comment_options',
           {
              author: author, permlink: permlink, max_accepted_payout: '1000000.000 SBD',
-             percent_steem_dollars: percent_steem_dollars, allow_votes: true, allow_curation_rewards: true,
+             percent_hive_dollars: percent_hive_dollars, allow_votes: true, allow_curation_rewards: true,
              extensions: []
           }
         ]
@@ -317,7 +317,7 @@ Template.create.createProject = function(form)
         ['comment_options',
           {
             author: author, permlink: permlink, max_accepted_payout: '1000000.000 SBD',
-            percent_steem_dollars: percent_steem_dollars, allow_votes: true, allow_curation_rewards: true,
+            percent_hive_dollars: percent_hive_dollars, allow_votes: true, allow_curation_rewards: true,
             extensions: [  [0, { beneficiaries: beneficiaries_dico } ]  ]
           }
         ]
@@ -388,7 +388,7 @@ Template.create.submitproject = function (project)
       if(options.extensions.length==0) { options=''; }
     }
     if (options!='') { options = JSON.stringify(options); }
-    window.steem_keychain.requestPost(comment.author, comment.title , comment.body, comment.parent_permlink,
+    window.hive_keychain.requestPost(comment.author, comment.title , comment.body, comment.parent_permlink,
       comment.parent_author, comment.json_metadata, comment.permlink, options, function(response)
     {
       if(!response.success)

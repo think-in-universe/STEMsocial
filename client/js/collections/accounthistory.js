@@ -7,7 +7,9 @@ AccountHistory.getVotes = function(quiet=false)
   if( Session.get('last_loaded_vote_stamp') <= Session.get('loaded_week'))
   {
     if(!quiet) AccountHistory.GetContent();
-    AccountHistory.LoadTags();
+    let start = new Date().getTime(); for (let i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 2000) break; }
+    if(Session.get('last_loaded_post')=='') AccountHistory.LoadTags();
+    else if(Session.get('last_loaded_post').split('/')[2] > Session.get('loaded_week')) AccountHistory.LoadTags();
     return;
   }
 
@@ -28,11 +30,8 @@ AccountHistory.getVotes = function(quiet=false)
       let id = res[i][1].op[1].author+'/'+res[i][1].op[1].permlink+'/'+res[i][1].op[1].weight/100;
       if(AccountHistory.findOne({_id:id})) continue;
 
-      // Sometimes to be activated as already there
-      // if(res[i][1].op[1].author=='lemouth-dev') continue;
-
       // Saving
-      AccountHistory.insert({_id:id, timestamp:res[i][1].timestamp});
+      AccountHistory.insert({_id:id, timestamp:res[i][1].timestamp, permlink:res[i][1].op[1].permlink});
     }
 
     // Continuing browsing the blockchain until the time limit is passed
@@ -45,7 +44,7 @@ AccountHistory.getVotes = function(quiet=false)
 // To get all posts from the steemstem tag
 AccountHistory.LoadTags = function ()
 {
-  // 75 posts are obtained, from the current starting point (default  = last cerated post)
+  // 75 posts are obtained, from the current starting point (default  = last created post)
   let query = { tag: "steemstem", limit:Session.get('load_post_charge')};
   let last = Session.get('last_loaded_post');
 
@@ -69,14 +68,23 @@ AccountHistory.LoadTags = function ()
       // Ignored voted posts, comments and posts without metadata
       if(Content.findOne({permlink:res[i].permlink}) || res[i].parent_author!='' || !res[i].json_metadata) continue;
 
+      // SteemSTEM voted post
+      let weight=0;
+      if(AccountHistory.findOne({permlink:res[i].permlink}))
+        weight = AccountHistory.findOne({permlink:res[i].permlink})._id.split('/')[2];
+
       // Normal post: updating the result and saving it
-      result = AccountHistory.UpgradeInfo(res[i],0);
+      let result = AccountHistory.UpgradeInfo(res[i],weight);
       Content.upsert({ _id: result._id }, result);
     }
 
     // Recursive loading
-    Session.set('last_loaded_post', res[res.length-1].author+'/'+res[res.length-1].permlink+'/' + res[res.length-1].week);
-    AccountHistory.LoadTags();
+    let new_last = Content.findOne({permlink:res[res.length-1].permlink});
+    Session.set('last_loaded_post',new_last.author+'/'+new_last.permlink+'/'+ new_last.week);
+    let start=new Date().getTime(); for (let i=0; i<1e7; i++) { if ((new Date().getTime()-start) > 2000) break; }
+    AccountHistory.getVotes(true);
+
+    // Exit
     return;
   });
 }
@@ -115,7 +123,7 @@ AccountHistory.GetInfo= function(author, permlink, weight)
     if (!result || result.parent_author!='' || !result.json_metadata) { return; }
 
     // Else: upgrade and save the information
-    res = AccountHistory.UpgradeInfo(result, weight);
+    let res = AccountHistory.UpgradeInfo(result, weight);
     Content.upsert({ _id: res._id }, res);
 
     // exit

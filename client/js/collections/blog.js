@@ -11,8 +11,9 @@ Blog.getContentByBlog = function (name, limit, type, link='', author='')
   Session.set('blog_author', name);
 
   // Getting the right query
-  let query = { tag:name, limit:limit };
-  if(link!='' && author!='') query = {  tag:name, limit:limit, start_author:author, start_permlink:link };
+  let nblogs = Math.min(limit,Session.get('load_post_charge')/3);
+  let query = { tag:name, limit:nblogs };
+  if(link!='' && author!='') query = {  tag:name, limit:nblogs, start_author:author, start_permlink:link };
 
   // Getting the content
   steem.api.getDiscussionsByBlog(query, (err, res)=>
@@ -39,12 +40,20 @@ Blog.getContentByBlog = function (name, limit, type, link='', author='')
         // Saving the blog post
         Blog.upsert({ _id: res[i].id }, res[i]);
     }
-    if(res.length<limit) Session.set('blog_loaded', true);
+    if(res.length<nblogs) Session.set('blog_loaded', true);
 
     // Setup
     Session.set('last_blog_author', res[res.length-1].author);
     Session.set('last_blog_permlink', res[res.length-1].permlink);
 
+    // Recursive call
+    if(limit>Session.get('load_post_charge')/3)
+    {
+      let start=new Date().getTime(); for (let i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 2000) break; }
+      Blog.getContentByBlog(name, limit-nblogs+1, type, res[res.length-1].permlink, res[res.length-1].author);
+    }
+
+    // Exit
     return;
 
   });

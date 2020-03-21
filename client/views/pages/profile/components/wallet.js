@@ -38,7 +38,7 @@ Template.wallet.events(
     if (localStorage.kc)
     {
       let json = ['claim_reward_balance',{ account:localStorage.username,reward_steem:steem,reward_sbd:sbd,reward_vests:vests}];
-      window.steem_keychain.requestBroadcast(localStorage.username, [json], 'Posting', function(response)
+      window.hive_keychain.requestBroadcast(localStorage.username, [json], 'Posting', function(response)
       {
         if(!response.success) { console.log('Error with keychain (cannot claim rewards)', response); return; }
         MainUser.add(localStorage.username, function (error) { if (error) { console.log(error) } });

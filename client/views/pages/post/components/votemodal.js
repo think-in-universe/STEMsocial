@@ -28,7 +28,7 @@ Template.votemodal.init = function ()
     let permlink = $("#confirmbutton").attr("data-permlink");
     if (localStorage.kc)
     {
-      window.steem_keychain.requestVote(localStorage.username, permlink, author, weight, function(resp)
+      window.hive_keychain.requestVote(localStorage.username, permlink, author, weight, function(resp)
       {
         $("#confirmbutton").removeClass('loading');
         if(resp.success)

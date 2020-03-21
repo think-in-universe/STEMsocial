@@ -90,7 +90,7 @@ Template.reply.comment = function (article)
 
   if (localStorage.kc)
   {
-    window.steem_keychain.requestPost(localStorage.username, '' , body, article.permlink, article.author, json_metadata,
+    window.hive_keychain.requestPost(localStorage.username, '' , body, article.permlink, article.author, json_metadata,
       permlink, '' , function(response)
     {
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
@@ -121,7 +121,7 @@ Template.reply.updatecomment = function (article)
 
   if (localStorage.kc)
   {
-    window.steem_keychain.requestPost(localStorage.username, article.title, newbody, article.parent_permlink,
+    window.hive_keychain.requestPost(localStorage.username, article.title, newbody, article.parent_permlink,
     article.parent_author, article.json_metadata,
       article.permlink, '' , function(response)
     {

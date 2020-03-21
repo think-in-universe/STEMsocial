@@ -12,13 +12,13 @@ Template.dropdownlogin.events({
     window.location.href = sc2.getLoginURL()
   },
   // login with SteemKeychain
-  'click #steemkeychain': function (event)
+  'click #hivekeychain': function (event)
   {
     event.preventDefault();
     event.stopPropagation();
-    $('.ui.steemkeychain.modal').remove();
-    $('article').append(Blaze.toHTMLWithData(Template.steemkeychainmodal, { data: this }));
-    $('.ui.steemkeychain.modal').modal('setting', 'transition', 'scale').modal('show');
-    Template.steemkeychainmodal.init();
+    $('.ui.hivekeychain.modal').remove();
+    $('article').append(Blaze.toHTMLWithData(Template.hivekeychainmodal, { data: this }));
+    $('.ui.hivekeychain.modal').modal('setting', 'transition', 'scale').modal('show');
+    Template.hivekeychainmodal.init();
   }
 });

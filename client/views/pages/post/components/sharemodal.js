@@ -13,7 +13,7 @@ Template.sharemodal.init = function(author, permlink)
     if (localStorage.kc)
     {
       let json = JSON.stringify(['reblog', { account: localStorage.username, author: author, permlink: permlink }]);
-      window.steem_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "resteem", function(response)
+      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "resteem", function(response)
         { console.log(response);});
     }
     else

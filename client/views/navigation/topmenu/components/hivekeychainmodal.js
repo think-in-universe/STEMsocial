@@ -1,12 +1,12 @@
 // Rendering
-Template.steemkeychainmodal.rendered = function () { }
+Template.hivekeychainmodal.rendered = function () { }
 
 // Modal initialization
-Template.steemkeychainmodal.init = function ()
+Template.hivekeychainmodal.init = function ()
 {
-  $("#steem_id").change(function ()
+  $("#hive_id").change(function ()
   {
-    steem.api.lookupAccountNames([$("#steem_id").val()], function (error, result)
+    steem.api.lookupAccountNames([$("#hive_id").val()], function (error, result)
     {
       if(result[0]===null)
       {
@@ -26,35 +26,35 @@ Template.steemkeychainmodal.init = function ()
   // Submit button
   document.getElementById("confirmlogin").addEventListener("click", ConfirmLogin);
 
-  // Confirm login via steemkeychain
+  // Confirm login via hivekeychain
   function ConfirmLogin()
   {
-    let keychain = window.steem_keychain;
-    keychain.requestSignBuffer($("#steem_id").val(), "#SteemSTEM", "Posting", function(resp)
+    let keychain = window.hive_keychain;
+    keychain.requestSignBuffer($("#hive_id").val(), "#HiveSTEM", "Posting", function(resp)
     {
        if(resp.success)
        {
-         localStorage.setItem('username', $("#steem_id").val());
+         localStorage.setItem('username', $("#hive_id").val());
          localStorage.setItem('kc', 'true');
          MainUser.add(localStorage.username, function(error) {});
-         $('.ui.steemkeychain.modal').modal('hide');
+         $('.ui.hivekeychain.modal').modal('hide');
        }
        else
        {
          $(".error.message.red").removeClass('hidden');
-         console.log('steem keychain login error:', resp.error);
+         console.log('Hive-keychain login error:', resp.error);
        }
     });
   }
 }
 
 // Events
-Template.steemkeychainmodal.events({ })
+Template.hivekeychainmodal.events({ })
 
 
 // Helpers
-Template.steemkeychainmodal.helpers(
+Template.hivekeychainmodal.helpers(
 {
     // Is key chain available
-    SteemKeychain: function () { return window.steem_keychain; }
+    HiveKeychain: function () { return window.hive_keychain; }
 });
