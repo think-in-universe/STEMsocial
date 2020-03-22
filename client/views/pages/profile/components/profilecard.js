@@ -22,10 +22,10 @@ Template.profilecard.events(
     else
     {
       $('.ui.button.follow').addClass('loading');
-      steemconnect.follow(this.name, function (error)
+      hivesigner.follow(this.name, function (error)
       {
         // Error
-        if (error) { console.log('Following with steemconnect', error); return; }
+        if (error) { console.log('Following with hivesigner', error); return; }
         // Everything is fine
         Followers.loadFollowers(name);
         $('.ui.button.follow').removeClass('loading');
@@ -50,10 +50,10 @@ Template.profilecard.events(
     else
     {
       $('.ui.button.unfollow').addClass('loading');
-      steemconnect.unfollow(this.name, function (error)
+      hivesigner.unfollow(this.name, function (error)
       {
         // Error
-        if (error) { console.log('Unfollowing with steemconnect', error); return; }
+        if (error) { console.log('Unfollowing with hivesigner', error); return; }
         // Everything is fine
         Followers.loadFollowers(name);
         $('.ui.button.unfollow').removeClass('loading');

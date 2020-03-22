@@ -1,7 +1,7 @@
 <template name="personalfeed">
-        <div class="ui cards">
-            {{#each currentAuthorHistory 10}} 
-           {{#if equals type 'vote'}}
+  <div class="ui cards">
+    {{#each currentAuthorHistory 10}}
+      {{#if equals type 'vote'}}
             <div class="card">
                 <div class="content">
                   <img class="right floated mini ui image" src="https://steemitimages.com/u/{{name}}/avatar">

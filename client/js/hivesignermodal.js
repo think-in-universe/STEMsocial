@@ -1,8 +1,8 @@
 // No rendering
-Template.steemconnectmodal.rendered = function() { }
+Template.hivesignermodal.rendered = function() { }
 
 // Modal initialization
-Template.steemconnectmodal.init = function()
+Template.hivesignermodal.init = function()
 {
   // buttons
   document.getElementById("proceed").addEventListener("click", Proceed);
@@ -17,4 +17,4 @@ Template.steemconnectmodal.init = function()
 }
 
 // No events
-Template.steemconnectmodal.events({ })
+Template.hivesignermodal.events({ })

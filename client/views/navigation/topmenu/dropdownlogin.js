@@ -6,7 +6,7 @@ Template.dropdownlogin.rendered = function () {
 // Events
 Template.dropdownlogin.events({
   // login with SteemConnect
-  'click #steemconnect': function (event) {
+  'click #hivesigner': function (event) {
     event.preventDefault()
     sessionStorage.setItem('currentroute', FlowRouter.current().path)
     window.location.href = sc2.getLoginURL()

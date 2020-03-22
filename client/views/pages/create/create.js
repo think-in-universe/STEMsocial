@@ -267,7 +267,7 @@ Template.create.createProject = function(form)
   if(sessionStorage.editpermlink)
   {
     permlink =  sessionStorage.editpermlink
-    var percent_hive_dollars = 10000
+    var percent_steem_dollars = 10000
     var project_to_publish = [
       ['comment',
         {
@@ -285,7 +285,7 @@ Template.create.createProject = function(form)
   }
   else
   {
-    var percent_hive_dollars = 10000
+    var percent_steem_dollars = 10000
     if(beneficiaries_dico.length==0)
     {
       project_to_publish = [
@@ -298,7 +298,7 @@ Template.create.createProject = function(form)
         ['comment_options',
           {
              author: author, permlink: permlink, max_accepted_payout: '1000000.000 SBD',
-             percent_hive_dollars: percent_hive_dollars, allow_votes: true, allow_curation_rewards: true,
+             percent_steem_dollars: percent_steem_dollars, allow_votes: true, allow_curation_rewards: true,
              extensions: []
           }
         ]
@@ -317,7 +317,7 @@ Template.create.createProject = function(form)
         ['comment_options',
           {
             author: author, permlink: permlink, max_accepted_payout: '1000000.000 SBD',
-            percent_hive_dollars: percent_hive_dollars, allow_votes: true, allow_curation_rewards: true,
+            percent_steem_dollars: percent_steem_dollars, allow_votes: true, allow_curation_rewards: true,
             extensions: [  [0, { beneficiaries: beneficiaries_dico } ]  ]
           }
         ]
@@ -410,13 +410,13 @@ Template.create.submitproject = function (project)
   }
   else
   {
-    steemconnect.send(project, function (error, result)
+    hivesigner.send(project, function (error, result)
     {
       if (error)
       {
         $('#postprob').removeClass("hidden")
         $('#postprob').text(error)
-        console.log("Error with steemconnect:", error.error_description)
+        console.log("Error with hivesigner:", error.error_description)
         console.log("status of the submission stuff:", project)
         if(error.error_description)
           $('#postprob').text(error.error_description)

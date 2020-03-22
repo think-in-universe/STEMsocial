@@ -107,12 +107,16 @@ Template.registerHelper('currentAuthorFollowers', function (comment) {
 Template.registerHelper('currentAuthorHistory', function (limit) {
   if (PersonalHistory.find().fetch())
   {
-    if (limit)
-      return PersonalHistory.find({}, { limit: limit }).fetch().reverse()
-    else
-      return PersonalHistory.find().fetch().reverse()
+    // Do we have profile information
+    let all_users =  User.find({}).fetch();
+    if (all_users.length==0) return [];
+
+    // Getting the last transactions
+    let current_user = all_users[ all_users.length-1].name;
+    if (limit) return PersonalHistory.find({user:current_user}, { limit: limit }).fetch().reverse();
+    else return PersonalHistory.find({user:current_user}).fetch().reverse();
   }
-})
+});
 
 // Get all blog posts from an author
 Template.registerHelper('currentAuthorBlog', function()

@@ -18,7 +18,7 @@ Template.sharemodal.init = function(author, permlink)
     }
     else
     {
-      steemconnect.reblog(author, permlink, function (error, result) { if (error) { console.log(error); return; } });
+      hivesigner.reblog(author, permlink, function (error, result) { if (error) { console.log(error); return; } });
       $('.ui.share.modal.'+permlink).modal('close');
     }
   }

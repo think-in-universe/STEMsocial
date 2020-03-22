@@ -60,7 +60,7 @@ Template.beneficiarymodal.init = function ()
   // Submit button
   document.getElementById("confirm-beneficiary").addEventListener("click", AddBeneficiary);
 
-  // Sending the required operation to steemconnect
+  // Sending the required operation to hivesigner
   function AddBeneficiary()
   {
     if(Session.get('beneficiary')!='' && Session.get('shares')!='')

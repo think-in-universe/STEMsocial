@@ -5,17 +5,17 @@ tokentest = function()
   if (!localStorage.username || !localStorage.expires_at || (time.getTime() > Date.parse(localStorage.expires_at)) )
   {
     event.preventDefault()
-    $('.ui.steemconnect.modal').remove()
-    $('article').append(Blaze.toHTMLWithData(Template.steemconnectmodal, {data:this}));
-    $('.ui.steemconnect.modal').modal('setting', 'transition', 'scale').modal('show')
-    Template.steemconnectmodal.init()
+    $('.ui.hivesigner.modal').remove()
+    $('article').append(Blaze.toHTMLWithData(Template.hivesignermodal, {data:this}));
+    $('.ui.hivesigner.modal').modal('setting', 'transition', 'scale').modal('show')
+    Template.hivesignermodal.init()
     return false
   }
   else { return true }
 }
 
 // Steemconnect machinery
-steemconnect = {
+hivesigner = {
   // Voting function
   vote: function (author, permlink, weight, cb)
   {
@@ -152,7 +152,7 @@ steemconnect = {
       sc2.setAccessToken(localStorage.accesstoken);
       sc2.updateUserMetadata(metadata, function (err, result) {
         console.log(err, result)
-        if(result) { steemconnect.me(); cb(null) }
+        if(result) { hivesigner.me(); cb(null) }
         else       { cb(true) }
       });
       delete localStorage.sc2_command

@@ -100,10 +100,10 @@ Template.reply.comment = function (article)
   }
   else
   {
-    steemconnect.comment(article.author, article.permlink, body, json_metadata, function (error, result)
+    hivesigner.comment(article.author, article.permlink, body, json_metadata, function (error, result)
     {
       // Error
-      if (error) { console.log('Posting reply with steemconnect', error); return; }
+      if (error) { console.log('Posting reply with hivesigner', error); return; }
       // Everything is fine
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading')
       Comments.loadComments(article.author, article.permlink, function (error) { if (error) { console.log(error) } })
@@ -113,7 +113,7 @@ Template.reply.comment = function (article)
 }
 
 
-// Updating an existing comment and send to steemconnect; then updating the post display
+// Updating an existing comment and send to hivesigner; then updating the post display
 Template.reply.updatecomment = function (article)
 {
   let newbody = Session.get('preview-comment-edit-'+article.author+'-'+article.permlink);
@@ -136,7 +136,7 @@ Template.reply.updatecomment = function (article)
   }
   else
   {
-    steemconnect.updatecomment(article.parent_author, article.parent_permlink, article.permlink, article.title,
+    hivesigner.updatecomment(article.parent_author, article.parent_permlink, article.permlink, article.title,
       newbody, article.json_metadata, function (error, res)
     {
       if (error) { console.log(error); if (error.description) { console.log(error.description) } }

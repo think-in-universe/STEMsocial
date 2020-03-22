@@ -40,16 +40,16 @@ Template.wallet.events(
       let json = ['claim_reward_balance',{ account:localStorage.username,reward_steem:steem,reward_sbd:sbd,reward_vests:vests}];
       window.hive_keychain.requestBroadcast(localStorage.username, [json], 'Posting', function(response)
       {
-        if(!response.success) { console.log('Error with keychain (cannot claim rewards)', response); return; }
+        if(!response.success) { console.log('Error with keychain (cannot claim rewards)', json, response); return; }
         MainUser.add(localStorage.username, function (error) { if (error) { console.log(error) } });
         FlowRouter.reload();
       });
     }
     else
     {
-      steemconnect.claimRewardBalance(steem, sbd, vests, function (error)
+      hivesigner.claimRewardBalance(steem, sbd, vests, function (error)
       {
-        if (error) { console.log('Error when claiming rewards with steemconnect', error); return; }
+        if (error) { console.log('Error when claiming rewards with hivesigner', error); return; }
         MainUser.add(localStorage.username, function (error) { if (error) { console.log(error) } });
         FlowRouter.reload();
       });

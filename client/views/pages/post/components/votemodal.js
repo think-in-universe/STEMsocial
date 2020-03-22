@@ -40,7 +40,7 @@ Template.votemodal.init = function ()
     }
     else
     {
-      steemconnect.vote(author, permlink, weight, function (error, result)
+      hivesigner.vote(author, permlink, weight, function (error, result)
       {
         if (result)
         {

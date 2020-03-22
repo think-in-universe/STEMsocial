@@ -19,34 +19,34 @@ Template.transfermodal.helpers(
   },
 
   // Do we need to calculate the balance from the available SP
-  NeedsSPBalance: function()
+  NeedsHPBalance: function()
   {
     if(['powerdown', 'delegate'].includes(this.data.current_op)) {return  true}
     return false
   },
 
-  // Do we need to calculate the balance from the available liquid STEEM tokens
+  // Do we need to calculate the balance from the available liquid HIVE tokens
   NeedsSteemBalance: function()
   {
     if(['steem-transfer', 'steem-savingtransfer', 'powerup'].includes(this.data.current_op)) {return true}
     return false
   },
 
-  // Do we need to calculate the balance from the available SBD tokens
-  NeedsSBDBalance: function()
+  // Do we need to calculate the balance from the available HBD tokens
+  NeedsHBDBalance: function()
   {
     if(['sbd-transfer', 'sbd-savingtransfer'].includes(this.data.current_op)) {return true}
     return false
   },
 
-   // Do we need to calculate the balance from the SBD tokens avaialble in savings
-  NeedsSBDSavingsBalance: function()
+   // Do we need to calculate the balance from the HBD tokens avaialble in savings
+  NeedsHBDSavingsBalance: function()
   {
     if(['fromsavings-sbd'].includes(this.data.current_op)) {return true}
     return false
   },
 
-   // Do we need to calculate the balance from the available SBD tokens
+   // Do we need to calculate the balance from the available HBD tokens
   NeedsSteemSavingsBalance: function()
   {
     if(['fromsavings-steem'].includes(this.data.current_op)) {return true}
@@ -59,15 +59,15 @@ Template.transfermodal.helpers(
     var title=''
     switch(this.data.current_op)
     {
-      case 'steem-transfer':       title="STEEM Wallet Transfer"; break;
-      case 'steem-savingtransfer': title="STEEM Transfer to Savings."; break;
-      case 'fromsavings-steem':    title="Withdraw STEEM from Savings."; break;
-      case 'sbd-transfer':         title="SBD Wallet Transfer"; break;
-      case 'sbd-savingtransfer':   title="SBD Transfer to Savings."; break;
-      case 'fromsavings-sbd':      title="Withdraw SBD from Savings."; break;
-      case 'powerup':              title="Convert to STEEM POWER."; break;
-      case 'powerdown':            title="Withdraw STEEM POWER."; break;
-      case 'delegate':             title="Delegate STEEM POWER."; break;
+      case 'steem-transfer':       title="HIVE wallet transfer"; break;
+      case 'steem-savingtransfer': title="HIVE transfer to savings"; break;
+      case 'fromsavings-steem':    title="Withdraw HIVE from savings"; break;
+      case 'sbd-transfer':         title="HBD wallet transfer"; break;
+      case 'sbd-savingtransfer':   title="HBD transfer to savings"; break;
+      case 'fromsavings-sbd':      title="Withdraw HBD from savings"; break;
+      case 'powerup':              title="Convert to HIVE POWER."; break;
+      case 'powerdown':            title="Withdraw HIVE POWER."; break;
+      case 'delegate':             title="Delegate HIVE POWER."; break;
     }
     return title
   },
@@ -93,31 +93,31 @@ Template.transfermodal.helpers(
     switch(this.data.current_op)
     {
       case 'steem-transfer':
-        descr="Move STEEM funds to another Steem account."
+        descr="Move HIVE funds to another Hive account."
         break;
       case 'steem-savingtransfer':
-        descr="Move STEEM funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
+        descr="Move HIVE funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
         break;
       case 'powerup':
-        descr="STEEM POWER is non-transferable and requires 13 weeks to be converted back to Steem."
+        descr="HIVE POWER is non-transferable and requires 13 weeks to be converted back to HIVE."
         break;
       case 'powerdown':
-        descr="Set up a STEEM POWER withdrawal (1/13 of the powered down amount to be withdrawn once every week during 13 weeks)."
+        descr="Set up a HIVE POWER withdrawal (1/13 of the powered down amount to be withdrawn once every week during 13 weeks)."
         break;
       case 'delegate':
-        descr="Delegate STEEM POWER to another Steem account. Delegated STEEM POWER can be recovered 5 days after undelegating."
+        descr="Delegate HIVE POWER to another Hive account. Delegated HIVE POWER can be recovered 5 days after undelegating."
         break;
       case 'sbd-transfer':
-        descr="Move SBD funds to another Steem account."
+        descr="Move HBD funds to another Hive account."
         break;
       case 'sbd-savingtransfer':
-        descr="Move SBD funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
+        descr="Move HBD funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
         break;
       case 'fromsavings-steem':
-        descr="Withdraw STEEM funds from a saving account (a three-day withdraw waiting period is required)."
+        descr="Withdraw HIVE funds from a saving account (a three-day withdraw waiting period is required)."
         break;
       case 'fromsavings-sbd':
-        descr="Withdraw SBD funds from a saving account (a three-day withdraw waiting period is required)."
+        descr="Withdraw HBD funds from a saving account (a three-day withdraw waiting period is required)."
         break;
     }
     return descr
@@ -179,8 +179,9 @@ Template.transfermodal.init = function (operation)
     if(parseFloat($("#amount").val()) <= balance[2])
     {
       $(".amount.message.red").addClass('hidden')
-      Session.set('amount',$("#amount").val()) 
-      if(Session.get('to') && Session.get('amount')) { $("#confirmtransfer").removeClass('disabled') }
+      Session.set('amount',$("#amount").val());
+      if((Session.get('to') || 'powerdown'==operation) && Session.get('amount'))
+        { $("#confirmtransfer").removeClass('disabled') }
     }
     else
     {
@@ -196,47 +197,47 @@ Template.transfermodal.init = function (operation)
   // Submit button
   document.getElementById("confirmtransfer").addEventListener("click", confirmTransfer);
 
-  // Sending the required operation to steemconnect
+  // Sending the required operation to hivesigner
   function confirmTransfer()
   {
     var coin=''; var url='';
     if( (Session.get('to') && Session.get('amount')) || (Session.get('amount') && 'powerdown'==operation))
     {
       $('.ui.transfer.modal').modal('hide')
-      coin = 'STEEM'
-      if(['fromsavings-sbd', 'sbd-transfer', 'sbd-savingtransfer'].includes(operation)) { coin = 'SBD' }
+      coin = 'HIVE'
+      if(['fromsavings-sbd', 'sbd-transfer', 'sbd-savingtransfer'].includes(operation)) { coin = 'HBD' }
       switch(operation)
       {
         case 'steem-transfer':
         case 'sbd-transfer':
-          url = "https://steemconnect.com/sign/transfer?to=" + Session.get('to') + 
+          url = "https://hivesigner.com/sign/transfer?to=" + Session.get('to') + 
             "&amount=" + parseFloat(Session.get('amount')).toFixed(3) + " " + coin +
             "&memo=" + Session.get('memo')
           break;
         case 'steem-savingtransfer':
         case 'sbd-savingtransfer':
           if(Session.get('memo')=='') Session.set('memo', '.')
-          url = "https://steemconnect.com/sign/transfer-to-savings?to=" + Session.get('to') +
+          url = "https://hivesigner.com/sign/transfer-to-savings?to=" + Session.get('to') +
              "&amount=" + parseFloat(Session.get('amount')).toFixed(3) + " " + coin +
              "&memo=" + Session.get('memo')
           break;
         case 'powerup':
-          url = "https://steemconnect.com/sign/transfer-to-vesting?to=" + Session.get('to') +
+          url = "https://hivesigner.com/sign/transfer-to-vesting?to=" + Session.get('to') +
               "&amount=" + parseFloat(Session.get('amount')).toFixed(3) + " " + coin
           break;
         case 'powerdown':
-          url = "https://steemconnect.com/sign/withdraw-vesting?vesting_shares=" +
-              parseFloat(Session.get('amount')).toFixed(3) + "%20SP"
+          url = "https://hivesigner.com/sign/withdraw-vesting?vesting_shares=" +
+              parseFloat(Session.get('amount')).toFixed(3) + "%20HP"
           break;
         case 'delegate':
-          url = "https://steemconnect.com/sign/delegateVestingShares?delegator=&delegatee=" + Session.get('to') +
-              "&vesting_shares=" + parseFloat(Session.get('amount')).toFixed(3) + "%20SP"
+          url = "https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=" + Session.get('to') +
+              "&vesting_shares=" + parseFloat(Session.get('amount')).toFixed(3) + "%20HP"
           break;
         case 'fromsavings-steem':
         case 'fromsavings-sbd':
           reqid = 'SSIO-'+(Math.random()*1000000000).toString();
           if(Session.get('memo')=='') Session.set('memo', '.')
-          url = 'https://steemconnect.com/sign/transfer-from-savings?request_id=' + reqid +
+          url = 'https://hivesigner.com/sign/transfer-from-savings?request_id=' + reqid +
               "&to=" + Session.get('to') + '&amount=' +
               parseFloat(Session.get('amount')).toFixed(3) + ' ' + coin + "&memo=" + Session.get('memo')
           break;

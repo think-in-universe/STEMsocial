@@ -16,51 +16,45 @@ PersonalHistory.getPersonalHistory = function (username, limit)
 }
 
 
-PersonalHistory.filterhistory = function (transaction, username) {
-    switch (transaction[1].op[0]) {
-        case 'vote':
-            var result = {};
-            result.type = 'vote'
-            result.date = transaction[1].timestamp
-            result.name = transaction[1].op[1].voter
-            result.author = transaction[1].op[1].author
-            result.permlink = transaction[1].op[1].permlink
-            result.weight = transaction[1].op[1].weight / 100
-            PersonalHistory.upsert({ _id: result.id }, result)
-            break;
-        case 'comment':
-            var result = {};
-            if (transaction[1].op[1].author === username)
-                result.type = 'comment'
-            else
-                result.type = 'replies'
-            result.date = transaction[1].timestamp
-            result.name = transaction[1].op[1].author
-            result.parent_permlink = transaction[1].op[1].parent_permlink
-            result.permlink = transaction[1].op[1].permlink
-            PersonalHistory.upsert({ _id: result.id }, result)
-            break;
-        case 'transfer':
-            var result = {};
-            result.type = 'transfer'
-            result.date = transaction[1].timestamp
-            result.from = transaction[1].op[1].from
-            result.to = transaction[1].op[1].to
-            result.amount = transaction[1].op[1].amount
-            result.memo = transaction[1].op[1].memo
-            PersonalHistory.upsert({ _id: result.id }, result)
-            break;
-        case 'claim_reward_balance':
-            var result = {};
-            result.type = 'claimreward'
-            result.date = transaction[1].timestamp
-            result.name = transaction[1].op[1].account
-            result.reward_sbd = transaction[1].op[1].reward_sbd
-            result.reward_steem = transaction[1].op[1].reward_steem
-            result.reward_vests = transaction[1].op[1].reward_vests
-            PersonalHistory.upsert({ _id: result.id }, result)
-            break;
-        default:
-            break;
-    }
+PersonalHistory.filterhistory = function (transaction, username)
+{
+  let result = {};
+  result.user = username;
+  switch (transaction[1].op[0])
+  {
+    case 'vote':
+      result.type = 'vote'
+      result.date = transaction[1].timestamp
+      result.name = transaction[1].op[1].voter
+      result.author = transaction[1].op[1].author
+      result.permlink = transaction[1].op[1].permlink
+      result.weight = transaction[1].op[1].weight / 100
+      break;
+    case 'comment':
+      if (transaction[1].op[1].author === username) result.type = 'comment';
+      else result.type = 'replies';
+      result.date = transaction[1].timestamp
+      result.name = transaction[1].op[1].author
+      result.parent_permlink = transaction[1].op[1].parent_permlink
+      result.permlink = transaction[1].op[1].permlink
+      break;
+    case 'transfer':
+      result.type = 'transfer'
+      result.date = transaction[1].timestamp
+      result.from = transaction[1].op[1].from
+      result.to = transaction[1].op[1].to
+      result.amount = transaction[1].op[1].amount
+      result.memo = transaction[1].op[1].memo
+      break;
+    case 'claim_reward_balance':
+      result.date = transaction[1].timestamp
+      result.name = transaction[1].op[1].account
+      result.reward_sbd = transaction[1].op[1].reward_sbd
+      result.reward_steem = transaction[1].op[1].reward_steem
+      result.reward_vests = transaction[1].op[1].reward_vests
+      break;
+    default:
+      break;
+  }
+  PersonalHistory.upsert({ _id: result.id}, result);
 }

@@ -143,7 +143,7 @@ FlowRouter.route('/login', {
               break;
             case 'metadata':
               sc2.updateUserMetadata(JSON.parse(command[2].split('UNDERSKORE').join('_')), function (err, result) {
-                if(result) { steemconnect.me(); cb(null) }
+                if(result) { hivesigner.me(); cb(null) }
                 else       { console.log(err) }
               });
               break;

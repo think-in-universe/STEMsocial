@@ -97,27 +97,15 @@ function API_connect(url_id)
 // Setup
 BlazeLayout.setRoot('body');
 
-// Connection to steemconnect
-var dev = false
-if (dev)
-{
-  console.log('DEV VERSION')
-  var sc2 = sc2sdk.Initialize({
-    baseURL: 'https://steemconnect.com',
-    app: 'factit.app',
+// Connection to hivesigner
+let sc2 = sc2sdk.Initialize({
+    baseURL: 'https://hivesigner.com',
+//    app: 'hivestem-app',
+//    callbackURL: 'https://stem.openhive.network/#!/login',
+    app: 'hivestem-app.dev',
     callbackURL: 'http://localhost:3000/login',
     accessToken: 'access_token'
-  });
-}
-else
-{
-  var sc2 = sc2sdk.Initialize({
-    baseURL: 'https://steemconnect.com',
-    app: 'steemstem-app',
-    callbackURL: 'https://www.steemstem.io/#!/login',
-    accessToken: 'access_token'
-  });
-}
+});
 window.sc2 = sc2
 window.steem = steem;
 
@@ -125,7 +113,7 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c HiveStem OpenSource v0.10.7: https://github.com/BFuks/hivestem`,
+  console.log(`%c HiveStem OpenSource v0.10.8: https://github.com/BFuks/hivestem`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");

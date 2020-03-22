@@ -12,7 +12,7 @@
     {{/if}}
     <div class="item">
       <div class="middle aligned content">
-        <div class="ui left aligned header">STEEM Tokens</div>
+        <div class="ui left aligned header">HIVE Tokens</div>
         <div class="ui dropdown balance right floated">
           <a>{{balance}}</a>
           {{#if equals currentAuthor.name mainuser.name}}
@@ -29,11 +29,11 @@
           {{/if}}
         </div>
         <div class="ui message description">
-          <p><b>The primary token of the Steem blockchain.</b></p>
+          <p><b>The primary token of the Hive blockchain.</b></p>
           <ul style="list-style-type:circle">
-            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Steem accounts and
+            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Hive accounts and
               to financial exchanges.</li>
-            <li style="margin-bottom:10px; font-size:11pt">STEEM can also be converted to STEEM POWER, in a
+            <li style="margin-bottom:10px; font-size:11pt">HIVE can also be converted to HIVE POWER, in a
               process called powering up, to increase your influence over post payouts and earn more curation
               rewards.</li>
           </ul>
@@ -45,7 +45,7 @@
 
     <div class="item">
       <div class="middle aligned content">
-        <div class="ui left aligned header">STEEM POWER (SP)</div>
+        <div class="ui left aligned header">HIVE POWER (SP)</div>
         <div class="ui dropdown steempower right floated item">
           <a>{{DisplaySteemPower vesting_shares}}</a>
           {{#if equals currentAuthor.name mainuser.name}}
@@ -67,12 +67,12 @@
         <div class="ui message description">
           <p><b>Influence tokens</b></p>
           <ul style="list-style-type:circle">
-            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER gives control over post payouts and
+            <li style="margin-bottom:10px; font-size:11pt">HIVE POWER gives control over post payouts and
               allow to earn curation rewards.</li>
-            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER gives you bandwidth to act with the
+            <li style="margin-bottom:10px; font-size:11pt">HIVE POWER gives you bandwidth to act with the
               blockchain.</li>
-            <li style="margin-bottom:10px; font-size:11pt">STEEM POWER can be delegated to or from another
-              Steem account, respectively decreasing or increasing the effective STEEM POWER of the account.</li>
+            <li style="margin-bottom:10px; font-size:11pt">HIVE POWER can be delegated to or from another
+              Hive account, respectively decreasing or increasing the effective HIVE POWER of the account.</li>
           </ul>
         </div>
       </div>
@@ -82,7 +82,7 @@
 
     <div class="item">
       <div class="middle aligned content">
-        <div class="ui left aligned header">STEEM Dollars (SBD) Tokens</div>
+        <div class="ui left aligned header">Hive-Backed Dollars (HBD) Tokens</div>
         <div class="ui dropdown balancesbd right floated">
           <a>{{sbd_balance}}</a>
           {{#if equals currentAuthor.name mainuser.name}}
@@ -98,9 +98,9 @@
           {{/if}}
         </div>
         <div class="ui message description">
-          <p><b>Second token connected to the Steem blockchain.</b></p>
+          <p><b>Second token connected to the Hive blockchain.</b></p>
           <ul style="list-style-type:circle">
-            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Steem accounts and
+            <li style="margin-bottom:10px; font-size:11pt">They can be transfered to other Hive accounts and
               to financial exchanges.</li>
           </ul>
         </div>
@@ -119,7 +119,7 @@
               <input  id="operation-class-savings" type="hidden">
               <i class="dropdown icon"></i>
               <div class="menu">
-                <div class="item transfersavings" data-value="fromsavings-steem">Withdraw STEEM</div>
+                <div class="item transfersavings" data-value="fromsavings-steem">Withdraw HIVE</div>
               </div>
               <script>
                 $('.ui.dropdown.savings').dropdown()
@@ -132,7 +132,7 @@
               <input  id="operation-class-sbdsavings" type="hidden">
               <i class="dropdown icon"></i>
               <div class="menu">
-                <div class="item transfersbdsavings" data-value="fromsavings-sbd">Withdraw SBD</div>
+                <div class="item transfersbdsavings" data-value="fromsavings-sbd">Withdraw HBD</div>
               </div>
               <script>
                 $('.ui.dropdown.sbdsavings').dropdown()
@@ -155,7 +155,7 @@
           <a class="text">{{EstimateAccount this}}$</a>
         </div>
         <div class="ui message description">
-          <p>The estimated value is based on an average value of STEEM in US dollars.</p>
+          <p>The estimated value is based on an average value of HIVE in US dollars.</p>
         </div>
       </div>
     </div>
