@@ -9,8 +9,6 @@ Template.mainlist.events({
     Session.set('visiblecontent',Session.get('visiblecontentlimit'));
     Session.set('current_week', parseInt(this))
     AccountHistory.GetContent(5);
-    if((parseInt(this)-2)<Session.get('loaded_week'))
-      { Session.set('loaded_week', (parseInt(this)-2)); AccountHistory.getVotes(true); }
     $('html,body').scrollTop(0);
   },
   'click .load-more-weeks': function(event)

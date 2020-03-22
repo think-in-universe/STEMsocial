@@ -237,7 +237,7 @@ Template.transfermodal.init = function (operation)
         case 'fromsavings-sbd':
           reqid = 'SSIO-'+(Math.random()*1000000000).toString();
           if(Session.get('memo')=='') Session.set('memo', '.')
-          url = 'https://hivesigner.com/sign/transfer-from-savings?request_id=' + reqid +
+          url = 'https://hivesigner.com/sign/transfer_from_savings?request_id=' + reqid +
               "&to=" + Session.get('to') + '&amount=' +
               parseFloat(Session.get('amount')).toFixed(3) + ' ' + coin + "&memo=" + Session.get('memo')
           break;

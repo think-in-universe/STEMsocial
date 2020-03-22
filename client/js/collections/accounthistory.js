@@ -7,9 +7,6 @@ AccountHistory.getVotes = function(quiet=false)
   if( Session.get('last_loaded_vote_stamp') <= Session.get('loaded_week'))
   {
     if(!quiet) AccountHistory.GetContent();
-    let start = new Date().getTime(); for (let i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 2000) break; }
-    if(Session.get('last_loaded_post')=='') AccountHistory.LoadTags();
-    else if(Session.get('last_loaded_post').split('/')[2] > Session.get('loaded_week')) AccountHistory.LoadTags();
     return;
   }
 
@@ -81,8 +78,16 @@ AccountHistory.LoadTags = function ()
     // Recursive loading
     let new_last = Content.findOne({permlink:res[res.length-1].permlink});
     Session.set('last_loaded_post',new_last.author+'/'+new_last.permlink+'/'+ new_last.week);
-    let start=new Date().getTime(); for (let i=0; i<1e7; i++) { if ((new Date().getTime()-start) > 2000) break; }
-    AccountHistory.getVotes(true);
+
+    let steemstem_posts = Content.find({author:{$nin: ['steemstem','lemouth-dev']}, upvoted:{$gt: 0}},
+       {sort:{created:1}, limit:1}).fetch();
+    let other_posts     = Content.find({upvoted:0}, {sort:{created:1}, limit:1}).fetch();
+
+    if(steemstem_posts[0].created<other_posts[0].created)
+    {
+      let start=new Date().getTime(); for (let i=0; i<1e7; i++) { if ((new Date().getTime()-start) > 2000) break; }
+      AccountHistory.LoadTags();
+    }
 
     // Exit
     return;
@@ -106,15 +111,17 @@ AccountHistory.GetContent = function(total=20)
     if(parseFloat(weight)<5 || Content.find({permlink:permlink}).fetch().length>0) continue;
 
     // Get information on the post
-    AccountHistory.GetInfo(author, permlink, weight);
+    if(timer==1) AccountHistory.GetInfo(author, permlink, weight,true);
+    else         AccountHistory.GetInfo(author, permlink, weight);
     timer--;
   }
+
   return;
 }
 
 
 // Getting post information on a voted content
-AccountHistory.GetInfo= function(author, permlink, weight)
+AccountHistory.GetInfo= function(author, permlink, weight, update_tag=false)
 {
   // Interrogating Steem
   steem.api.getContent(author, permlink, function (error, result)
@@ -125,6 +132,13 @@ AccountHistory.GetInfo= function(author, permlink, weight)
     // Else: upgrade and save the information
     let res = AccountHistory.UpgradeInfo(result, weight);
     Content.upsert({ _id: res._id }, res);
+
+    // Do we need to update the tag?
+    if(update_tag)
+    {
+      let tag_posts = Content.find({upvoted:0}, {sort: {created:1}, limit:1}).fetch();
+      if(tag_posts.length==0 || res.created<tag_posts[0].created) AccountHistory.LoadTags();
+    }
 
     // exit
     return;
