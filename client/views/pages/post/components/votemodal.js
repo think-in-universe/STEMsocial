@@ -17,8 +17,23 @@ Template.votemodal.init = function ()
     keyboard: true,
     onChange: function (data) { Session.set('currentVotingPercentage', data.from) }
   });
+
   // Confirm button
   document.getElementById("confirmbutton").addEventListener("click", confirmVote);
+
+  function UpdatePostInfo(author, permlink)
+  {
+    steem.api.getContent(author, permlink, (err2, res2)=>
+    {
+      // If error
+      if (!res2) 
+      {
+        $("#confirmbutton").removeClass('loading');
+        $('.ui.vote.modal').modal('hide');
+        return;
+      }
+    });
+  }
 
   function confirmVote()
   {
@@ -30,12 +45,13 @@ Template.votemodal.init = function ()
     {
       window.hive_keychain.requestVote(localStorage.username, permlink, author, weight, function(resp)
       {
-        $("#confirmbutton").removeClass('loading');
         if(resp.success)
         {
-          $('.ui.vote.modal').modal('hide');
           Content.reloadContent(author,permlink,function(error){ if(error) console.log(error) });
+          $("#confirmbutton").removeClass('loading');
+          $('.ui.vote.modal').modal('hide');
         }
+        else $("#confirmbutton").removeClass('loading');
       } );
     }
     else
@@ -44,12 +60,13 @@ Template.votemodal.init = function ()
       {
         if (result)
         {
+          Content.reloadContent(author,permlink,function(error){ if(error) console.log(error) });
           $("#confirmbutton").removeClass('loading');
           $('.ui.vote.modal').modal('hide');
-          Content.reloadContent(author,permlink,function(error){ if(error) console.log(error) });
         }
         else
         {
+          $("#confirmbutton").removeClass('loading');
           event.preventDefault()
           sessionStorage.setItem('currentroute', FlowRouter.current().path)
           window.location.href = sc2.getLoginURL()

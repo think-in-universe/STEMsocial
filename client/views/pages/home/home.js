@@ -6,6 +6,12 @@ Template.home.helpers({
   // Are we in grid view mode?
   isGridView: function () { return Session.get('gridview') },
 
+  ShortTitle: function(title)
+  {
+    if(title.length>75) return title.substring(0,75)+'...';
+    else return title;
+  },
+
   GetPromoted: function ()
   {
     // Safety

@@ -367,15 +367,13 @@ Template.registerHelper('isBlacklisted', function (user_permlink) {
 
 Template.registerHelper('MainUserRate', function (project)
 {
-  if (!project || !project.active_votes || !project.net_votes) return
+  if (!project || (!project.active_votes && !project.net_votes) ) return
   if (project.active_votes.length)
   {
-    for (var i = 0; i < project.active_votes.length; i++)
+    for (let i = 0; i < project.active_votes.length; i++)
     {
       if (project.active_votes[i].voter==localStorage.username && parseInt(project.active_votes[i].percent) > 0)
-      {
         return parseFloat(project.active_votes[i].percent / 100).toFixed(0)
-      }
     }
   }
   else
@@ -389,7 +387,7 @@ Template.registerHelper('MainUserRate', function (project)
       }
     }
   }
-})
+});
 
 Template.registerHelper('displayPayout', function (active, total, voter) {
     if (active && !total || !voter) return active

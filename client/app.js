@@ -82,11 +82,25 @@ function API_connect(url_id)
       result = AccountHistory.UpgradeInfo(result[0],100);
       Content.upsert({ _id: result._id }, result)
 
-      // Get all other votes
-      AccountHistory.getVotes();
+      // Latest steemstem posts
+      steem.api.getDiscussionsByBlog({tag:'steemstem', limit:30}, (error2, result2)=>
+      {
+        if (!result2 || result2.length==0) { console.log(" error = ", error2); return; }
+        for (let ii=0;ii<result2.length; ii++)
+        {
+          if(!Content.findOne({permlink:result2[ii].permlink}))
+          {
+            let myres = AccountHistory.UpgradeInfo(result2[ii],100);
+            Content.upsert({ _id: myres._id }, myres);
+          }
+        }
 
-      //  flowrouter
-      FlowRouter.initialize( { hashbang: true},function () { });
+        // Get all other votes
+        AccountHistory.getVotes();
+
+        //  flowrouter
+        FlowRouter.initialize( { hashbang: true},function () { });
+      });
     });
 
     // Exit
@@ -113,14 +127,14 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c HiveStem OpenSource v0.10.10: https://github.com/BFuks/hivestem`,
+  console.log(`%c STEMsocial OpenSource v0.10.11: https://github.com/BFuks/hivestem`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c Maintained and developed by @lemouth.`,
     "font-size: 11px; padding: 1px 1px;");
 
-  // HiveSTEM Settings
+  // STEMsocial Settings
   Session.set('settings', false)
   if(sessionStorage.getItem('settings'))
   {
