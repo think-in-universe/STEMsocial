@@ -100,10 +100,10 @@ BlazeLayout.setRoot('body');
 // Connection to hivesigner
 let sc2 = sc2sdk.Initialize({
     baseURL: 'https://hivesigner.com',
-//    app: 'hivestem-app',
-//    callbackURL: 'https://stem.openhive.network/#!/login',
-    app: 'hivestem-app.dev',
-    callbackURL: 'http://localhost:3000/login',
+    app: 'hivestem-app',
+    callbackURL: 'https://stem.openhive.network/#!/login',
+//    app: 'hivestem-app.dev',
+//    callbackURL: 'http://localhost:3000/login',
     accessToken: 'access_token'
 });
 window.sc2 = sc2
@@ -113,7 +113,7 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c HiveStem OpenSource v0.10.9: https://github.com/BFuks/hivestem`,
+  console.log(`%c HiveStem OpenSource v0.10.10: https://github.com/BFuks/hivestem`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");

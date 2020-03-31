@@ -588,7 +588,7 @@ Template.registerHelper('ToHTML', function(text)
     for (let i=0;i<mkd_hdr.length;i++)
     {
       let tmp=mkd_hdr[i].substring(0,mkd_hdr[i].length-1);
-      if(mkd_hdr[i].startsWith('\n')) { tmp=tmp.substring(1,tmp.length-1); }
+      if(mkd_hdr[i].startsWith('\n')) { tmp=tmp.substring(1,tmp.length); }
       if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>\n'; }
       else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>\n'; }
       else if(tmp.startsWith('####'  )) { tmp = tmp.replace('####',  '<h4>')+'</h4>\n'; }
@@ -709,13 +709,13 @@ Template.registerHelper('ToHTML', function(text)
         if(is_ul) {list_natures.push('ul');}
         if(is_ol) {list_natures.push('ol');}
         let sp = new Array(2*nspaces.length).join(' ');
-        line = sp + '<' + list_natures[list_natures.length-1] + '>\n' + sp + '  <li>'+line.substring(2,line.length)+'</li>';
+        line = sp + '<' + list_natures[list_natures.length-1] + '>\n' + sp + '  <li style="margin-top:3px; margin-bottom:3px">'+line.substring(2,line.length)+'</li>';
       }
       // No new list are needed
       else
       {
         let sp = new Array(2*my_ul+2).join(' ');
-        line = sp + '  <li>'+line.substring(2,line.length)+'</li>';
+        line = sp + '  <li style="margin-top:7px; margin-bottom:3px">'+line.substring(2,line.length)+'</li>';
         // Do we need to close some lists
         for(let j=my_ul+1; j<nspaces.length; j++)
           { sp = new Array(2*j+2).join(' '); line = sp + '</' + list_natures[list_natures.length-(j-my_ul)] + '>\n' + line; }
@@ -723,10 +723,14 @@ Template.registerHelper('ToHTML', function(text)
         list_natures = list_natures.slice(0,my_ul+1);
       }
     }
+    // Header environment
+    else if (line.startsWith('<h')) line = close_all_lists(nspaces, list_natures) + line;
+
     // Closing what needs to be closed
     else { line = line + close_all_lists(nspaces, list_natures); nspaces = []; list_natures = []; }
     new_text[i]=line;
   }
+
   // Closing all pending lists
   new_text.push(close_all_lists(nspaces,list_natures)); nspaces = []; list_natures = [];
   new_text = new_text.join('\n');
@@ -754,12 +758,13 @@ Template.registerHelper('ToHTML', function(text)
       if(!src && src.length!=1) {console.log('error markdown conversion: ', mkdtags[i]); continue;}
       src = src[0].substring(2,src[0].length-1);
       if(src.startsWith('/') && src!='/') { src = '/#!'+ src; }
-      let alt = mkdtags[i].match(/\[.*\]\(/g);
+      let alt = mkdtags[i].match(/\[[\s\S]*?\]\(/g);
       if(!alt && alt.length!=1) {console.log('error markdown conversion: ', mkdtags[i]); continue;}
       alt = alt[0].substring(1,alt[0].length-2);
       new_text = restore(new_text,'--ssiod--'+parseInt(i)+'-', '<a href=\'' + src + '\'>'+alt+'</a>');
     }
   }
+
   if(userid) { for (let i=0;i<userid.length;i++)
   {
     let link = userid[i];
