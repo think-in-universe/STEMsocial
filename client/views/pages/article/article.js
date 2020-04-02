@@ -13,8 +13,7 @@ Template.article.rendered = function () {
       {
         // loads a max of 5 times 
         if(!Comments.findOne({ 'parent_permlink': Session.get('article') }))
-          Comments.loadComments(Session.get('user'), Session.get('article'),
-            function (error) { if (error) { console.log(error) } })
+          Comments.loadComments(Session.get('user'), Session.get('article'));
       }
     });
   });

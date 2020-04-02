@@ -1,7 +1,5 @@
 Content = new Mongo.Collection(null)
 
-//contentObserver = new PersistentMinimongo2(Content, 'content');
-
 // Helper allowing to get the list of posts
 Content.getCreatedContent = function (tag, limit, type, cb)
 {
@@ -46,7 +44,6 @@ Content.getContentByAuthor = function (author, lastPermlink, cb) {
     });
 }
 
-
 Content.getContent = function (author, permlink,type, cb) {
     steem.api.getContent(author, permlink, function (error, result) {
         if (!result)
@@ -66,45 +63,6 @@ Content.getContent = function (author, permlink,type, cb) {
             }
         }
     });
-}
-
-Content.reloadContent = function (author, permlink, cb)
-{
-  steem.api.getContent(author, permlink,
-    function (error, result)
-    {
-      if (!result) { return cb(true) }
-      else
-      {
-        if (result.json_metadata)
-        {
-          try { result.json_metadata = JSON.parse(result.json_metadata) } catch (error) { console.log(error); cb(error); }
-          if(Content.findOne({ permlink: result.permlink }))
-          {
-            var old = Content.findOne({ permlink: result.permlink })
-            result.type = old.type
-          }
-          for (var t = 0; t < result.json_metadata.tags.length; t++)
-          {
-            if (!result.language) { result.language = FilterLanguage(result.json_metadata.tags[t]) }
-            else { break; }
-          }
-          if (!result.language)
-            result.language = 'en'
-          result._id = result.id
-          result.search = result.json_metadata.tags.join(' ')
-          result.surl = Content.CreateUrl(result.author, result.permlink)
-          Content.upsert({ _id: result._id }, result)
-        }
-      }
-      cb(null)
-    }
-  );
-}
-
-Content.chainLoad = function ()
-{
-  Content.getCreatedContent('steemstem', 100, 'featured', function (error) { if (error) { console.log(error) } })
 }
 
 Content.CreateUrl = function (author, permlink) {

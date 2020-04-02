@@ -94,7 +94,7 @@ Template.reply.comment = function (article)
       permlink, '' , function(response)
     {
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
-      Comments.loadComments(article.author, article.permlink, function (error) { if (error) { console.log(error) } });
+      Comments.loadComments(article.author, article.permlink);
       document.getElementById('reply-button-'+article.permlink).style.display = "";
     });
   }
@@ -106,7 +106,7 @@ Template.reply.comment = function (article)
       if (error) { console.log('Posting reply with hivesigner', error); return; }
       // Everything is fine
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading')
-      Comments.loadComments(article.author, article.permlink, function (error) { if (error) { console.log(error) } })
+      Comments.loadComments(article.author, article.permlink);
       document.getElementById('reply-button-'+article.permlink).style.display = "";
     });
   }
@@ -127,7 +127,7 @@ Template.reply.updatecomment = function (article)
     {
       document.getElementById('comment-'+link).innerHTML=Blaze._globalHelpers['ToHTML'](newbody);
       document.getElementById('submit-edited-comment-'+article.permlink).classList.remove('loading')
-      Comments.loadComments(article.author, article.permlink, function (error) { if (error) { console.log(error) } })
+      Comments.loadComments(article.author, article.permlink);
       document.getElementById('comment-edit-'+link).style.display = "none";
       document.getElementById('submit-edited-comment-'+article.permlink).style.display = "none";
       document.getElementById('comment-'+link).style.display = "";
@@ -144,7 +144,7 @@ Template.reply.updatecomment = function (article)
       {
         document.getElementById('comment-'+link).innerHTML=Blaze._globalHelpers['ToHTML'](newbody);
         document.getElementById('submit-edited-comment-'+article.permlink).classList.remove('loading')
-        Comments.loadComments(article.author, article.permlink, function (error) { if (error) { console.log(error) } })
+        Comments.loadComments(article.author, article.permlink);
         document.getElementById('comment-edit-'+link).style.display = "none";
         document.getElementById('submit-edited-comment-'+article.permlink).style.display = "none";
         document.getElementById('comment-'+link).style.display = "";

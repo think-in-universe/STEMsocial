@@ -744,7 +744,6 @@ Template.registerHelper('ToHTML', function(text)
     return mod_text;
   }
 
-
   if(codetags)  { for (let i=0;i<codetags.length;i++)  { new_text = restore(new_text,'--ssioa--'+parseInt(i)+'-', '<code>'+codetags[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
   if(codetags2) { for (let i=0;i<codetags2.length;i++) { new_text = restore(new_text,'--ssiob--'+parseInt(i)+'-', '<code>'+codetags2[i].substring(5,codetags2[i].length-6).replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
   if(htmltags)  { for (let i=0;i<htmltags.length;i++)  { new_text = restore(new_text,'--ssioc--'+parseInt(i)+'-', htmltags[i]); } }

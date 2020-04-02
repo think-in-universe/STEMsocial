@@ -15,7 +15,7 @@
         <!-- The comment main body -->
         <div class="text">
           <!-- displaying the comment (visible by default) -->
-          <div id='comment-{{author}}-{{permlink}}'> {{{DisplayCommentBody}}} </div>
+          <div id='comment-{{author}}-{{permlink}}'> {{{ToHTML body}}} </div>
 
           <!-- Editing form (invisible by default) -->
           <div id='comment-edit-{{author}}-{{permlink}}' style="display:none">
@@ -30,42 +30,58 @@
             </form>
           </div>
 
-          <!-- likes, rewards, upvotes  -->
+          <!-- Rewards  -->
           <span class="ui left commentvotes-{{permlink}}">
             <i style="margin-top:5px;" class="dollar sign icon"></i>
             {{displayPayout pending_payout_value total_payout_value curator_payout_value}}
           </span>
-          {{#if GetCommentVotes}}
-            <div class="ui commentvotes popup center large left">
+          {{#if inequals active_votes.length 0}}
+            <div class="ui commentvotes popup {{permlink}} center large left">
               <div class='ui mini middle aligned divided list'>
                 {{#each GetCommentVotes}}
                   <div class='ui item'>
                     <a href='/c/{{voter}}'><div class='content'><div class='header'>
-                      {{voter}}&nbsp;<span>(${{DisplayCommentPayout rshares (TotalRShares ..) (displayPayout ../pending_payout_value ../total_payout_value ../curator_payout_value)}})</span>
+                      {{voter}}&nbsp;<span>(${{GetCommentValue rshares ..}})</span>
                       </div></div></a>
                   </div>
                 {{/each}}
               </div>
             </div>
           {{/if}}
+
+          <!-- Upvotes /Downvotes  -->
           {{#if mainuser}}
             <span class="right floated">
-              {{#if equals net_votes 0}}
-                <i id="vote" class="heart outline icon"></i>{{net_votes}} like
-              {{else if equals net_votes 1}}
-                <i id="vote" class="heart icon"></i>{{net_votes}} like
+              {{#if equals NLikes 0}}
+                <i id="upvote" class="thumbs up outline icon"></i>{{NLikes}}
               {{else}}
-                <i id="vote" class="heart icon"></i>{{net_votes}} likes
+                {{#if HasUpvoted}}
+                  <i id="upvote" class="thumbs up icon teal"></i>{{NLikes}}
+                {{else}}
+                  <i id="upvote" class="thumbs up icon"></i>{{NLikes}}
+                {{/if}}
+              {{/if}}
+              {{#if equals NDislikes 0}}
+                <i id="downvote" class="thumbs down outline icon"></i>{{NDislikes}}
+              {{else}}
+                {{#if HasDownvoted}}
+                  <i id="downvote"  class="thumbs down icon red"></i>{{NDislikes}}
+                {{else}}
+                  <i id="downvote"  class="thumbs down icon"></i>{{NDislikes}}
+                {{/if}}
               {{/if}}
             </span>
           {{else}}
-            <span class="right floated" data-tooltip="You need a Steem account for this!">
-              {{#if equals net_votes 0}}
-                <i class="heart outline icon"></i>{{net_votes}} like
-              {{else if equals net_votes 1}}
-                <i class="heart icon"></i>{{net_votes}} like
+            <span class="right floated" data-tooltip="Please sign up on Hive">
+              {{#if equals NLikes 0}}
+                <i class="thumbs up outline icon"></i>{{NLikes}}
               {{else}}
-                <i class="heart icon"></i>{{net_votes}} likes
+                <i class="thumbs up icon"></i>{{NLikes}}
+              {{/if}}
+              {{#if equals NDislikes 0}}
+                <i class="thumbs down outline icon"></i>{{NDislikes}}
+              {{else}}
+                <i class="thumbs down icon"></i>{{NDislikes}}
               {{/if}}
             </span>
           {{/if}}

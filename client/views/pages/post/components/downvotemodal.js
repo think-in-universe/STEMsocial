@@ -1,21 +1,19 @@
 // Rendering
-Template.votemodal.rendered = function () { }
+Template.downvotemodal.rendered = function () { }
 
 // Initializastion of the vote modal
-Template.votemodal.init = function (iscomment=false)
+Template.downvotemodal.init = function (iscomment=false)
 {
   // Do we have a comment
   Session.set('vote-modal',iscomment);
 
   // Setting up the sliders
-  let vp = 50;
-  if(Session.get('currentVotingPercentage')) vp = Session.get('currentVotingPercentage');
   $('input[type="rangeslide"]').ionRangeSlider(
   {
     type    : "single",
-    min     : 0,
-    max     : 100,
-    from    : vp,
+    min     : -100,
+    max     : 0,
+    from    : 0,
     grid    : true,
     keyboard: true,
     onChange: function (data) { Session.set('currentVotingPercentage', data.from) }
@@ -32,7 +30,7 @@ Template.votemodal.init = function (iscomment=false)
       if (!res2) 
       {
         $("#confirmbutton").removeClass('loading');
-        $('.ui.vote.modal').modal('hide');
+        $('.ui.downvote.modal').modal('hide');
         return;
       }
 
@@ -46,7 +44,7 @@ Template.votemodal.init = function (iscomment=false)
 
       // Exit
       $("#confirmbutton").removeClass('loading');
-      $('.ui.vote.modal').modal('hide');
+      $('.ui.downvote.modal').modal('hide');
     });
   }
 
@@ -81,9 +79,8 @@ Template.votemodal.init = function (iscomment=false)
   }
 }
 
-Template.votemodal.events({ });
+Template.downvotemodal.events({ });
 
-Template.votemodal.vote = function (article) { }
+Template.downvotemodal.downvote = function (article) { }
 
-Template.votemodal.helpers({ IsComment: function() { return Session.get('vote-modal'); } });
-
+Template.downvotemodal.helpers({ IsComment: function() { return Session.get('vote-modal'); } });

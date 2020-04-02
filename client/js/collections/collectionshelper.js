@@ -87,7 +87,7 @@ Template.registerHelper('currentArticleComments', function ()
         });
         return comments
   }
-})
+});
 
 // Getting the replies to a comment
 Template.registerHelper('currentCommentsSubcomments', function (comment) {

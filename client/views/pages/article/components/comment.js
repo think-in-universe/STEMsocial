@@ -1,20 +1,32 @@
-Template.comment.rendered = function () {
-  if(this.data.net_votes > 0)
-    $('.left.commentvotes-'+this.data.permlink)
-    .popup({ popup: '.commentvotes.popup', position: 'left center' });
+Template.comment.rendered = function ()
+{
+  $('.left.commentvotes-'+this.data.permlink).popup(
+    { popup: '.commentvotes.popup.'+this.data.permlink, position: 'left center' }
+  );
 }
 
 
 // Events
-Template.comment.events({
+Template.comment.events(
+{
   // Initiate the comment vote
-  'click  #vote': function (event) {
+  'click #upvote': function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $('.ui.vote.modal').remove();
+    $('article').append(Blaze.toHTMLWithData(Template.votemodal, { project: this }));
+    $('.ui.vote.modal.' + this.permlink).modal('setting', 'transition', 'scale').modal('show');
+    Template.votemodal.init(true);
+  },
+
+  // Initiate the comment downvote
+  'click #downvote': function (event) {
     event.preventDefault()
     event.stopPropagation();
-    $('.ui.vote.modal').remove()
-    $('article').append(Blaze.toHTMLWithData(Template.votemodal, { project: this }));
-    $('.ui.vote.modal.' + this.permlink).modal('setting', 'transition', 'scale').modal('show')
-    Template.votemodal.init()
+    $('.ui.downvote.modal').remove();
+    $('article').append(Blaze.toHTMLWithData(Template.downvotemodal, { project: this }));
+    $('.ui.downvote.modal.' + this.permlink).modal('setting', 'transition', 'scale').modal('show');
+    Template.downvotemodal.init(true);
   },
 
   // Action when closing the reply window (hiding/showing the different objects and saving the content)
@@ -30,9 +42,6 @@ Template.comment.events({
 
 Template.comment.helpers(
 {
-  // Markdown management for the comment itself...
-  DisplayCommentBody: function () { return Blaze._globalHelpers['ToHTML'](this.body); },
-
   // And for its preview in comment editing mode
   DisplayCommentEditBody: function ()
   {
@@ -41,26 +50,42 @@ Template.comment.helpers(
   },
 
   // Getting the list of voters to display in the popup
-  GetCommentVotes: function() { 
-    if(this.net_votes > 0)
-    {
-      voters = this.active_votes;
-      voters.sort(function(b,a) { return (parseInt(a.rshares)-parseInt(b.rshares)) });
-      return voters
-    }
-  },
-  TotalRShares: function(comment) {
-    if(comment.net_votes > 0)
-    {
-      total=0;
-      for(i=0; i < comment.active_votes.length; i++)
-        { total += parseInt(comment.active_votes[i].rshares) }
-      return total
-    }
+  GetCommentVotes: function()
+  {
+    let voters =  this.active_votes.filter(obj => { return parseInt(obj.rshares)!=0; });
+    voters.sort(function(b,a) { return (parseInt(a.rshares)-parseInt(b.rshares)); });
+    return voters;
   },
 
+  // Number of likes and disklikes
+  NLikes:    function() { return this.active_votes.filter(obj => { return parseInt(obj.rshares) > 0; }).length; },
+  NDislikes: function() { return this.active_votes.filter(obj => { return parseInt(obj.rshares) < 0; }).length; },
 
-  // Display the payout brought in by a single voter (for the popup)
-  DisplayCommentPayout: function (shares, shares_sum,sum) { return (shares*sum/shares_sum).toFixed(3) }
-})
+  // Has liked or disliked
+  HasUpvoted: function()
+  {return this.active_votes.filter(obj=>{return obj.voter==localStorage.username && parseInt(obj.rshares)>=0;}).length>0;},
+  HasDownvoted: function()
+  {return this.active_votes.filter(obj=>{return obj.voter==localStorage.username && parseInt(obj.rshares)<0;}).length>0;},
+
+  // Total value of the comment
+  GetCommentValue: function(vote_shares, comment)
+  {
+    if(comment.active_votes.length==0) return 0;
+    // Getting the user part of the total rshares
+    let frac=0;
+    for(let i=0; i<comment.active_votes.length; i++) frac+=parseInt(comment.active_votes[i].rshares);
+    frac = parseInt(vote_shares)/frac;
+
+    // Getting the total payout and multiplying by the share
+    let check1 = (comment.pending_payout_value=='0.000 HBD');
+    let check2 = (comment.total_payout_value=='0.000 HBD');
+    let check3 = (comment.curator_payout_value=='0.000 HBD');
+    if( check1 && !check2 && !check3 )
+       frac*=(parseFloat(comment.total_payout_value.split(' ')[0])+parseFloat(comment.curator_payout_value.split(' ')[0]));
+    else if( !check1 && check2 && check3 )
+       frac*=parseFloat(comment.pending_payout_value.split(' ')[0]);
+    else frac = 0;
+    return frac.toFixed(3);
+  }
+});
 
