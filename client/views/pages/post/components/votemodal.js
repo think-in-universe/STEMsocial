@@ -40,9 +40,14 @@ Template.votemodal.init = function (iscomment=false)
       if(!iscomment)
       {
         let res = AccountHistory.UpgradeInfo(res2, Content.findOne({author:author, permlink:permlink}).upvoted);
+        delete res._id;
         Content.update({author:author, permlink:permlink}, {$set: res});
       }
-      else Comments.GetVotes(Comments.findOne({author:author, permlink:permlink}));
+      else
+     {
+       Comments.update({author:author, permlink:permlink}, {$set: res2});
+       Comments.GetVotes(Comments.findOne({author:author, permlink:permlink}));
+     }
 
       // Exit
       $("#confirmbutton").removeClass('loading');

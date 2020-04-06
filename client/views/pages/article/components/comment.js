@@ -54,7 +54,7 @@ Template.comment.helpers(
   {
     let voters =  this.active_votes.filter(obj => { return parseInt(obj.rshares)!=0; });
     voters.sort(function(b,a) { return (parseInt(a.rshares)-parseInt(b.rshares)); });
-    return voters;
+    return voters.slice(0, 20);;
   },
 
   // Number of likes and disklikes
