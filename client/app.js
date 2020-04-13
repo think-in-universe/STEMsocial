@@ -55,7 +55,6 @@ function API_connect(url_id)
         if(Session.get('customtags')[i].subcategories)
           allowed_tags = allowed_tags.concat(Session.get('customtags')[i].subcategories);
       }
-      allowed_tags = allowed_tags.concat(['hive-196387', 'steemstem']);
       Session.set('allowed_tags',allowed_tags);
       sessionStorage.setItem('allowed_tags',JSON.stringify(allowed_tags));
     });
@@ -139,7 +138,7 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c STEMsocial OpenSource v0.10.14: https://github.com/BFuks/stemsocial`,
+  console.log(`%c STEMsocial OpenSource v0.10.15: https://github.com/BFuks/stemsocial`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");
