@@ -103,23 +103,16 @@ Template.registerHelper('xssShortFormatter', function (text) {
     return text;
 })
 
-Template.registerHelper('colorfromcategory', function (tags) {
-    var colors = Session.get('customtags')
-    for (i = 0; tags.length > i; i++) {
-        if (colors.find(item => item.category === tags[i]) && tags[i] != "steemstem") {
-            var item = colors.find(item => item.category === tags[i])
-            return item.color
-        }
-    }
-})
-
-Template.registerHelper('colorByCategory', function (tag) {
-    var colors = Session.get('customtags')
-    if (colors.find(item => item.category === tag) && tag != "steemstem") {
-        var item = colors.find(item => item.category === tag)
-        return item.color
-    }
-})
+// Color by categories
+Template.registerHelper('colorByCategory', function (tag)
+{
+  let colors = Session.get('customtags')
+  if (colors.find(item => item.category === tag) && !['steemstem', 'hive-196387'].includes(tag))
+  {
+    let item = colors.find(item => item.category === tag);
+    return item.color;
+  }
+});
 
 Template.registerHelper('xssTxtFormatter', function (text) {
     if (!text) return text;
@@ -368,7 +361,7 @@ Template.registerHelper('isBlacklisted', function (user_permlink) {
 Template.registerHelper('MainUserRate', function (project)
 {
   if (!project || (!project.active_votes && !project.net_votes) ) return
-  if (project.active_votes.length)
+  if (project.active_votes)
   {
     for (let i = 0; i < project.active_votes.length; i++)
     {
@@ -378,7 +371,7 @@ Template.registerHelper('MainUserRate', function (project)
   }
   else
   {
-    if (project.net_votes.length)
+    if (project.net_votes)
     {
       for (var i = 0; i < project.net_votes.length; i++)
       {
@@ -479,9 +472,19 @@ Template.registerHelper('isArray', function (array) {
 });
 
 
+// Related to tags
 Template.registerHelper('customTags', function (array) {
     if (Session.get('customtags'))
         return Session.get('customtags')
+});
+
+Template.registerHelper('IsAllowedTag', function(tag)
+{
+  // Safety: no custom tags
+  if (!Session.get('customtags')) return true;
+
+  // get the list of allowed tags
+  return Session.get('allowed_tags').includes(tag);
 });
 
 
@@ -504,7 +507,6 @@ Template.registerHelper('Timestamp', function(mydate)
 Template.registerHelper('ToHTML', function(text)
 {
   let new_text = text;
-// if(new_text.startsWith('<p><br></p>')) { new_text = new_text.substring(10,new_text.length-9); }
 
   // Converting markdown code environment
   let codetags = new_text.match(/(```[^`]+```)|(`[^`]*`)/gi);
@@ -532,7 +534,7 @@ Template.registerHelper('ToHTML', function(text)
       let src = img_mkd[i].match(/\]\(\S+\)/g);
       if(!src) continue;
       src = src[0].substring(2,src[0].length-1);
-      new_text = new_text.replace(img_mkd[i], '<img src=\"'+src+'\" />');
+      new_text = new_text.replace(img_mkd[i], '<br /><img src=\"'+src+'\" />');
     }
   }
 
@@ -544,7 +546,7 @@ Template.registerHelper('ToHTML', function(text)
   let fixlinks =  new_text.match(/\]\(\s+http/gi);
   if(fixlinks) { for (let i=0;i<fixlinks.length;i++) { new_text = new_text.replace(fixlinks[i], fixlinks[i].replace(' ','')); } }
 //  let mkdtags = new_text.match(/\[.+\]\(\S+\)/gi);
-  let mkdtags = new_text.match(/\[[^\[\]]+\]\([^\s\)]+\)/gi);
+  let mkdtags = new_text.match(/\[[^\[\]]+\]\([^\s]+[^\s\)]\)/gi);
   if(mkdtags) { for (let i=0;i<mkdtags.length;i++) { new_text = new_text.replace(mkdtags[i], ' --ssiod--'+parseInt(i)+'- '); } }
 
   // adding links to user ids
@@ -572,7 +574,7 @@ Template.registerHelper('ToHTML', function(text)
   }
 
   // From markdown to html: italic
-  let mkd_ita = new_text.match(/(\_[^\_]*\_)/g);
+  let mkd_ita = new_text.match(/(\_[^\_\n]*\_)/g);
   if(mkd_ita)
   {
     for (let i=0;i<mkd_ita.length; i++)
@@ -587,12 +589,12 @@ Template.registerHelper('ToHTML', function(text)
     {
       let tmp=mkd_hdr[i].substring(0,mkd_hdr[i].length-1);
       if(mkd_hdr[i].startsWith('\n')) { tmp=tmp.substring(1,tmp.length); }
-      if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>\n'; }
-      else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>\n'; }
-      else if(tmp.startsWith('####'  )) { tmp = tmp.replace('####',  '<h4>')+'</h4>\n'; }
-      else if(tmp.startsWith('###'   )) { tmp = tmp.replace('###',   '<h3>')+'</h3>\n'; }
-      else if(tmp.startsWith('##'    )) { tmp = tmp.replace('##',    '<h2>')+'</h2>\n'; }
-      else if(tmp.startsWith('#'     )) { tmp = tmp.replace('#',     '<h1>')+'</h1>\n'; }
+      if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>'; }
+      else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>'; }
+      else if(tmp.startsWith('####'  )) { tmp = tmp.replace('####',  '<h4>')+'</h4>'; }
+      else if(tmp.startsWith('###'   )) { tmp = tmp.replace('###',   '<h3>')+'</h3>'; }
+      else if(tmp.startsWith('##'    )) { tmp = tmp.replace('##',    '<h2>')+'</h2>'; }
+      else if(tmp.startsWith('#'     )) { tmp = tmp.replace('#',     '<h1>')+'</h1>'; }
       new_text = new_text.replace(mkd_hdr[i],tmp);
     }
   }
@@ -632,8 +634,8 @@ Template.registerHelper('ToHTML', function(text)
     }
 
     // protection
-    if(in_quote==0 && in_table==0 && line.length==0) { new_text[i]='<br /><br />'; continue; }
-    if(in_quote==0 && in_table==0 && line.trim().length==0) { new_text[i]='<br /><br />'; continue; }
+    if(in_quote==0 && in_table==0 && line.length==0) { new_text[i]='<br />'; continue; }
+    if(in_quote==0 && in_table==0 && line.trim().length==0) { new_text[i]='<br />'; continue; }
     if(in_quote!=0 && line.length==0) { new_text[i]='</blockquote>'; in_quote--; continue; }
     if(in_table>0 && line.length==0)  { new_text[i-1] = new_text[i-1] + '  </tbody>\n</table>\n'; in_table=0; cell_natures = []; continue;}
 
@@ -665,7 +667,7 @@ Template.registerHelper('ToHTML', function(text)
       if (header[header.length-1].trim()=='')    { header.splice(header.length-1,1); }
       if (header.length==splitted.length) { in_table = splitted.length; }
       else { continue; }
-      let new_header='<table>\n  <thead><tr>\n';
+      let new_header='<br /><table>\n  <thead><tr>\n';
       for(let j=0;j<in_table;j++) { new_header = new_header + '    <td align=\''+cell_natures[j]+'\'>' + header[j]+'</td>\n'; }
       new_text[i-1]=new_header + '  </tr></thead>\n  <tbody>';
       new_text[i] = '';
@@ -783,7 +785,7 @@ Template.registerHelper('ToHTML', function(text)
           let code = myurl.split('=')[1];
           if(!vid_urls.includes('('+myurl+')'))
             new_text = restore(new_text,'--ssiof--'+parseInt(i)+'-',
-              '<iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+code+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
+              '<br /><iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+code+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
         }
       }
       urls = vid_urls[i].match(/\bhttps?:\/\/youtu\.be\S+/gi);
@@ -793,7 +795,7 @@ Template.registerHelper('ToHTML', function(text)
         myurl = myurl[myurl.length-1];
         if(!vid_urls.includes('('+urls[0]+')'))
           new_text= restore(new_text,'--ssiof--'+parseInt(i)+'-',
-            '<iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+myurl+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
+            '<br /><iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+myurl+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
       }
       new_text = restore(new_text,'--ssiof--'+parseInt(i)+'-', vid_urls[i]);
     }
@@ -829,12 +831,23 @@ Template.registerHelper('ToHTML', function(text)
 
   // Images and links
   if(img_urls)
-  { for (let i=0;i<img_urls.length;i++) { new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<img src=\"'+img_urls[i]+'\" /><br />'); } }
+  { for (let i=0;i<img_urls.length;i++) { new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<br /><img src=\"'+img_urls[i]+'\" /><br />'); } }
 
   if(link_urls) { for (let i=0;i<link_urls.length;i++) { new_text = restore(new_text,'--ssioh--'+parseInt(i)+'-',
     '<a href=\"'+link_urls[i]+'\">'+link_urls[i]+'</a>'); } }
 
+  // Cleaning
+  new_text = new_text.replace(/\n/g,'<br />');
+  new_text = new_text.replace(/(<br ?\/?>){3,}/gm,'<br /><br />');
+  new_text = new_text.replace(/<\/div><br ?\/?><br ?\/?>/gm,'</div><br />');
+  let to_clean = ['\/ul', 'ul', '\/li', '\/h1', '\/h2', '\/h3', '\/h4', '\/h5','\/h6','table','tr','\/td','\/tr',
+   '\/table','\/thead', 'hr','tbody','\/tbody'];
+  for(let i=0; i<to_clean.length;i++)
+  {
+    let rep = new RegExp('<'+to_clean[i]+'>\\s*(<br ?\/?>)+',"gm");
+    new_text = new_text.replace(rep,'<'+to_clean[i]+'>');
+  }
+
   // Output
-//  console.log(new_text);
   return new_text;
 });

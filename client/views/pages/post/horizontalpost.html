@@ -3,8 +3,8 @@
         <div class="content" style="padding: 1em;">
             <a href="#!/@{{author}}/{{permlink}}" class="header">{{title}}</a>
             <span class="tags">{{#each json_metadata.tags}}
-                {{#unless equals this 'steemstem'}}
-                <a href="#!/{{this}}" class="ui mini {{colorByCategory this}} label">{{this}}</a>{{/unless}}{{/each}}
+                {{#if IsAllowedTag this}}
+                <a href="#!/{{this}}" class="ui mini {{colorByCategory this}} label">{{this}}</a>{{/if}}{{/each}}
             </span>
             <div class="meta">
                 <!-- <img class="ui avatar image" src="https://steemitimages.com/u/{{author}}/avatar"> -->

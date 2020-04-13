@@ -19,9 +19,9 @@
       {{#if HasTags json_metadata.tags}}
         <span class="ui top right attached label childopacity">
           {{#each json_metadata.tags}}
-            {{#unless equals this 'steemstem'}}
+            {{#if IsAllowedTag this}}
               <a href="{{this}}" class="ui top mini {{colorByCategory this}} label noradius">{{this}}</a>
-            {{/unless}}
+            {{/if}}
           {{/each}}
         </span>
       {{/if}}

@@ -3,19 +3,9 @@ Template.horizontalpost.rendered = function () {
     $('.description.post.h.' + this.data.permlink).html(p + " ...")
 }
 
-Template.horizontalpost.helpers({
-    colorfromcategory : function(tags){
-        var colors = Session.get('customtags')
-        for (i=0; tags.length > i; i++)
-        {
-            if(colors.find(item => item.category === tags[i]) && tags[i] != "steemstem")
-            {
-                var item = colors.find(item => item.category === tags[i])
-                return item.color
-            }
-        }
-    }
-})
+
+// Helpers
+Template.horizontalpost.helpers({});
 
 Template.horizontalpost.events({
     'click .image': function (event) {

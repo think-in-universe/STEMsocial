@@ -116,6 +116,8 @@ Template.article.helpers(
             var tags = $('#tags').attr('value').split(",").length;
             if($('#tags').attr('value').split(',').includes('steemstem'))
               tags--
+            if($('#tags').attr('value').split(',').includes('hive-196387'))
+              tags--
             if (tags <= 10)
               $('.ui.multiple.dropdown').dropdown('setting', 'allowAdditions', true);
             else if (tags>10) {
@@ -131,7 +133,7 @@ Template.article.helpers(
         {
           for (i = 0; i < tagsarray.length; i++)
           {
-            if(tagsarray[i]!='steemstem')
+            if(!['steemstem', 'hive-196387'].includes(tagsarray[i]))
             {
               ntags++
               if(ntags>10)
@@ -171,8 +173,8 @@ Template.article.helpers(
   {
     tags = Session.get('preview-tags')
     if(tags) { tags = tags.split(',') }
-    else     { tags =  ['steemstem']  }
-    if(!tags.includes('steemstem'))  { tags.unshift('steemstem') }
+    else     { tags =  ['hive-196387']  }
+    if(!tags.includes('hive-196387'))  { tags.unshift('hive-196387') }
     return tags
   },
 
@@ -244,8 +246,8 @@ Template.article.UpdateProject = function(form)
 {
   old_content = Content.findOne({ 'permlink': Session.get('article') })
   tags = form.tags.value
-  if(tags=="") { tags=['steemstem'] }
-  else         { tags = tags.split(','); tags.unshift('steemstem') }
+  if(tags=="") { tags=['hive-196387'] }
+  else         { tags = tags.split(','); tags.unshift('hive-196387') }
 
   if(old_content)
   {

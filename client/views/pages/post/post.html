@@ -22,9 +22,9 @@
       </div>
       <span class="tags" style="margin-top:10px;">
         {{#each json_metadata.tags}}
-          {{#unless equals this 'steemstem'}}
+          {{#if IsAllowedTag this}}
             <a href="#!/{{this}}" class="ui mini {{colorByCategory this}} label noradius">{{this}}</a>
-          {{/unless}}
+          {{/if}}
         {{/each}}
       </span>
     </div>

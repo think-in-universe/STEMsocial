@@ -41,9 +41,9 @@ Template.content.helpers({
   // Do we have tags to display?
   HasTags: function(tags)
   {
-    if(!tags || tags=='steemstem') { return false;}
+    if(!tags || tags=='steemstem' || tags=='hive-196387') { return false;}
     for(i=0; i<tags.length; i++)
-      { if (tags[i]!='steemstem') { return true; } }
+      { if (!['steemstem', 'hive-196387'].includes(tags[i])) { return true; } }
     return false
   },
 

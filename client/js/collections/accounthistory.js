@@ -1,5 +1,6 @@
 AccountHistory = new Mongo.Collection(null)
 
+
 // Getting the list of supported posts
 AccountHistory.getVotes = function(quiet=false)
 {
@@ -39,18 +40,23 @@ AccountHistory.getVotes = function(quiet=false)
 
 
 // To get all posts from the steemstem tag
-AccountHistory.LoadTags = function ()
+AccountHistory.LoadTags = function (tag_id=0)
 {
-  // 75 posts are obtained, from the current starting point (default  = last created post)
-  let query = { tag: "steemstem", limit:Session.get('load_post_charge')};
-  let last = Session.get('last_loaded_post');
+  // Tag and end of the loop
+  let tag = JSON.parse(Session.get('main_tags'));
+  if(tag_id==tag.length) return;
+
+  // A set of posts is obtained, from the current starting point (default  = last created post)
+  tag = tag[tag_id];
+  let query = { tag:tag, limit:Session.get('load_post_charge')};
+  let last = JSON.parse(Session.get('last_loaded_post'));
 
   // Checking whether extra posts need to be laoded
-  if(last!='')
+  if(last[tag_id])
   {
-    if(last.split('/')[2]<Session.get('loaded_week')) return;
-    query = { tag: "steemstem", limit:Session.get('load_post_charge'),
-       start_author:last.split('/')[0], start_permlink:last.split('/')[1] };
+    if(last[tag_id].week<Session.get('current_week')-1) return AccountHistory.LoadTags(tag_id+1);
+    query = { tag:tag, limit:Session.get('load_post_charge'),
+      start_author:last[tag_id].author, start_permlink:last[tag_id].permlink };
   }
 
   // Getting the tag content
@@ -75,10 +81,12 @@ AccountHistory.LoadTags = function ()
       Content.upsert({ _id: result._id }, result);
     }
 
-    // Recursive loading
-    let new_last = Content.findOne({permlink:res[res.length-1].permlink});
-    Session.set('last_loaded_post',new_last.author+'/'+new_last.permlink+'/'+ new_last.week);
+    // Saving info about the last inserted post
+    last_post = Content.findOne({permlink:res[res.length-1].permlink});
+    last[tag_id] = {author:last_post.author, permlink:last_post.permlink, week:last_post.week};
+    Session.set('last_loaded_post',JSON.stringify(last));
 
+    // Recursive loading
     let steemstem_posts = Content.find({author:{$nin: ['steemstem','lemouth-dev']}, upvoted:{$gt: 0}},
        {sort:{created:1}, limit:1}).fetch();
     let other_posts     = Content.find({upvoted:0}, {sort:{created:1}, limit:1}).fetch();
@@ -86,7 +94,7 @@ AccountHistory.LoadTags = function ()
     if(steemstem_posts[0].created<other_posts[0].created)
     {
       let start=new Date().getTime(); for (let i=0; i<1e7; i++) { if ((new Date().getTime()-start) > 2000) break; }
-      AccountHistory.LoadTags();
+      AccountHistory.LoadTags(tag_id);
     }
 
     // Exit
@@ -160,7 +168,8 @@ AccountHistory.UpgradeInfo = function (post, weight)
     post.search = post.json_metadata.tags.join(' ')
     for (let t = 0; t < post.json_metadata.tags.length; t++)
     {
-      if (!post.language) { post.language = FilterLanguage(post.json_metadata.tags[t]) }
+      if(Session.get('allowed_tags').includes(post.json_metadata.tags[t])) continue;
+      if(!post.language) { post.language = FilterLanguage(post.json_metadata.tags[t]) }
       else { break; }
     }
   }
@@ -183,13 +192,7 @@ AccountHistory.UpgradeInfo = function (post, weight)
 
 
 // Get the langage of a post
-FilterLanguage = function (tag)
+FilterLanguage = function(tag)
 {
-  let langs = Session.get('settings').languages
-  if (tag != 'steemstem')
-  {
-    for (var key in langs)
-      if (langs.hasOwnProperty(key))
-        if (Session.get('settings').languages[key].includes(tag)) { return key }
-  }
+  for (var key in Session.get('settings').languages) if (Session.get('settings').languages[key].includes(tag)) return key;
 }

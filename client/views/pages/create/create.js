@@ -1,7 +1,7 @@
 // Rendering of the page
 Template.create.rendered = function () {
     // Configuration of the dropdown menu where tags can be entered
-    // We limit in particular the number of tag to four + #steemstem
+    // We limit in particular the number of tag to 9 + the STEMsocial community tag
     $('.ui.multiple.dropdown').dropdown({
         allowAdditions: true,
         keys: {
@@ -10,8 +10,7 @@ Template.create.rendered = function () {
         onNoResults: function (search) { }, 
         onChange: function () {
           var tags = $('#tags').attr('value').split(",").length;
-          if($('#tags').attr('value').split(',').includes('steemstem'))
-            tags--
+          if($('#tags').attr('value').split(',').includes('hive-196387')) tags--
           if (tags <= 10) {
             $('.ui.multiple.dropdown').dropdown('setting', 'allowAdditions', true);
           }
@@ -247,8 +246,8 @@ Template.create.createProject = function(form)
    });
 
   // Getting the tags
-  if(tags=="") { tags=['steemstem'] }
-  else         { tags = tags.split(','); tags.unshift('steemstem') }
+  if(tags=="") { tags=['hive-196387'] }
+  else         { tags = tags.split(','); tags.unshift('hive-196387') }
 
   if(sessionStorage.editpermlink) { permlink = sessionStorage.editpermlink }
   else
@@ -342,7 +341,7 @@ Template.create.loadDraft = function (draft)
   {
     for (i = 0; i < tagsarray.length; i++)
     {
-      if(tagsarray[i]!='steemstem') { ntags++ }
+      if(!['steemstem', 'hive-196387'].includes(tagsarray[i])) { ntags++ }
       if(ntags==10)
       {
         $(".ui.multiple.dropdown").dropdown("set selected", tagsarray[i])
@@ -505,10 +504,9 @@ Template.create.helpers(
   DisplayPostTags: function()
   {
     tags = Session.get('preview-tags').split(',');
-    if(tags=='') { return ['steemstem'] }
-    if(!tags.includes('steemstem'))
-      tags.unshift('steemstem')
-    return tags
+    if(tags=='') return ['hive-196387']
+    if(!tags.includes('hive-196387')) tags.unshift('hive-196387');
+    return tags;
   }
-})
+});
 

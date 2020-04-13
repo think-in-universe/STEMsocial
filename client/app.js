@@ -46,6 +46,18 @@ function API_connect(url_id)
         sessionStorage.setItem('settings', JSON.stringify(Session.get('settings')));
         sessionStorage.setItem('customtags', JSON.stringify(Session.get('customtags')));
       }
+
+      // tags
+      let allowed_tags = [];
+      for(let i=0; i<Session.get('customtags').length; i++)
+      {
+        allowed_tags.push(Session.get('customtags')[i].category);
+        if(Session.get('customtags')[i].subcategories)
+          allowed_tags = allowed_tags.concat(Session.get('customtags')[i].subcategories);
+      }
+      allowed_tags = allowed_tags.concat(['hive-196387', 'steemstem']);
+      Session.set('allowed_tags',allowed_tags);
+      sessionStorage.setItem('allowed_tags',JSON.stringify(allowed_tags));
     });
 
     // Getting the list of promotable posts
@@ -127,7 +139,7 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c STEMsocial OpenSource v0.10.13: https://github.com/BFuks/hivestem`,
+  console.log(`%c STEMsocial OpenSource v0.10.14: https://github.com/BFuks/stemsocial`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");
@@ -137,10 +149,12 @@ Meteor.startup(function ()
   // STEMsocial Settings
   Session.set('settings', false)
   if(sessionStorage.getItem('settings'))
-  {
-    Session.set('settings', JSON.parse(sessionStorage.getItem('settings')));
-    Session.set('customtags', JSON.parse(sessionStorage.getItem('customtags')));
-  }
+    Session.set('settings',    JSON.parse(sessionStorage.getItem('settings')));
+  if(sessionStorage.getItem('customtags'))
+    Session.set('customtags',  JSON.parse(sessionStorage.getItem('customtags')));
+  if(sessionStorage.getItem('allowed_tags'))
+    Session.set('allowed_tags',JSON.parse(sessionStorage.getItem('allowed_tags')));
+  Session.set('main_tags', JSON.stringify(['hive-196387', 'steemstem']));
 
   // Setting up the week numbering
   let timestamp = Blaze._globalHelpers['Timestamp']('');
@@ -157,7 +171,7 @@ Meteor.startup(function ()
   Session.set('loaded_week',            timestamp-2);
   Session.set('last_loaded_vote_stamp', 2100);
   Session.set('last_loaded_vote',       -1);
-  Session.set('last_loaded_post',       '');
+  Session.set('last_loaded_post',       JSON.stringify({}));
   Session.set('load_post_charge',        30);
 
   // View configuration
