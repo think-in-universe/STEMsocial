@@ -26,13 +26,11 @@ Template.registerHelper('whitelistedContent', function ()
   stamp = stamp.toISOString().slice(0, 19);
 
   // Get the whitelisted content opf the last week
-  let query = { language: 'en', parent_author: '', created: {$gt: stamp},
-    author: {$in: Session.get('settings').whitelist} };
+  let filtered = Session.get('settings').whitelist.filter(function(value, index, arr){ return value != 'steemstem';});
+  let query = { language: 'en', parent_author: '', created: {$gt: stamp}, author: {$in: filtered} };
   let content = Content.find(query).fetch();
-  if(content.length > Session.get('N_whitelist'))
-    { Session.set('N_whitelist', content.length) }
-  else
-    { return Session.get('whitelisted'); }
+  if(content.length > Session.get('N_whitelist')) Session.set('N_whitelist', content.length);
+  else return Session.get('whitelisted');
 
   // Select N posts amongst it
   if(content.length<=N) { Session.set('whitelisted', content); return content; }
