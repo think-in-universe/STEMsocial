@@ -301,12 +301,12 @@ FlowRouter.route('/@:user/:permlink', {
              var __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
              if(result.body.match(__imgRegex))
              {
-               var img = 'https://steemitimages.com/0x0/' + result.body.match(__imgRegex)[0];
+               var img = 'https://images.hive.blog/0x0/' + result.body.match(__imgRegex)[0];
                DocHead.addMeta({property: 'og:image', content: img})
              }
              DocHead.addMeta({property: 'title', content: result.title})
              DocHead.addMeta({property: 'og:title', content: result.title})
-             DocHead.addMeta({property: 'og:url', content: 'https://www.steemstem.io/#!'+result.url})
+             DocHead.addMeta({property: 'og:url', content: 'https://stem.openhive.network/#!'+result.url})
              desc = Blaze._globalHelpers['remarkableFormatter'](result.body)
              desc = Blaze._globalHelpers['xssShortFormatter'](desc)
              desc = Blaze._globalHelpers['shortDescription'](desc)

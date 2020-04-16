@@ -1,6 +1,10 @@
 <template name="card">
   <div class="card" style="box-shadow: 0px 0px 7px #00000069;">
-    <div class="image" style="cursor: pointer;"><img src="{{imgFromBody this}}"></div>
+    {{#if imgFromBody this}}
+      <div class="image" style="cursor: pointer;"><img src="{{imgFromBody this}}"></div>
+    {{else}}
+      <br />&nbsp;<br />
+    {{/if}}
     <span class="ui teal label top left attached" style="border-radius: 0rem 0em 0.28571429rem 0em;">
       <i class="clock outline icon"></i> {{DisplayTimeFrom created}}
     </span> 
@@ -24,7 +28,7 @@
           {{/if}}
         {{/each}}
       </span>
-      {{#if UsingSSio}}
+<!--      {{#if UsingSSio}}
         {{#if SetBeneficiary}}
           <p></p><p>
             <img width='90px' src='images/postedon7.jpg' />
@@ -37,7 +41,7 @@
         {{#if SetBeneficiary}}
           <p></p><p><img width='90px' src='images/beneficiary.jpg' /></p>
         {{/if}}
-      {{/if}}
+      {{/if}} -->
     </div>
     <div class="ui big label fluid npdg noradius">{{>upvote}}</div>
   </div>

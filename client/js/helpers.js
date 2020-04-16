@@ -6,28 +6,19 @@ import Remarkable from 'remarkable';
 
 const steemMarkdown = require('steem-markdown-only')
 
-Template.registerHelper('imgFromArray', function (project) {
-    if (!project) return
-    if ($.isArray(project.json_metadata.image)) {
-        if (project.json_metadata.image[0]) {
-            return project.json_metadata.image[0]
-        }
-    }
-})
+// Getting the first image of the post (for the thumbnail)
+Template.registerHelper('imgFromBody', function (project)
+{
+  // no image to get
+  if (!project) return;
 
-Template.registerHelper('imgFromBody', function (project) {
-    if (!project) return
-    else {
-        var __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
-        if (__imgRegex.test(project.body)) {
+  // getting an image if there is one
+  let __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
+  if (__imgRegex.test(project.body)) return 'https://images.hive.blog/0x0/' + project.body.match(__imgRegex)[0];
 
-            return 'https://steemitimages.com/0x0/' + project.body.match(__imgRegex)[0];
-        }
-        else {
-            return false
-        }
-    }
-})
+  // no image
+  return;
+});
 
 Template.registerHelper('isBlacklisted', function (name) {
     if(!Session.get('settings').blacklist.includes(result[i].author))
