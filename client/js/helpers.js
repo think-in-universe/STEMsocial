@@ -578,7 +578,8 @@ Template.registerHelper('ToHTML', function(text)
   {
     for (let i=0;i<mkd_hdr.length;i++)
     {
-      let tmp=mkd_hdr[i].substring(0,mkd_hdr[i].length-1);
+      let tmp=mkd_hdr[i];
+      if(tmp.endsWith('\n')) tmp = tmp.substring(0,tmp.length-1);
       if(mkd_hdr[i].startsWith('\n')) { tmp=tmp.substring(1,tmp.length); }
       if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>'; }
       else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>'; }
