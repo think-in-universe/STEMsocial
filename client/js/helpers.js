@@ -718,7 +718,8 @@ Template.registerHelper('ToHTML', function(text)
     else if (line.startsWith('<h')) line = close_all_lists(nspaces, list_natures) + line;
 
     // Closing what needs to be closed
-    else { line = line + close_all_lists(nspaces, list_natures); nspaces = []; list_natures = []; }
+    else if (idx>0){ line = line + close_all_lists(nspaces, list_natures); nspaces = []; list_natures = []; }
+    else { line = close_all_lists(nspaces, list_natures) + line; nspaces = []; list_natures = []; }
     new_text[i]=line;
   }
 
