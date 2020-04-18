@@ -9,8 +9,8 @@
 #main-header {
 	max-height: 25%;
 }
-/*Top Banner*/
 
+/*Top Banner*/
 .ui.banner.fluid.image {
 	height: 0px !important;
 	width: 100% !important;
@@ -793,8 +793,15 @@ article{
 }
 
 .mfield{
-	margin:1em 0em 1em!important;
+  margin:1em 0em 1em!important;
 }
+
+.submfield{
+  border:      1px solid #C8C8C8!important;
+  color:       #C8C8C8;
+  line-height: '140%';
+}
+
 
 .col33{
 	width: 33.3333333%
@@ -863,4 +870,24 @@ body{
   visibility: visible;
   opacity: 1;
 }
+
+/* new rule for wide screens */
+@media all and (min-width:1600px) 
+{
+  .ui.container.supercontainer{ width:1504px; }
+}
+
+/* post creation */
+#postcreate{
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding-top: 14.5px;
+    height: 80%;
+    width:100%;
+    min-height: 50px;
+    overflow-y: scroll;
+}
+
+
 

@@ -69,6 +69,23 @@ FlowRouter.route('/create',
   }
 });
 
+FlowRouter.route('/newcreate',
+{
+  name: 'newcreate',
+  action: function (params, queryParams)
+  {
+    DocHead.removeDocHeadAddedTags()
+    Session.set('preview-title','')
+    Session.set('preview-body','')
+    Session.set('preview-tags','')
+    BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "newcreate", topmenu: "topmenu" });
+  }
+});
+
+
+
+
+
 
 // Login to the app + implementation of the redirection to the previous page
 // (if the connection happens after trying to do something with an expired or non-existing token)

@@ -1,0 +1,73 @@
+<template name="newcreate">
+  <div class="ui container supercontainer">
+
+    <!-- DRAFTS AND RECOMMENDATIONS -->
+    {{>drafts}}
+
+    <div class="ui grid two column stackable padded">
+
+      <!--- ARTICLE SIDE -->
+      <div id="articleside" class="eight wide column">
+        <h2 class="ui dividing header">Write a new post</h2>
+        <form id="newarticle" class="ui form">
+          <!-- TITLE -->
+          <div class="field mfield">
+            <label>TITLE</label>
+            <input id='posttitle' name="posttitle" type="text" class="submfield" placeholder="Type your title">
+          </div>
+
+          <!-- BODY-->
+          <div class="field">
+            <label>ARTICLE</label>
+            <textarea id="postbody" name='postbody' type="text"  class='submfield' rows='20'></textarea>
+          </div>
+
+          <!-- TAGS -->
+          <div class="field mfield">
+            <label>TAGS</label>
+            <div class="ui fluid multiple search selection dropdown">
+              <input id="posttags" name="posttags" type="hidden">
+              <div class="default text">Set tags...</div>
+            </div>
+          </div>
+          <div class="ui mini to message yellow hidden">
+            Reaching the tag number limit:
+            the (potentially automatically added) #hive-196387 tag
+            plus nine user-defined tags. <br /><br />
+            Any extra tag will be ignored.
+          </div>
+
+        </form>
+      </div>
+
+      <!-- preview part -->
+      <div id="previewside" class="eight wide column" style="height:768px"><div id='postcreate'>
+        <h2 class="ui dividing header">Post preview</h2>
+
+        <!-- TITLE -->
+        <h2 class="ui header">{{DisplayPostTitle}}</h2>
+
+        <!-- BODY -->
+        <div class='content'>
+          <div class="description">
+            {{{DisplayPostBody}}}
+          </div>
+        </div>
+
+        <!-- TAGS -->
+        <div style='padding-top: 10px; clear: both;'>
+          <div class="ui divider"></div>
+          <h4>
+            Tags:
+            {{#each DisplayPostTags}}
+              <button class="ui mini disabled button grey"> {{this}}</button>
+            {{/each}}
+          </h4>
+        </div>
+
+
+
+      </div></div>
+    </div>
+  </div>
+</template>

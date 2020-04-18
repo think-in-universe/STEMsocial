@@ -573,7 +573,7 @@ Template.registerHelper('ToHTML', function(text)
   }
 
   // From markdown to HTML: headers
-  let mkd_hdr = new_text.match(/(\n|^)\#{1,6}.+\n/g);
+  let mkd_hdr = new_text.match(/^\#{1,6}.+(\n|$)/gm);
   if(mkd_hdr)
   {
     for (let i=0;i<mkd_hdr.length;i++)
