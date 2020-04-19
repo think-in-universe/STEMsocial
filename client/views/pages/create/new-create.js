@@ -49,15 +49,6 @@ Template.newcreate.helpers({
   DisplayPostTitle: function() { return Session.get('preview-title') },
 
   // Function to display the post body for the preview part
-  DisplayPostBody: function()  { return Session.get('preview-body'); },
-
-  // Function to display the post tagsfor the preview part
-  DisplayPostTags: function()
-  {
-    tags = Session.get('preview-tags').split(',');
-    if(tags=='') return ['hive-196387']
-    if(!tags.includes('hive-196387')) tags.unshift('hive-196387');
-   return tags;
-  }
+  DisplayPostBody: function()  { return Session.get('preview-body'); }
 });
 

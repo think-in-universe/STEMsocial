@@ -879,13 +879,10 @@ body{
 
 /* post creation */
 #postcreate{
-    position: absolute;
-    left: 0;
-    top: 0;
-    padding-top: 14.5px;
     height: 80%;
     width:100%;
     min-height: 50px;
+    max-height: 610px;
     overflow-y: scroll;
 }
 
