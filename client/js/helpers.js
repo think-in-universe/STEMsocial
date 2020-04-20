@@ -832,6 +832,7 @@ Template.registerHelper('ToHTML', function(text)
   // Cleaning
   new_text = new_text.replace(/\n/g,'<br />');
   new_text = new_text.replace(/(<br ?\/?>){3,}/gm,'<br /><br />');
+  new_text = new_text.replace(/<\/table><br ?\/?><br ?\/?>/gm,'</table><br />');
   let divs = new_text.match(/<\/div>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], '<\/div>');
   divs = new_text.match(/<div[^\>\<]*>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
