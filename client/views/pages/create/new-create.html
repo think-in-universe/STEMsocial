@@ -47,31 +47,29 @@
                   <input id='stmscl_bnf' name="stmscl_bnf" type="number" min="0" max="100"
                     style='width:55px;border:none;border-width:0;margin-top:-9px;margin-right:-10px' value='5'> %.
                 </label>
-            </div>
+            </div><br />
+          {{#if Beneficiaries}}
+            <p style='margin-bottom:23px;margin-top:-3px;'>
+              {{#each beneficiary in DisplayBeneficiaries}}
+                <i class='user outline icon' style='margin-right:-1px;'></i>
+                  @{{DisplayBeneficiary beneficiary}}: {{DisplayShare beneficiary}}%
+                  <i id='edit-beneficiary' aria-hidden="true" class="fitted link edit outline icon" name={{DisplayBeneficiary beneficiary}}-{{DisplayShare beneficiary}}></i>
+                  <i id='remove-beneficiary' aria-hidden="true" class="fitted link trash alternate outline icon" name={{DisplayBeneficiary beneficiary}}></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {{/each}}
+            </p>
+          {{/if}}
           </div>
           <div class="field mfield">
-            <div class="ui basic button add-beneficiary black left floated"  style='margin-top:-10px'>
+            <div class="ui basic button add-beneficiary black left floated"  style='margin-top:-10px;margin-bottom:20px;'>
               <i class="user icon"></i>Add another beneficiary
             </div>
-<!--
-            <input id="beneficiaries" name="beneficiaries" type="hidden">
-            {{#if loadBeneficiaries}}
-              {{#each beneficiary in loadBeneficiaries}}
-                <div class="ui compact medium message teal floated">
-                  {{DisplayBeneficiary beneficiary}}:
-                  <b>{{DisplayShare beneficiary}}</b><i class="percent icon"></i>
-                  <i id='edit-beneficiary' aria-hidden="true" class="fitted link edit outline icon" name={{DisplayBeneficiary beneficiary}}-{{DisplayShare beneficiary}}></i>
-                  <i id='remove-beneficiary' aria-hidden="true" class="fitted link trash alternate outline icon" name={{DisplayBeneficiary beneficiary}}></i>
-                </div>
-              {{/each}}
-            {{else}}
-               No added beneficiary.<br />
-            {{/if}}
--->
           </div>
+
+        <!-- MESSAGES -->
+          <div class="field mfield" ><div class="ui error message"></div></div>
         </form>
 
-        <!-- MESSAGES AND BUTTONS-->
+        <!-- BUTTONS-->
         <div class="ui button submit teal right floated" style='margin-top:30px'>SUBMIT</div>
       </div>
 

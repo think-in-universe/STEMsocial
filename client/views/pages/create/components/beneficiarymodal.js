@@ -1,20 +1,17 @@
 // No rendering
-Template.beneficiarymodal.rendered = function () { }
+Template.beneficiarymodal.rendered = function () {  }
 
 // Initialization of the transfer form
-Template.beneficiarymodal.init = function ()
+Template.beneficiarymodal.init = function (bnf,shr)
 {
-  // Initialization
-  if(Session.get('beneficiary')!=='')
+  // Initialization (check whether it is a new beneficiary)
+  if(bnf!=='' && shr!=='')
   {
-    document.getElementById('my-beneficiary').value = Session.get('beneficiary')
+    document.getElementById('my-beneficiary').value = bnf;
     $("#my-beneficiary").prop('disabled', 'true')
     $(".to.message.green").removeClass('hidden')
     $("#shares").prop('disabled', false)
-  }
-  if(Session.get('shares')!=='')
-  {
-    document.getElementById('shares').value = Session.get('shares')
+    document.getElementById('shares').value = shr;
     $("#confirm-beneficiary").removeClass('disabled')
   }
 
@@ -23,19 +20,18 @@ Template.beneficiarymodal.init = function ()
   {
     steem.api.lookupAccountNames([$("#my-beneficiary").val()], function (error, result)
     {
-      if (result[0] === null)
+      if(!result[0])
       {
-        $(".to.message.green").addClass('hidden')
-        $(".to.message.red").removeClass('hidden')
+        $(".to.message.green").addClass('hidden');
+        $(".to.message.red").removeClass('hidden');
         $("#shares").prop('disabled', true);
-        $("#confirm-beneficiary").addClass('disabled')
+        $("#confirm-beneficiary").addClass('disabled');
       }
       else
       {
-        $(".to.message.green").removeClass('hidden')
-        $(".to.message.red").addClass('hidden')
+        $(".to.message.green").removeClass('hidden');
+        $(".to.message.red").addClass('hidden');
         $("#shares").prop('disabled', false);
-        Session.set('beneficiary',$("#my-beneficiary").val())
       }
     });
   });
@@ -46,14 +42,12 @@ Template.beneficiarymodal.init = function ()
     if( (parseFloat($("#shares").val())>0) && (parseFloat($("#shares").val())<=100) )
     {
       $(".shares.message.red").addClass('hidden')
-      Session.set('shares',$("#shares").val())
-      if(Session.get('shares') && Session.get('beneficiary'))
-        { $("#confirm-beneficiary").removeClass('disabled') }
+      $("#confirm-beneficiary").removeClass('disabled');
     }
     else
     {
-      $(".shares.message.red").removeClass('hidden')
-      $("#confirm-beneficiary").addClass('disabled')
+      $(".shares.message.red").removeClass('hidden');
+      $("#confirm-beneficiary").addClass('disabled');
     }
   });
 
@@ -63,16 +57,10 @@ Template.beneficiarymodal.init = function ()
   // Sending the required operation to hivesigner
   function AddBeneficiary()
   {
-    if(Session.get('beneficiary')!='' && Session.get('shares')!='')
-    {
-      draft = Session.get('current-draft')
-      if(draft.beneficiaries=='') {  draft.beneficiaries=[] }
-      draft.beneficiaries = draft.beneficiaries.filter( (x) => { return x[0]!==Session.get('beneficiary'); });
-      draft.beneficiaries.push([Session.get('beneficiary'), Session.get('shares') ])
-      Session.set('current-draft', draft)
-      document.getElementById('newarticle').beneficiaries.value = draft.beneficiaries
-      $('.ui.beneficiary.modal').modal('hide')
-    }
+      let json={}; if(Session.get('preview-beneficiaries')) json=JSON.parse(Session.get('preview-beneficiaries'));
+      json[$("#my-beneficiary").val()] = parseFloat($("#shares").val());
+      Session.set('preview-beneficiaries', JSON.stringify(json));
+      $('.ui.beneficiary.modal').modal('hide');
   }
 }
 
@@ -85,8 +73,8 @@ Template.beneficiarymodal.helpers(
   // Get the right word in the confirm button
   AddButtonValue: function()
   {
-    if(Session.get('beneficiary-edit'))  { return 'Update' }
-    else { return 'Add' }
+    if(Session.get('beneficiary-edit')==true) return 'Update';
+    else return 'Add';
   }
 })
 
