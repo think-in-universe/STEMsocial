@@ -13,9 +13,7 @@ Template.newcreate.rendered = function () {
   );
 
   // tags
-  $('#posttags').on('change',function()
-    { console.log('bla'); Session.set('preview-tags',document.getElementById('newarticle').posttags.value) }
-  );
+  $('#posttags').on('change',function() {Session.set('preview-tags',document.getElementById('newarticle').posttags.value)});
   $('.ui.multiple.dropdown').dropdown(
   {
     allowAdditions: true,
@@ -103,21 +101,41 @@ Template.newcreate.events({
 
     // post information
     let title    = document.getElementById('newarticle').posttitle.value;
+    let body     = document.getElementById('newarticle').postbody.value;
+    let tags     = document.getElementById('newarticle').posttags.value;
     let permlink = title.replace(/[^a-zA-Z0-9]/g,' ').replace(/\s+/g, '-').toLowerCase().slice(0,50) + '-' +
       (Math.round((new Date()).getTime() / 1000)).toString();
 
+    // payout configurations
+    let payout     = document.getElementById('newarticle').payoutdistr.value;
+    let max_payout = '1000000.000 HBD';
+    let perc_HBD   = 10000;
+    if      (payout=='0')   max_payout = '0.000 HBD';
+    else if (payout=='100') perc_HBD   = 0;
+
+    // Getting the tags
+    if(tags=="") tags=['hive-196387'];
+    else         tags = tags.split(',');
+    tags = tags.filter(obj => { return obj!='hive-196387';});
+    tags.unshift('hive-196387');
+
+    // JSON metadata
+    let images = [];
+    let __imgRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;
+    if (__imgRegex.test(body)) images=body.match(__imgRegex);
+    let json_metadata = { tags:tags, app: 'stemsocial'};
+
+    // Putting everything together
     let post_object = [
-      ['comment', { parent_author: '', parent_permlink: tags[0], author:author, permlink:permlink, title:title,
-                    body: body, json_metadata: JSON.stringify(json_metadata) }],
-        ['comment_options', { author: author, permlink: permlink, max_accepted_payout: '1000000.000 SBD',
-                    percent_steem_dollars: percent_steem_dollars, allow_votes: true, allow_curation_rewards: true,
+      ['comment', { parent_author: '', parent_permlink: tags[0], author:localStorage.username, permlink:permlink,
+                   title:title, body:body, json_metadata: JSON.stringify(json_metadata) }],
+        ['comment_options', { author:localStorage.username, permlink:permlink, max_accepted_payout:max_payout,
+                    percent_steem_dollars:perc_HBD, allow_votes:true, allow_curation_rewards:true,
                    extensions: [] } ]
     ];
 
-    console.log('title    = ', title);
-    console.log('permlink = ', permlink);
-//      var project = Template.create.createProject(document.getElementById('newarticle'))
-//      Template.create.submitproject(project)
+    // submission
+    Template.newcreate.submit(post_object);
   }
 });
 
@@ -147,4 +165,69 @@ Template.newcreate.helpers({
 
 
 });
+
+
+// Submit the post
+Template.newcreate.submit= function(project)
+{
+  if (localStorage.kc)
+  {
+    let comment =project[0][1];
+    let options = '';
+    if(project.length>1)
+    {
+      options = project[1][1];
+      if(options.extensions.length==0) { options=''; }
+    }
+    if (options!='') { options = JSON.stringify(options); }
+    window.hive_keychain.requestPost(comment.author, comment.title , comment.body, comment.parent_permlink,
+      comment.parent_author, comment.json_metadata, comment.permlink, options, function(response)
+    {
+      if(!response.success)
+      {
+        console.log("Error with keychain (cannot post):", response);
+        $('#postprob').removeClass("hidden")
+        $('#postprob').text(JSON.stringify(response.error));
+        $('.ui.button.submit').removeClass('loading')
+        return;
+      }
+      $('#postprob').addClass("hidden")
+      Session.set('isonedit', 'false')
+      Session.set('editlink', '')
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 1000) { break; } }
+      FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink)
+      FlowRouter.reload()
+    });
+  }
+  else
+  {
+    hivesigner.send(project, function (error, result)
+    {
+      if (error)
+      {
+        $('#postprob').removeClass("hidden")
+        $('#postprob').text(error)
+        console.log("Error with hivesigner:", error.error_description)
+        console.log("status of the submission stuff:", project)
+        if(error.error_description)
+          $('#postprob').text(error.error_description)
+      }
+      else
+      {
+        $('#postprob').addClass("hidden")
+        Session.set('isonedit', 'false')
+        Session.set('editlink', '')
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 1000) { break; } }
+        FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink)
+        FlowRouter.reload()
+      }
+      $('.ui.button.submit').removeClass('loading')
+      return true
+    });
+  }
+}
+
+
 
