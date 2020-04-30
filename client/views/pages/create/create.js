@@ -1,5 +1,5 @@
 // Rendering of the page
-Template.newcreate.rendered = function () {
+Template.create.rendered = function () {
   delete Session.keys['preview-beneficiaries'];
 
   // Saving the post title for the post preview method
@@ -13,7 +13,6 @@ Template.newcreate.rendered = function () {
   );
 
   // tags
-  $('#posttags').on('change',function() {Session.set('preview-tags',document.getElementById('newarticle').posttags.value)});
   $('.ui.multiple.dropdown').dropdown(
   {
     allowAdditions: true,
@@ -58,7 +57,7 @@ Template.newcreate.rendered = function () {
 
 
 // Control of the different buttons
-Template.newcreate.events({
+Template.create.events({
   // Add beneficiary
   'click .ui.button.add-beneficiary': function (event)
   {
@@ -149,12 +148,12 @@ Template.newcreate.events({
     if(bnf_object.length>0) post_object[1][1].extensions =  [  [0, { beneficiaries: bnf_object} ] ];
 
     // submission
-    Template.newcreate.submit(post_object);
+    Template.create.submit(post_object);
   }
 });
 
 // Helpers
-Template.newcreate.helpers({
+Template.create.helpers({
   // Function allowing to display the post title for the preview part
   DisplayPostTitle: function() { return Session.get('preview-title') },
 
@@ -182,7 +181,7 @@ Template.newcreate.helpers({
 
 
 // Submit the post
-Template.newcreate.submit= function(project)
+Template.create.submit= function(project)
 {
   if (localStorage.kc)
   {

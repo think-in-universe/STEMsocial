@@ -373,21 +373,12 @@ Template.registerHelper('MainUserRate', function (project)
   }
 });
 
-Template.registerHelper('displayPayout', function (active, total, voter) {
-    if (active && !total || !voter) return active
-    if (!active || !total || !voter) return
-    var payout = active
-    if (total.split(' ')[0] > 0) {
-        var amount = parseInt(total.split(' ')[0].replace('.', '')) + parseInt(voter.split(' ')[0].replace('.', ''))
-        amount /= 1000
-        payout = amount + ' SBD'
-    }
-    if (!payout) return
-    var amount = payout.split(' ')[0]
-    var currency = payout.split(' ')[1]
-    amount = parseFloat(amount).toFixed(3)
-    return amount;
-})
+// Computing the post rewards
+Template.registerHelper('displayPayout', function (active, total, voter)
+{
+  if(parseFloat(active.split(' ' )[0])>0) return parseFloat(active.split(' ' )[0]).toFixed(3);
+  else return (parseFloat(voter.split(' ' )[0])+parseFloat(total.split(' ' )[0])).toFixed(3);
+});
 
 Template.registerHelper('displayPayoutUpvote', function (share, rewards) {
     return (share * rewards).toFixed(3);

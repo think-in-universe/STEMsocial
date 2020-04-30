@@ -64,27 +64,10 @@ FlowRouter.route('/create',
     DocHead.removeDocHeadAddedTags()
     Session.set('preview-title','')
     Session.set('preview-body','')
-    Session.set('preview-tags','')
+    Session.set('preview-beneficiaries','')
     BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "create", topmenu: "topmenu" });
   }
 });
-
-FlowRouter.route('/newcreate',
-{
-  name: 'newcreate',
-  action: function (params, queryParams)
-  {
-    DocHead.removeDocHeadAddedTags()
-    Session.set('preview-title','')
-    Session.set('preview-body','')
-    Session.set('preview-tags','')
-    BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "newcreate", topmenu: "topmenu" });
-  }
-});
-
-
-
-
 
 
 // Login to the app + implementation of the redirection to the previous page
