@@ -491,20 +491,25 @@ Template.registerHelper('ToHTML', function(text)
   let new_text = text;
 
   // Converting markdown code environment
-  let codetags = new_text.match(/(```[^`]+```)|(`[^`]*`)/gi);
+  let codetags = new_text.match(/(```[^`]+```)|(<pre>.*<\/pre>)/gi);
   if(codetags)
   {
     for(let i=0;i<codetags.length;i++)
     {
-       new_text = new_text.replace(codetags[i], ' --ssioa--'+parseInt(i)+'- '); }
+      if(codetags[i].startsWith('<pre>')) codetags[i] = codetags[i].substring(6,codetags[i].length-7);
+      new_text = new_text.replace(codetags[i], ' --ssioa--'+parseInt(i)+'- ');
+    }
   }
 
   // Protection when using HTML code environments
-  let codetags2 = new_text.match(/<pre>.*<\/pre>/gi);
+  let codetags2 = new_text.match(/(`[^`]*`)|(<code>.*<\/code>)/gi);
   if(codetags2)
   {
     for(let i=0;i<codetags2.length;i++)
-      { new_text = new_text.replace(codetags2[i], ' --ssiob--'+parseInt(i)+'- '); }
+    {
+      if(codetags2[i].startsWith('<code>')) codetags2[i] = codetags2[i].substring(7,codetags2[i].length-8);
+      new_text = new_text.replace(codetags2[i], ' --ssiob--'+parseInt(i)+'- ');
+    }
   }
 
   // Converting markdown images to HTML
@@ -730,8 +735,6 @@ Template.registerHelper('ToHTML', function(text)
     return mod_text;
   }
 
-  if(codetags)  { for (let i=0;i<codetags.length;i++)  { new_text = restore(new_text,'--ssioa--'+parseInt(i)+'-', '<code>'+codetags[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
-  if(codetags2) { for (let i=0;i<codetags2.length;i++) { new_text = restore(new_text,'--ssiob--'+parseInt(i)+'-', '<code>'+codetags2[i].substring(5,codetags2[i].length-6).replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
   if(htmltags)  { for (let i=0;i<htmltags.length;i++)  { new_text = restore(new_text,'--ssioc--'+parseInt(i)+'-', htmltags[i]); } }
   if(mkdtags)
   {
@@ -835,6 +838,10 @@ Template.registerHelper('ToHTML', function(text)
     let rep = new RegExp('<'+to_clean[i]+'>\\s*(<br ?\/?>)+',"gm");
     new_text = new_text.replace(rep,'<'+to_clean[i]+'>');
   }
+
+  // code environement
+  if(codetags)  { for (let i=0;i<codetags.length;i++) { new_text = restore(new_text,'--ssioa--'+parseInt(i)+'-', '<pre>'+codetags[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</pre>'); } }
+  if(codetags2) { for (let i=0;i<codetags2.length;i++) { new_text = restore(new_text,'--ssiob--'+parseInt(i)+'-', '<code>'+codetags2[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
 
   // Output
   return new_text;

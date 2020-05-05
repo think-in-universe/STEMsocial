@@ -138,7 +138,7 @@ window.steem = steem;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c STEMsocial OpenSource v0.11.4: https://github.com/BFuks/stemsocial`,
+  console.log(`%c STEMsocial OpenSource v0.11.5: https://github.com/BFuks/stemsocial`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");

@@ -878,12 +878,21 @@ body{
 
 /* post creation */
 #postcreate{
-    height: 80%;
+    height: 90%;
     width:100%;
     min-height: 50px;
-    max-height: 610px;
+    max-height: 650px;
     overflow-y: scroll;
 }
 
+/* code environment */
+pre  {
+  display: block;
+  white-space: pre-wrap;
+  background-color: #eee;
+  padding: 20px;
+  margin: 20px;
+}
 
+code  { background-color: #eee; }
 
