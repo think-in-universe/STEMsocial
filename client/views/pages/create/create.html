@@ -37,49 +37,51 @@
             Any extra tag will be ignored.
           </div>
 
-          <!-- BENEFICIARIES -->
-          <div class="field mfield">
-            <label  style='margin-top:15px;'>BENEFICIARIES (optional)</label>
-            <div class="ui stmscl_bnf checkbox" style="margin-right:2em;margin-top:5px;">
-              <input type="checkbox" name="stmscl_bx" id='stmscl_bx' style='vertical-align:middle;'>
-                <label for='stmscl_bx' style='vertical-align:middle;'>
-                  Donate a fraction of the post rewards to STEMsocial:
-                  <input id='stmscl_bnf' name="stmscl_bnf" type="number" min="0" max="100"
-                    style='width:70px;border:none;border-width:0;margin-top:-9px;margin-right:-10px' value='5'> %.
-                </label>
-            </div><br />
-          {{#if Beneficiaries}}
-            <p style='margin-bottom:23px;margin-top:-3px;'>
-              {{#each beneficiary in DisplayBeneficiaries}}
-                <i class='user outline icon' style='margin-right:-1px;'></i>
-                  @{{DisplayBeneficiary beneficiary}}: {{DisplayShare beneficiary}}%
-                  <i id='edit-beneficiary' aria-hidden="true" class="fitted link edit outline icon" name={{DisplayBeneficiary beneficiary}}-{{DisplayShare beneficiary}}></i>
-                  <i id='remove-beneficiary' aria-hidden="true" class="fitted link trash alternate outline icon" name={{DisplayBeneficiary beneficiary}}></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {{/each}}
-            </p>
-          {{/if}}
-          </div>
-          <div class="field mfield">
-            <div class="ui basic button add-beneficiary black left floated"  style='margin-top:-10px;margin-bottom:20px;'>
-              <i class="user icon"></i>Add another beneficiary
+          {{#if NotPostEdition}}
+            <!-- BENEFICIARIES -->
+            <div class="field mfield">
+              <label  style='margin-top:15px;'>BENEFICIARIES (optional)</label>
+              <div class="ui stmscl_bnf checkbox" style="margin-right:2em;margin-top:5px;">
+                <input type="checkbox" name="stmscl_bx" id='stmscl_bx' style='vertical-align:middle;'>
+                  <label for='stmscl_bx' style='vertical-align:middle;'>
+                    Donate a fraction of the post rewards to STEMsocial:
+                    <input id='stmscl_bnf' name="stmscl_bnf" type="number" min="0" max="100"
+                      style='width:70px;border:none;border-width:0;margin-top:-9px;margin-right:-10px' value='5'> %.
+                  </label>
+              </div><br />
+            {{#if Beneficiaries}}
+              <p style='margin-bottom:23px;margin-top:-3px;'>
+                {{#each beneficiary in DisplayBeneficiaries}}
+                  <i class='user outline icon' style='margin-right:-1px;'></i>
+                    @{{DisplayBeneficiary beneficiary}}: {{DisplayShare beneficiary}}%
+                    <i id='edit-beneficiary' aria-hidden="true" class="fitted link edit outline icon" name={{DisplayBeneficiary beneficiary}}-{{DisplayShare beneficiary}}></i>
+                    <i id='remove-beneficiary' aria-hidden="true" class="fitted link trash alternate outline icon" name={{DisplayBeneficiary beneficiary}}></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{/each}}
+              </p>
+            {{/if}}
             </div>
-          </div>
+            <div class="field mfield">
+              <div class="ui basic button add-beneficiary black left floated"  style='margin-top:-10px;margin-bottom:20px;'>
+                <i class="user icon"></i>Add another beneficiary
+              </div>
+            </div>
 
-          <!-- MISC -->
-          <div class="field mfield">
-            <strong><label style='margin-top:15px;font-size:13px'>PAYOUT DISTRIBUTION (advanced):</label></strong>
-            <div class="ui simple dropdown payout">
-              <input  id="payoutdistr" type="hidden" value='50-50'>
-               <div class='text'> &nbsp;50% HBD / 50% HP</div>
-               <div class="menu">
-                 <div class="item" data-value='50'>  &nbsp; 50% HBD / 50% HP</div>
-                 <div class="item" data-value='100'> &nbsp; 100% HP</div>
-                 <div class="item" data-value='0'>   &nbsp; Decline payout</div>
-               </div>
-               <i class="dropdown icon"></i>
-              <script>$('.ui.dropdown.payout').dropdown()</script>
+            <!-- MISC -->
+            <div class="field mfield">
+              <strong><label style='margin-top:15px;font-size:13px'>PAYOUT DISTRIBUTION (advanced):</label></strong>
+              <div class="ui simple dropdown payout">
+                <input  id="payoutdistr" type="hidden" value='50-50'>
+                 <div class='text'> &nbsp;50% HBD / 50% HP</div>
+                 <div class="menu">
+                   <div class="item" data-value='50'>  &nbsp; 50% HBD / 50% HP</div>
+                   <div class="item" data-value='100'> &nbsp; 100% HP</div>
+                   <div class="item" data-value='0'>   &nbsp; Decline payout</div>
+                 </div>
+                 <i class="dropdown icon"></i>
+                <script>$('.ui.dropdown.payout').dropdown()</script>
+              </div>
             </div>
-          </div>
+          {{/if}}
 
           <!-- MESSAGES -->
           <div class="field" ><div class="ui error message"></div>
@@ -98,11 +100,18 @@
         <h2 class="ui header">{{DisplayPostTitle}}</h2>
 
         <!-- BODY -->
-        <div id='postcreate'><div class='content'>
-          <div class="description">
+        <div id='postcreate'>
+          <div class='content'><div class="description">
             {{{DisplayPostBody}}}
-          </div>
-        </div></div>
+          </div></div>
+          {{#if PostEdition}}
+            <!-- COMMENTS -->
+            <div class="ui divider hidden"></div>
+            <div class="row">
+              {{>comments}}
+            </div>
+          {{/if}}
+        </div>
 
       </div>
     </div>

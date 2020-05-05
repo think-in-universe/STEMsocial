@@ -1,6 +1,14 @@
 // Rendering of the page
 Template.create.rendered = function () {
   delete Session.keys['preview-beneficiaries'];
+  if(Session.get('edit-post'))
+  {
+    Session.set('preview-title',Session.get('edit-post').title);
+    Session.set('preview-body', Session.get('edit-post').body);
+    document.getElementById('newarticle').posttitle.value = Session.get('edit-post').title;
+    document.getElementById('newarticle').postbody.value = Session.get('edit-post').body;
+    document.getElementById('newarticle').posttags.value = Session.get('edit-post').json_metadata.tags;
+  }
 
   // Saving the post title for the post preview method
   $('#posttitle').on('input',function()
@@ -106,7 +114,8 @@ Template.create.events({
       (Math.round((new Date()).getTime() / 1000)).toString();
 
     // payout configurations
-    let payout     = document.getElementById('newarticle').payoutdistr.value;
+    let payout     = '0';
+    if(!Session.get('edit-post')) payout = document.getElementById('newarticle').payoutdistr.value;
     let max_payout = '1000000.000 HBD';
     let perc_HBD   = 10000;
     if      (payout=='0')   max_payout = '0.000 HBD';
@@ -127,7 +136,7 @@ Template.create.events({
     // Beneficiaries
     let beneficiaries = {};
     if(Session.get('preview-beneficiaries')) beneficiaries = JSON.parse(Session.get('preview-beneficiaries'));
-    if(document.getElementById('newarticle').stmscl_bx.checked)
+    if(!Session.get('edit-post') && document.getElementById('newarticle').stmscl_bx.checked)
     {
       let stemsocial_val = parseFloat(document.getElementById('newarticle').stmscl_bnf.value);
       if(Object.keys(beneficiaries).length>0 && Object.keys(beneficiaries).includes('stemsocial'))
@@ -147,6 +156,17 @@ Template.create.events({
     ];
     if(bnf_object.length>0) post_object[1][1].extensions =  [  [0, { beneficiaries: bnf_object} ] ];
 
+    // Post edition
+    if(Session.get('edit-post'))
+    {
+      let old = Session.get('edit-post'); old.json_metadata.tags=tags;
+      post_object = [
+        ['comment', { parent_author: old.parent_author, parent_permlink :old.parent_permlink, author: old.author,
+                      permlink:old.permlink, title:title, body:body, json_metadata: JSON.stringify(old.json_metadata)}]
+      ];
+      delete Session.keys['edit-post'];
+    }
+
     // submission
     Template.create.submit(post_object);
   }
@@ -154,6 +174,18 @@ Template.create.events({
 
 // Helpers
 Template.create.helpers({
+  // Post edition
+  NotPostEdition: function()
+  {
+    if(Session.get('edit-post')) return false;
+    else return true;
+  },
+  PostEdition: function()
+  {
+    if(Session.get('edit-post')) return true;
+    else return false;
+  },
+
   // Function allowing to display the post title for the preview part
   DisplayPostTitle: function() { return Session.get('preview-title') },
 
@@ -205,12 +237,11 @@ Template.create.submit= function(project)
         return;
       }
       $('#postprob').addClass("hidden")
-      Session.set('isonedit', 'false')
-      Session.set('editlink', '')
-      var start = new Date().getTime();
-      for (var i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 1000) { break; } }
-      FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink)
-      FlowRouter.reload()
+      // Updating the database
+      Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
+        {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: project[0][1].json_metadata}});
+      // Redirection
+      FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);      var start = new Date().getTime();
     });
   }
   else
@@ -229,12 +260,11 @@ Template.create.submit= function(project)
       else
       {
         $('#postprob').addClass("hidden")
-        Session.set('isonedit', 'false')
-        Session.set('editlink', '')
-        var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) { if ((new Date().getTime() - start) > 1000) { break; } }
-        FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink)
-        FlowRouter.reload()
+        // Updating the database
+        Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
+          {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: project[0][1].json_metadata}});
+        // Redirection
+        FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);
       }
       $('.ui.button.submit').removeClass('loading')
       return true

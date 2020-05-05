@@ -835,7 +835,7 @@ Template.registerHelper('ToHTML', function(text)
    '\/thead', 'hr','tbody','\/tbody'];
   for(let i=0; i<to_clean.length;i++)
   {
-    let rep = new RegExp('<'+to_clean[i]+'>\\s*(<br ?\/?>)+',"gm");
+    let rep = new RegExp('<'+to_clean[i]+' ?\/?>\\s*(<br ?\/?>)+',"gm");
     new_text = new_text.replace(rep,'<'+to_clean[i]+'>');
   }
 

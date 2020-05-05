@@ -12,7 +12,6 @@ FlowRouter.route('/', {
       Session.set('currentFilter', false);
       Session.set('currentSearch', false);
       Session.set('currentTag', false);
-      Session.set('isonedit', false);
       Session.set('superfilter','');
   }
 });
@@ -69,6 +68,17 @@ FlowRouter.route('/create',
   }
 });
 
+FlowRouter.route('/edit/@:user/:permlink',
+{
+  name: 'edit',
+  action: function (params, queryParams)
+  {
+    if(localStorage.username==params.user)
+      BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "create", topmenu: "topmenu" });
+    else
+        FlowRouter.go('/@' + params.user + '/' + params.permlink)
+  }
+});
 
 // Login to the app + implementation of the redirection to the previous page
 // (if the connection happens after trying to do something with an expired or non-existing token)

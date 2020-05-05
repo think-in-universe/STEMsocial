@@ -27,7 +27,7 @@ Template.content.helpers({
   DisplayShare: function(beneficiary) { return beneficiary[1] },
 
   // Check whether the post has been posted with steemstem.io
-  UsingSSio: function() { return (this.json_metadata && this.json_metadata.app=='steemstem') },
+  UsingSSio: function() { return (this.json_metadata && ['steemstem', 'stemsocial'].includes(this.json_metadata.app)) },
 
   // Check whether the author has set SteemSTEM as a beneficiary
   SetBeneficiary: function()
@@ -35,7 +35,7 @@ Template.content.helpers({
     bnf_list = []
     for(i=0; i<this.beneficiaries.length;i++)
       bnf_list.push(this.beneficiaries[i].account)
-    return bnf_list.includes('steemstem')
+    return (bnf_list.includes('steemstem') || bnf_list.includes('stemsocial'));
   },
 
   // Do we have tags to display?
@@ -66,9 +66,8 @@ Template.content.events({
   // Action of the edit button
   'click .edit-action': function(event)
   {
-    Session.set('isonedit', 'true')
-    Session.set('editlink', this.permlink)
-    FlowRouter.reload();
+    Session.set('edit-post', this);
+    FlowRouter.go('/edit/@'+this.author+'/'+this.permlink);
   }
 
 })
