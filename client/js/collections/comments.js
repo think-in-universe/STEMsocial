@@ -7,10 +7,10 @@ Comments.loadComments = function (author, permlink, root=true)
   if(root && Session.get('settings').blacklist.includes(author)) return;
 
   // Not blacklisted -> interrogating the blockchain to get the comments
-  steem.api.getContentReplies(author, permlink, (err, res) =>
+  hive.api.getContentReplies(author, permlink, (err, res) =>
   {
     // Error, no result
-    if (!res) { console.log('steem API error (getContentReplies): ', err); return; }
+    if (!res) { console.log('Hive API error (getContentReplies): ', err); return; }
 
     // Everything is fine, storing the information
     for (let i=0; i < res.length; i++)
@@ -32,10 +32,10 @@ Comments.loadComments = function (author, permlink, root=true)
 // Getting the active votes on a comment
 Comments.GetVotes = function (comment)
 {
-  steem.api.getActiveVotes(comment.author, comment.permlink, (err, res) =>
+  hive.api.getActiveVotes(comment.author, comment.permlink, (err, res) =>
   {
     // Error, no result
-    if (!res) { console.log('steem API error (getActiveVotes): ', err); return; }
+    if (!res) { console.log('Hive API error (getActiveVotes): ', err); return; }
 
     // Storing the votes
     Comments.update({author:comment.author, permlink:comment.permlink}, {$set: {'active_votes':res}});

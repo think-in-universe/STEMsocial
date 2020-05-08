@@ -4,7 +4,7 @@ AccountHistory = new Mongo.Collection(null)
 // Getting the list of supported posts
 AccountHistory.getVotes = function(quiet=false)
 {
-  // Only when all steemstem-voted posts are loaded, we load the rest of the posts
+  // Only when all STEMsocial-voted posts are loaded, we load the rest of the posts
   if( Session.get('last_loaded_vote_stamp') <= Session.get('loaded_week'))
   {
     if(!quiet) AccountHistory.GetContent();
@@ -12,9 +12,9 @@ AccountHistory.getVotes = function(quiet=false)
   }
 
   // Getting information on the necessary votes
-  steem.api.getAccountHistory('steemstem',Session.get('last_loaded_vote'),500, (err, res)=>
+  hive.api.getAccountHistory('steemstem',Session.get('last_loaded_vote'),500, (err, res)=>
   {
-    if (!res) {console.log('steem API error (account history): ', err); return; }
+    if (!res) {console.log('Hive API error (account history): ', err); return; }
     if(res.length==0) {return;}
 
     // Updating the settings related to the loaded votes
@@ -39,7 +39,7 @@ AccountHistory.getVotes = function(quiet=false)
 }
 
 
-// To get all posts from the steemstem tag
+// To get all posts from the STEMsocial community and any given tag
 AccountHistory.LoadTags = function (tag_id=0)
 {
   // Tag and end of the loop
@@ -60,10 +60,10 @@ AccountHistory.LoadTags = function (tag_id=0)
   }
 
   // Getting the tag content
-  steem.api.getDiscussionsByCreated(query, (err, res) =>
+  hive.api.getDiscussionsByCreated(query, (err, res) =>
   {
     // Error
-    if (!res) {console.log('Steem API error (getDiscussionsByCreated):', query, err); return err; }
+    if (!res) {console.log('Hive API error (getDiscussionsByCreated):', query, err); return err; }
 
     // Everything is fine
     for (let i=0; i<res.length; i++)
@@ -71,7 +71,7 @@ AccountHistory.LoadTags = function (tag_id=0)
       // Ignored voted posts, comments and posts without metadata
       if(Content.findOne({permlink:res[i].permlink}) || res[i].parent_author!='' || !res[i].json_metadata) continue;
 
-      // SteemSTEM voted post
+      // STEMsocial voted post
       let weight=0;
       if(AccountHistory.findOne({permlink:res[i].permlink}))
         weight = AccountHistory.findOne({permlink:res[i].permlink})._id.split('/')[2];
@@ -87,11 +87,11 @@ AccountHistory.LoadTags = function (tag_id=0)
     Session.set('last_loaded_post',JSON.stringify(last));
 
     // Recursive loading
-    let steemstem_posts = Content.find({author:{$nin: ['steemstem','lemouth-dev']}, upvoted:{$gt: 0}},
+    let stem_posts = Content.find({author:{$nin: ['steemstem','lemouth-dev']}, upvoted:{$gt: 0}},
        {sort:{created:1}, limit:1}).fetch();
     let other_posts     = Content.find({upvoted:0}, {sort:{created:1}, limit:1}).fetch();
 
-    if(steemstem_posts[0].created<other_posts[0].created)
+    if(stem_posts[0].created<other_posts[0].created)
     {
       let start=new Date().getTime(); for (let i=0; i<1e7; i++) { if ((new Date().getTime()-start) > 2000) break; }
       AccountHistory.LoadTags(tag_id);
@@ -131,8 +131,8 @@ AccountHistory.GetContent = function(total=20)
 // Getting post information on a voted content
 AccountHistory.GetInfo= function(author, permlink, weight, update_tag=false)
 {
-  // Interrogating Steem
-  steem.api.getContent(author, permlink, function (error, result)
+  // Interrogating Hive
+  hive.api.getContent(author, permlink, function (error, result)
   {
     // If error, comment or no metadata -> ignore
     if (!result || result.parent_author!='' || !result.json_metadata) { return; }
@@ -181,7 +181,7 @@ AccountHistory.UpgradeInfo = function (post, weight)
   // Setting useful information
   post.surl = Content.CreateUrl(post.author, post.permlink)
   if(weight>0 || (Session.get('settings') && Session.get('settings').whitelist.includes(post.author)) )
-     { post.type = 'steemstem' }
+     { post.type = 'stemsocial' }
   else { post.type = 'all' }
   post.upvoted = parseInt(weight);
   post._id = post.id

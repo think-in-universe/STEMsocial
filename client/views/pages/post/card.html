@@ -19,7 +19,7 @@
         </span>
       </div>
       <div class="description" style="margin-bottom: 0.5em;">
-        {{shortDescription (xssShortFormatter (remarkableFormatter body))}}
+        {{shortDescription (xssShortFormatter body)}}
       </div>
       <span class="tags">
         {{#each json_metadata.tags}}
@@ -28,20 +28,6 @@
           {{/if}}
         {{/each}}
       </span>
-<!--      {{#if UsingSSio}}
-        {{#if SetBeneficiary}}
-          <p></p><p>
-            <img width='90px' src='images/postedon7.jpg' />
-            <img width='90px' src='images/beneficiary.jpg' />
-          </p>
-        {{else}}
-          <p></p><p><img width='90px' src='images/postedon7.jpg' /></p>
-        {{/if}}
-      {{else}}
-        {{#if SetBeneficiary}}
-          <p></p><p><img width='90px' src='images/beneficiary.jpg' /></p>
-        {{/if}}
-      {{/if}} -->
     </div>
     <div class="ui big label fluid npdg noradius">{{>upvote}}</div>
   </div>

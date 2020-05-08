@@ -1,20 +1,21 @@
 <template name="share">
-  <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.steemstem.io/#!/@{{author}}/{{permlink}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui facebook icon button">
-    <i class="facebook icon"></i>
-  </a>
-  <a href="https://twitter.com/intent/tweet?text=https://www.steemstem.io/#!/@{{author}}/{{permlink}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui twitter icon button">
-    <i class="twitter icon"></i>
-  </a>
-  <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.steemstem.io/#!/@{{author}}/{{permlink}}&amp;title={{title}}summary={{body}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui linkedin icon button">
-    <i class="linkedin icon"></i>
-  </a>
   {{#if mainuser}} 
-    <a class="ui steem icon button">
-      <i class="steem icon"><img src="/images/icons/steem.ico"></i>
-    </a>
+    <a class="ui hive icon button"><i class="hive icon"><img src="/images/icons/hive.ico"></i></a>
   {{else}}
-    <div class="ui steem icon button" data-tooltip="You need a Steem account for this!" style="opacity:1">
-      <i class="steem icon"><img src="/images/icons/steem.ico"></i>
+    <div class="ui hive icon button" data-tooltip="You need a Hive account for this!" style="opacity:1">
+      <i class="hive icon"><img src="/images/icons/hive.ico"></i>
     </div>
   {{/if}}
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https://stem.openhive.network/#!/@{{author}}/{{permlink}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui facebook icon button">
+    <i class="facebook icon"></i>
+  </a>
+  <a href="https://twitter.com/intent/tweet?text=https://stem.openhive.network/#!/@{{author}}/{{permlink}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui twitter icon button">
+    <i class="twitter icon"></i>
+  </a>
+  <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://stem.openhive.network/#!/@{{author}}/{{permlink}}&amp;title={{title}}summary={{body}}" onclick="window.open(this.href, 'Popup', 'scrollbars=1,resizable=1,height=400,width=500'); return false;" target="_blank" class="ui linkedin icon button">
+    <i class="linkedin icon"></i>
+  </a>
+
+
 </template>

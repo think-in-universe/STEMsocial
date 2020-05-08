@@ -18,7 +18,7 @@ Template.beneficiarymodal.init = function (bnf,shr)
   // The beneficiary field
   $("#my-beneficiary").change(function ()
   {
-    steem.api.lookupAccountNames([$("#my-beneficiary").val()], function (error, result)
+    hive.api.lookupAccountNames([$("#my-beneficiary").val()], function (error, result)
     {
       if(!result[0])
       {

@@ -3,39 +3,39 @@ import './app.html';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-import steem from 'steem';
+import hive from '@hiveio/hive-js';
 import sc2sdk from 'sc2-sdk';
 
 // Pause the routing
 FlowRouter.wait();
 
 // API settings
-let my_urls = ['https://anyx.io','https://api.hive.blog'];
+let my_urls = [ 'https://anyx.io', 'https://api.hive.blog' , 'https://api.openhive.network', 'https://api.hivekings.com'];
 function API_connect(url_id)
 {
   // Safety
   if(url_id>=my_urls.length) return API_connect(0);
 
   // Setting the API path
-  steem.api.setOptions({useAppbaseApi:true, url:my_urls[url_id]});
+  hive.api.setOptions({useAppbaseApi:true, url:my_urls[url_id]});
 
   // Testing the API
   let sendDate = (new Date()).getTime();
-  steem.api.getDynamicGlobalProperties( (err, res) =>
+  hive.api.getDynamicGlobalProperties( (err, res) =>
   {
     // API not working
     if (!res)
     {
-      console.log('steem API error (getDynamicGlobalProperties on' + my_urls[url_id] + '): ', err);
+      console.log('Hive API error (getDynamicGlobalProperties on' + my_urls[url_id] + '): ', err);
       return API_connect(url_id+1);
     }
     // Else everything is good
     let responseTimeMs = (new Date()).getTime() - sendDate;
     console.log(' Global Properties loaded from ' + my_urls[url_id]+ ' in ' + responseTimeMs + "ms");
-    localStorage.setItem('steemProps', JSON.stringify(res));
+    localStorage.setItem('HiveProps', JSON.stringify(res));
 
-    // Steemstem setup
-    steem.api.getAccounts(['steemstem.setup'], function (error, result)
+    // STEMsocial setup
+    hive.api.getAccounts(['steemstem.setup'], function (error, result)
     {
       if (!result) { return; }
       for (let j = 0; j<result.length; j++)
@@ -60,7 +60,7 @@ function API_connect(url_id)
     });
 
     // Getting the list of promotable posts
-    steem.api.getAccountHistory('steemstem-io', -1, 500, function(error, result)
+    hive.api.getAccountHistory('steemstem-io', -1, 500, function(error, result)
     {
       // Error, list empty
       if (!result) { return; }
@@ -86,15 +86,15 @@ function API_connect(url_id)
     });
 
     // lemouth-dev promotion
-    steem.api.getDiscussionsByBlog({tag:'lemouth-dev', limit:1}, (error, result)=>
+    hive.api.getDiscussionsByBlog({tag:'lemouth-dev', limit:1}, (error, result)=>
     {
       if (!result || result.length==0) { console.log(" error = ", error); return; }
       if(Content.findOne({permlink:result[0].permlink})) { return;}
       result = AccountHistory.UpgradeInfo(result[0],100);
       Content.upsert({ _id: result._id }, result)
 
-      // Latest steemstem posts
-      steem.api.getDiscussionsByBlog({tag:'steemstem', limit:30}, (error2, result2)=>
+      // Latest STEMsocial posts
+      hive.api.getDiscussionsByBlog({tag:'steemstem', limit:30}, (error2, result2)=>
       {
         if (!result2 || result2.length==0) { console.log(" error = ", error2); return; }
         for (let ii=0;ii<result2.length; ii++)
@@ -132,13 +132,13 @@ let sc2 = sc2sdk.Initialize({
     accessToken: 'access_token'
 });
 window.sc2 = sc2
-window.steem = steem;
+window.hive= hive;
 
 // Main startup function
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c STEMsocial OpenSource v0.11.7: https://github.com/BFuks/stemsocial`,
+  console.log(`%c STEMsocial OpenSource v0.11.8: https://github.com/BFuks/stemsocial`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");

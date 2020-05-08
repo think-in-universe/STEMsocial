@@ -1,5 +1,5 @@
 <template name="maincards">
-  {{#if NewSteemSTEMContent currentWeek}}
+  {{#if STEMsocialContent currentWeek}}
 
     <!-- Menu to navigate between weeks -->
     {{#each GetToLoad}}
@@ -18,7 +18,7 @@
 
     <!-- Cards with the posts -->
     <div class="ui two cards" style=" margin-left: -1em; margin-right: -1em;">
-      {{#each NewSteemSTEMContent currentWeek}}
+      {{#each STEMsocialContent currentWeek}}
         {{>card}}
         <div class="ui divider"></div>
       {{/each}}
@@ -47,7 +47,7 @@
           <div class="ui active dimmer inverted"><h4 class="ui text loader">Loading...</h4></div>
         </div>
       </div>
-    {{else if equals currentSearch 'steemstem'}}
+    {{else if equals currentSearch 'STEMsocial'}}
       {{#each GetToLoad}}
         <a class="go-to-wk go-to-wk-{{this}}">
           {{#if MyWeek}}

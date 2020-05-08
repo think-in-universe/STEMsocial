@@ -25,23 +25,22 @@ Template.admin.rendered = function () {
             "steemstem_settings": {
             },
             "profile": {
-              "name": "SteemStem.Setup",
-              "email": "info@steemstem.io",
-              "about": "SteemStem Setup Account",
-              "location": "Steem",
+              "name": "STEMsocial",
+              "about": "STEMsocial Setup Account",
+              "location": "Hive",
               "timezone": "+1",
               "locale": "en_US",
               "languages": [
                 "en"
               ],
-              "website": "https://steemstem.io/",
-              "cover_image": "https://steemstem.io/images/steemstem_banner.png",
-              "profile_image": "https://steemstem.io/images/steemstem.png"
+              "website": "https://stem.openhive.network/",
+              "cover_image": "https://i.imgsafe.org/2f/2fff22279f.jpeg",
+              "profile_image": "https://i.imgsafe.org/83/83038ca02a.jpeg"
             }
           }
 
         jsonMetadata.steemstem_settings = json
-        steem.broadcast.accountUpdate(
+        hive.broadcast.accountUpdate(
             active.value,
             'steemstem.setup',
             undefined, // Set to undefined so account authority dont change

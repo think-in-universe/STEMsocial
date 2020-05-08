@@ -28,13 +28,13 @@
         <div class="field">
           <label>{{OperationAmountClass}}</label>
           <input id="amount" type="number" name="amount" placeholder="Amount" disabled="true">
-          {{#if NeedsSteemBalance}}
+          {{#if NeedsHiveBalance}}
             {{#with mainuser}}
               <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{balance}} </div>
             {{/with}}
           {{else if NeedsHPBalance}}
             {{#with mainuser}}
-              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{DisplayEffectiveSteemPower vesting_shares delegated 0}} (Undelegated HP)</div>
+              <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{DisplayEffectiveHivePower vesting_shares delegated 0}} (Undelegated HP)</div>
             {{/with}}
           {{else if NeedsHBDBalance}}
             {{#with mainuser}}
@@ -44,13 +44,13 @@
             {{#with mainuser}}
               <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{savings_sbd_balance}} </div>
             {{/with}}
-          {{else if NeedsSteemSavingsBalance}}
+          {{else if NeedsHiveSavingsBalance}}
             {{#with mainuser}}
               <div id="addbalance" class="ui button teal inverted disabled" style="margin-top:5px;">BALANCE : {{savings_balance}} </div>
             {{/with}}
           {{/if}}
         </div>
-        {{#if NeedsSteemBalance}}
+        {{#if NeedsHiveBalance}}
           <div class="ui mini amount message red hidden"><p>Not enough HIVE in your wallet</p></div>
         {{else if NeedsHPBalance}}
           <div class="ui mini amount message red hidden"><p>Not enough HP in your account</p></div>
@@ -58,7 +58,7 @@
           <div class="ui mini amount message red hidden"><p>Not enough HBD in your wallet</p></div>
         {{else if NeedsHBDSavingsBalance}}
           <div class="ui mini amount message red hidden"><p>Not enough HBD in your savings account</p></div>
-        {{else if NeedsSteemSavingsBalance}}
+        {{else if NeedsHiveSavingsBalance}}
           <div class="ui mini amount message red hidden"><p>Not enough HIVE in your savings account</p></div>
         {{/if}}
         {{#if NeedsMemo}}

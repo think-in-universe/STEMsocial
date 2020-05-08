@@ -6,7 +6,7 @@ Template.hivekeychainmodal.init = function ()
 {
   $("#hive_id").change(function ()
   {
-    steem.api.lookupAccountNames([$("#hive_id").val()], function (error, result)
+    hive.api.lookupAccountNames([$("#hive_id").val()], function (error, result)
     {
       if(result[0]===null)
       {
@@ -30,7 +30,7 @@ Template.hivekeychainmodal.init = function ()
   function ConfirmLogin()
   {
     let keychain = window.hive_keychain;
-    keychain.requestSignBuffer($("#hive_id").val(), "#HiveSTEM", "Posting", function(resp)
+    keychain.requestSignBuffer($("#hive_id").val(), "#STEMsocial", "Posting", function(resp)
     {
        if(resp.success)
        {

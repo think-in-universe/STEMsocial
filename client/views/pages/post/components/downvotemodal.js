@@ -24,7 +24,7 @@ Template.downvotemodal.init = function (iscomment=false)
 
   function UpdatePostInfo(author, permlink)
   {
-    steem.api.getContent(author, permlink, (err2, res2)=>
+    hive.api.getContent(author, permlink, (err2, res2)=>
     {
       // If error
       if (!res2) 

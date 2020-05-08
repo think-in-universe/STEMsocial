@@ -85,7 +85,7 @@ Template.reply.events({
 Template.reply.comment = function (article)
 {
   let body = $('#reply-content-'+ article.permlink).val();
-  let json_metadata = { tags: 'hive-196387', app: 'steemstem' };
+  let json_metadata = { tags: 'hive-196387', app: 'stemsocial' };
   let permlink = 'stemsocial-app-comment-'+ (Math.round((new Date()).getTime() / 1000)).toString();
 
   if (localStorage.kc)

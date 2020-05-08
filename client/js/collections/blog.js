@@ -1,7 +1,7 @@
 // Creating a MongoDB for storing the user's blog content
 Blog = new Mongo.Collection(null)
 
-// Method to get the user's blog content from the Steem blockchain
+// Method to get the user's blog content from the Hive blockchain
 Blog.getContentByBlog = function (name, limit, type, link='', author='')
 {
   // If done
@@ -16,10 +16,10 @@ Blog.getContentByBlog = function (name, limit, type, link='', author='')
   if(link!='' && author!='') query = {  tag:name, limit:nblogs, start_author:author, start_permlink:link };
 
   // Getting the content
-  steem.api.getDiscussionsByBlog(query, (err, res)=>
+  hive.api.getDiscussionsByBlog(query, (err, res)=>
   {
     // Error and empty lists
-    if (!res) { console.log('Steem API error (getDiscussionsByBlog): ', err, '(query:', query, ')' ); return; }
+    if (!res) { console.log('Hive API error (getDiscussionsByBlog): ', err, '(query:', query, ')' ); return; }
     if(name && res.length==0) { Session.set('blog_loaded', true); return; }
 
     // Processing the results and adding them to the DB (plus a few useful attributes)

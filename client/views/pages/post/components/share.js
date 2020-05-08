@@ -1,16 +1,16 @@
 // Actions to share the post
 Template.share.events(
 {
-  // Facebook
-  'click .facebook.button': function (event) { event.stopPropagation(); },
-  // Twitter
-  'click .twitter.button':  function (event) { event.stopPropagation(); },
-  // Linkedin
-  'click .linkedin.button': function (event) { event.stopPropagation(); },
-  // Google
-  'click .google.button':   function (event) { event.stopPropagation(); },
-  //Steem
-  'click .steem.button': function (event)
+  // // Facebook
+  // 'click .facebook.button': function (event) { event.stopPropagation(); },
+  // // Twitter
+  // 'click .twitter.button':  function (event) { event.stopPropagation(); },
+  // // Linkedin
+  // 'click .linkedin.button': function (event) { event.stopPropagation(); },
+  // // Google
+  // 'click .google.button':   function (event) { event.stopPropagation(); },
+  //Hive
+  'click .hive.button': function (event)
   {
     event.stopPropagation();
     event.preventDefault()

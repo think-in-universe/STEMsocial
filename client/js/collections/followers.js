@@ -2,7 +2,7 @@ Followers = new Mongo.Collection(null)
 
 Followers.loadFollowing = function (username, startFollowing = undefined, recursive = true, cb) {
     var limit = 100
-    steem.api.getFollowing(username, startFollowing, 'blog', limit, function (error, results) {
+    hive.api.getFollowing(username, startFollowing, 'blog', limit, function (error, results) {
         if (error) console.log(error)
         if (results && results.length) {
             for (var i = 0; i < results.length; i++)
@@ -16,10 +16,10 @@ Followers.loadFollowing = function (username, startFollowing = undefined, recurs
 // Method to get the followers of an account
 Followers.loadFollowers = function (username, startFollowers = undefined)
 {
-  steem.api.getFollowers(username, startFollowers, 'blog', 1000, (err, res)=>
+  hive.api.getFollowers(username, startFollowers, 'blog', 1000, (err, res)=>
   {
     // Error message
-    if (!res) {console.log('steem API error (getFollowers): ', err); return; }
+    if (!res) {console.log('Hive API error (getFollowers): ', err); return; }
     console.log('follow', res);
 
     // Everything is fine

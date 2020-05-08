@@ -1,10 +1,5 @@
 import { Session } from "meteor/session";
-import xss from 'xss'
 import moment from 'moment-with-locales-es6'
-import showdown from 'showdown'
-import Remarkable from 'remarkable';
-
-const steemMarkdown = require('steem-markdown-only')
 
 // Getting the first image of the post (for the thumbnail)
 Template.registerHelper('imgFromBody', function (project)
@@ -20,6 +15,7 @@ Template.registerHelper('imgFromBody', function (project)
   return;
 });
 
+
 Template.registerHelper('isBlacklisted', function (name) {
     if(!Session.get('settings').blacklist.includes(result[i].author))
     return false
@@ -28,20 +24,10 @@ Template.registerHelper('isBlacklisted', function (name) {
 });
 
 
-
 Template.registerHelper('translator', function (code) {
     return translate(code);
 });
 
-// Formatter for the posts (with some tricks to make it nicer)
-Template.registerHelper('remarkableFormatter', function (text) {
-    text = text.replace(/<span([^>]*)>/g,'ssioMUF[$1]');
-    text = text.replace(/<\/span>/g,'ENDssioMUF');
-    text = steemMarkdown(text)
-    text = text.replace(/ssioMUF\[([^\]]*)\]/g,'<span $1>');
-    text = text.replace(/ENDssioMUF/g,'</span>');
-    return text 
-})
 
 
 Template.registerHelper('isFollowing', function (following) {
@@ -51,48 +37,47 @@ Template.registerHelper('isFollowing', function (following) {
     return false;
 })
 
-Template.registerHelper('shortDescription', function (string) {
-    return string.slice(0, 150) + " ..."
-})
+// Formatter for the posts description
+Template.registerHelper('shortDescription', function (string) { return string.slice(0, 225) + " ..." });
 
-Template.registerHelper('xssShortFormatter', function (text) {
-    if (!text) return text;
-    var converter = new showdown.Converter(),
-        text = converter.makeHtml(text);
-    var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-    text = text.replace(urlPattern, "")
-    text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
-    text = text.replace(/<(?:.|\n)*?>/gm, '');
-    //-- remove BR tags and replace them with line break
-    text = text.replace(/<br>/gi, "\n");
-    text = text.replace(/<br\s\/>/gi, "\n");
-    text = text.replace(/<br\/>/gi, "\n");
+Template.registerHelper('xssShortFormatter', function (text)
+{
+  if (!text) return text;
+  text = Blaze._globalHelpers['ToHTML'](text);
+  let urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
+  text = text.replace(urlPattern, "")
+  text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
+  text = text.replace(/<(?:.|\n)*?>/gm, '');
+  //-- remove BR tags and replace them with line break
+  text = text.replace(/<br>/gi, "\n");
+  text = text.replace(/<br\s\/>/gi, "\n");
+  text = text.replace(/<br\/>/gi, "\n");
 
-    //-- remove P and A tags but preserve what's inside of them
-    text = text.replace(/<p.*>/gi, "\n");
-    text = text.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1)");
+  //-- remove P and A tags but preserve what's inside of them
+  text = text.replace(/<p.*>/gi, "\n");
+  text = text.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1)");
 
-    //-- remove all inside SCRIPT and STYLE tags
-    text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
-    text = text.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, "");
-    //-- remove all else
-    text = text.replace(/<(?:.|\s)*?>/g, "");
+  //-- remove all inside SCRIPT and STYLE tags
+  text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
+  text = text.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, "");
+  //-- remove all else
+  text = text.replace(/<(?:.|\s)*?>/g, "");
 
-    //-- get rid of more than 2 multiple line breaks:
-    text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "\n\n");
+  //-- get rid of more than 2 multiple line breaks:
+  text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "\n\n");
 
-    //-- get rid of more than 2 spaces:
-    text = text.replace(/ +(?= )/g, '');
+  //-- get rid of more than 2 spaces:
+  text = text.replace(/ +(?= )/g, '');
 
-    //-- get rid of html-encoded characters:
-    text = text.replace(/&nbsp;/gi, " ");
-    text = text.replace(/&amp;/gi, "&");
-    text = text.replace(/&quot;/gi, '"');
-    text = text.replace(/&lt;/gi, '<');
-    text = text.replace(/&gt;/gi, '>');
-    text = text.replace(/\.[^/.]+$/, "")
-    return text;
-})
+  //-- get rid of html-encoded characters:
+  text = text.replace(/&nbsp;/gi, " ");
+  text = text.replace(/&amp;/gi, "&");
+  text = text.replace(/&quot;/gi, '"');
+  text = text.replace(/&lt;/gi, '<');
+  text = text.replace(/&gt;/gi, '>');
+  text = text.replace(/\.[^/.]+$/, "")
+  return text;
+});
 
 // Color by categories
 Template.registerHelper('colorByCategory', function (tag)
@@ -104,25 +89,6 @@ Template.registerHelper('colorByCategory', function (tag)
     return item.color;
   }
 });
-
-Template.registerHelper('xssTxtFormatter', function (text) {
-    if (!text) return text;
-    var converter = new showdown.Converter(),
-        text = converter.makeHtml(text);
-    var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-    text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
-
-
-    //-- remove all inside SCRIPT and STYLE tags
-    text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
-    //-- remove all else
-    text = text.replace(/<(?:.|\s)*?>/g, "");
-
-    //-- get rid of more than 2 multiple line breaks:
-    text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "\n\n");
-    return text;
-})
-
 
 Template.registerHelper('inequals', function (a, b) {
     return a !== b;
@@ -160,19 +126,19 @@ Template.registerHelper('displayUpvote', function (share, rewards) {
 
 
 Template.registerHelper('displayReputation', function (string)
-  { return steem.formatter.reputation(string); })
+  { return hive.formatter.reputation(string); })
 
 Template.registerHelper('EstimateAccount', function (user) {
 
-    if (Coins.findOne({ 'id': 'steem' }) && Coins.findOne({ 'id': 'steem-dollars' })) {
-        var balanceSteem = parseFloat(user.balance.split(' ')[0])
+    if (Coins.findOne({ 'id': 'hive' }) && Coins.findOne({ 'id': 'hive-dollars' })) {
+        var balanceHive  = parseFloat(user.balance.split(' ')[0])
         var balanceVests = parseFloat(user.vesting_shares.split(' ')[0])
         var balanceSbd = parseFloat(user.sbd_balance.split(' ')[0])
         var balanceUsd = 0
 
-        balanceUsd += Coins.findOne({ 'id': 'steem' }).price_usd * vestToSteemPower(balanceVests)
-        balanceUsd += Coins.findOne({ 'id': 'steem' }).price_usd * balanceSteem
-        balanceUsd += Coins.findOne({ 'id': 'steem-dollars' }).price_usd * balanceSbd
+        balanceUsd += Coins.findOne({ 'id': 'hive' }).price_usd * vestToHivePower(balanceVests)
+        balanceUsd += Coins.findOne({ 'id': 'hive' }).price_usd * balanceHive
+        balanceUsd += Coins.findOne({ 'id': 'hive-dollars' }).price_usd * balanceSbd
         return parseFloat(balanceUsd).toFixed(2)
     }
     else {
@@ -181,14 +147,8 @@ Template.registerHelper('EstimateAccount', function (user) {
     }
 })
 
-// Check whether 59 blogs posts are visible
+// Check whether all STEMsocial posts of the week are visible
 Template.registerHelper('isLoadedFull', function (coll) {
-    if(Session.get('visiblecontent') >= Math.max(coll.length,76)) { return true }
-    else { return false }
-})
-
-// Check whether all steemstem posts of the week are visible
-Template.registerHelper('isSteemSTEMLoadedFull', function (coll) {
     if(!coll) { return true }
     if(Session.get('visiblecontent') >= coll.length) { return true }
     else { return false }
@@ -211,44 +171,44 @@ Template.registerHelper('DisplayVotingPower', function (votingPower, lastVoteTim
 })
 
 
-Template.registerHelper('DisplaySteemPower', function (vesting_shares)
+Template.registerHelper('DisplayHivePower', function (vesting_shares)
 {
-  var SP = 0;
-  if (vesting_shares) SP = Number(vestToSteemPower(vesting_shares.split(' ')[0]))
-  return parseFloat(SP).toFixed(3) + ' STEEM'
+  var HP = 0;
+  if (vesting_shares) HP = Number(vestToHivePower(vesting_shares.split(' ')[0]))
+  return parseFloat(HP).toFixed(3) + ' HIVE'
 })
 
-Template.registerHelper('DisplayDelegatedSteemPower', function (delegated)
+Template.registerHelper('DisplayDelegatedHivePower', function (delegated)
 {
-  var SP = 0;
-  if (delegated) SP = SP - Number(vestToSteemPower(delegated.split(' ')[0]))
-  return parseFloat(SP).toFixed(3) + ' STEEM'
+  var HP = 0;
+  if (delegated) HP = HP - Number(vestToHivePower(delegated.split(' ')[0]))
+  return parseFloat(HP).toFixed(3) + ' HIVE'
 })
 
-Template.registerHelper('DisplayReceivedSteemPower', function (received_vesting_shares)
+Template.registerHelper('DisplayReceivedHivePower', function (received_vesting_shares)
 {
-  var SP = 0;
-  if (received_vesting_shares) SP = SP + Number(vestToSteemPower(received_vesting_shares.split(' ')[0]))
-  return parseFloat(SP).toFixed(3) + ' STEEM'
+  var HP = 0;
+  if (received_vesting_shares) HP = HP + Number(vestToHivePower(received_vesting_shares.split(' ')[0]))
+  return parseFloat(HP).toFixed(3) + ' HIVE'
 })
 
-Template.registerHelper('DisplayEffectiveSteemPower', function (vesting_shares, delegated, received_vesting_shares)
+Template.registerHelper('DisplayEffectiveHivePower', function (vesting_shares, delegated, received_vesting_shares)
 {
-  var SP = 0;
-  if (vesting_shares)          SP = SP + Number(vestToSteemPower(vesting_shares.split(' ')[0]))
-  if (delegated)               SP = SP - Number(vestToSteemPower(delegated.split(' ')[0]))
-  if (received_vesting_shares) SP = SP + Number(vestToSteemPower(received_vesting_shares.split(' ')[0]))
-  return parseFloat(SP).toFixed(3) + ' STEEM'
+  var HP = 0;
+  if (vesting_shares)          HP = HP + Number(vestToHivePower(vesting_shares.split(' ')[0]))
+  if (delegated)               HP = HP - Number(vestToHivePower(delegated.split(' ')[0]))
+  if (received_vesting_shares) HP = HP + Number(vestToHivePower(received_vesting_shares.split(' ')[0]))
+  return parseFloat(HP).toFixed(3) + ' HIVE'
 })
 
 
-Template.registerHelper('vestToSteemPower', function (userVests) {
-    var globals = JSON.parse(localStorage.steemProps)
-    var totalSteem = parseFloat(globals.total_vesting_fund_steem.split(' ')[0])
+Template.registerHelper('vestToHivePower', function (userVests) {
+    var globals = JSON.parse(localStorage.HiveProps)
+    var totalHive = parseFloat(globals.total_vesting_fund_steem.split(' ')[0])
     var totalVests = parseFloat(globals.total_vesting_shares.split(' ')[0])
     userVests = userVests.split(' ')[0]
-    var SP = totalSteem * (userVests / totalVests)
-    return parseFloat(SP).toFixed(3) + ' SP'
+    var HP = totalHive * (userVests / totalVests)
+    return parseFloat(HP).toFixed(3) + ' HP'
 })
 
 Template.registerHelper('displayRewards', function (text) {
@@ -263,13 +223,13 @@ Template.registerHelper('displayRewards', function (text) {
     return array;
 })
 
-function vestToSteemPower(userVests) {
-    if (JSON.parse(localStorage.steemProps) && userVests) {
-        var globals = JSON.parse(localStorage.steemProps)
-        var totalSteem = parseFloat(globals.total_vesting_fund_steem.split(' ')[0])
+function vestToHivePower(userVests) {
+    if (JSON.parse(localStorage.HiveProps) && userVests) {
+        var globals = JSON.parse(localStorage.HiveProps)
+        var totalHive = parseFloat(globals.total_vesting_fund_steem.split(' ')[0])
         var totalVests = parseFloat(globals.total_vesting_shares.split(' ')[0])
-        var SP = totalSteem * (userVests / totalVests)
-        return SP
+        var HP = totalHive * (userVests / totalVests)
+        return HP
     }
 }
 
@@ -318,12 +278,11 @@ Template.registerHelper('unfiltered', function () {
         return Session.get('unfiltered')
 })
 
-Template.registerHelper('currentSearch', function () {
-    if (Session.get('currentSearch'))
-        return Session.get('currentSearch')
-    else
-        return 'steemstem'
-})
+Template.registerHelper('currentSearch', function ()
+{
+  if (Session.get('currentSearch')) return Session.get('currentSearch');
+  else return 'STEMsocial';
+});
 
   // Get the week number and year number to which one should show posts
 Template.registerHelper('currentWeek', function () { return Session.get('current_week'); })
@@ -407,20 +366,6 @@ Template.registerHelper('displayAllVoters', function (votes, isDownvote) {
     }
     return top300
 })
-
-Template.registerHelper('estimateAccount', function () {
-    if (Coins.findOne({ 'id': 'steem' }) && Coins.findOne({ 'id': 'steem-dollars' })) {
-        var balanceSteem = parseFloat(this.balance.split(' ')[0])
-        var balanceVests = parseFloat(this.vesting_shares.split(' ')[0])
-        var balanceSbd = parseFloat(this.sbd_balance.split(' ')[0])
-        var balanceUsd = 0
-        balanceUsd += Coins.findOne({ 'id': 'steem' }).price_usd * vestToSteemPower(balanceVests)
-        balanceUsd += Coins.findOne({ 'id': 'steem' }).price_usd * balanceSteem
-        balanceUsd += Coins.findOne({ 'id': 'steem-dollars' }).price_usd * balanceSbd
-        return balanceUsd
-    }
-})
-
 
 Template.registerHelper('displayVotersTop', function (votes, isDownvote) {
     if (!votes) return

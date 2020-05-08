@@ -8,7 +8,7 @@ FlowRouter.route('/', {
       DocHead.removeDocHeadAddedTags();
       BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "home", topmenu: "topmenu" });
       $('.actived').removeClass('actived');
-      $('.steemstem.home').addClass('actived');
+      $('.stemsocial.home').addClass('actived');
       Session.set('currentFilter', false);
       Session.set('currentSearch', false);
       Session.set('currentTag', false);
@@ -303,7 +303,7 @@ FlowRouter.route('/@:user/:permlink', {
         DocHead.removeDocHeadAddedTags()
         if (!Content.findOne({ permlink: params.permlink }))
           { Content.getContent(params.user, params.permlink,"article", function (error) { if (error) { console.log(error) } }) }
-        steem.api.getContent(params.user, params.permlink, function (error, result)
+        hive.api.getContent(params.user, params.permlink, function (error, result)
         {
           if(error) {console.log('error = ', error); }
           else
@@ -317,8 +317,7 @@ FlowRouter.route('/@:user/:permlink', {
              DocHead.addMeta({property: 'title', content: result.title})
              DocHead.addMeta({property: 'og:title', content: result.title})
              DocHead.addMeta({property: 'og:url', content: 'https://stem.openhive.network/#!'+result.url})
-             desc = Blaze._globalHelpers['remarkableFormatter'](result.body)
-             desc = Blaze._globalHelpers['xssShortFormatter'](desc)
+             desc = Blaze._globalHelpers['xssShortFormatter'](result.body)
              desc = Blaze._globalHelpers['shortDescription'](desc)
              desc = desc.split('\n').join(' ')
              DocHead.addMeta({property: 'og:description', content: desc})

@@ -1,11 +1,12 @@
 {
-  "name": "fundition.org",
+  "name": "STEMsocial",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.42",
+    "@hiveio/hive-js": "^0.1.0",
     "ajv": "^6.5.4",
     "autolink.js": "^0.1.1",
     "blueimp-file-upload": "^9.21.0",
@@ -31,21 +32,16 @@
     "rangeslider.js": "^2.3.2",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
-    "remarkable": "^1.7.1",
     "rrssb": "^1.14.0",
     "sanitize-html": "^1.18.5",
     "save": "^2.3.2",
     "sc2-sdk": "^1.0.2",
     "semantic-ui-range": "^1.0.1",
-    "showdown": "^1.8.7",
     "sockjs": "^0.3.19",
     "ssr": "^1.1.1",
-    "steem": "^0.7.5",
-    "steem-markdown-only": "0.0.7",
     "utf-8-validate": "^4.0.2",
     "wowjs": "^1.1.3",
-    "xmldom": "^0.1.27",
-    "xss": "^0.3.8"
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.7"

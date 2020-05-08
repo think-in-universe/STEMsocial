@@ -1,6 +1,6 @@
 <template name="home">
   <!-- promotion -->
-  {{#if equals currentSearch 'steemstem'}}
+  {{#if equals currentSearch 'STEMsocial'}}
     <div class="ui container fluid mtop3n">
       <div class="ui three column grid padded large screen only">
         {{ #each GetPromoted}}
@@ -36,8 +36,8 @@
               Featured
             {{/if}}
           </a>
-          {{#if equals currentSearch 'steemstem'}}
-            <div class="ui left floated item"><h5>#steemstem</h5></div>
+          {{#if equals currentSearch 'STEMsocial'}}
+            <div class="ui left floated item"><h5>#STEMsocial</h5></div>
           {{else}}
             <div class="ui left floated item"><h5>#{{currentSearch}}</h5></div>
           {{/if}}
@@ -45,21 +45,21 @@
             <div class="ui topposts checkbox" style="margin-right:2em;">
               <input type="checkbox" name="topposts" id='topposts'>
               <label><h5 class='tooltip'>
-                <span class="tooltiptext">All posts with a strong SteemSTEM support</span>
+                <span class="tooltiptext">All posts with a strong STEMsocial support</span>
                 Top posts
               </h5></label>
             </div>
             <div class="ui medposts checkbox" style="margin-right:2em;">
               <input type="checkbox" name="medposts" id='medposts'>
               <label><h5 class='tooltip'>
-                <span class="tooltiptext">All posts with an average SteemSTEM support</span>
+                <span class="tooltiptext">All posts with an average STEMsocial support</span>
                 Best posts
               </h5></label>
             </div>
             <div class="ui filter checkbox">
               <input type="checkbox" name="filter" id='filter'>
               <label><h5 class='tooltip'>
-                <span class="tooltiptext">All posts carrying the SteemSTEM tag</span>
+                <span class="tooltiptext">All posts carrying the STEMsocial tag</span>
                 All posts
               </h5></label>
             </div>
@@ -81,7 +81,7 @@
             {{>mainlist}}
           {{/if}}
         </div>
-        {{#unless isSteemSTEMLoadedFull (NewSteemSTEMContent currentWeek)}}
+        {{#unless isLoadedFull (STEMsocialContent currentWeek)}}
           <div class="ui container">
             <div class="ui segment grid padded centered fluid borderless">
               <div class="ui active dimmer inverted"><h4 class="ui text loader">Adding Content...</h4></div>

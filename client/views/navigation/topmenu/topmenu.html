@@ -6,11 +6,11 @@
           <a href="/" class="item"><img class="ui fluid small image" src="/images/banner/steemstemlogoback.png"></a>
         </div>
         <div class="ui grid inverted compact menu computer only">
-          <a id="tag" class="item steemstem red home top cat">home</a>
+          <a id="tag" class="item stemsocial red home top cat">home</a>
           {{#each customTags}}
             {{#if this.mainmenu}}
               {{#if subcategories}}
-                <div class="ui pointing dropdown link item steemstem {{color}} {{category}} top cat">
+                <div class="ui pointing dropdown link item stemsocial {{color}} {{category}} top cat">
                   <span> {{category}}</span>
                   <i class="dropdown icon"></i>
                   <div class="ui labeled icon menu">
@@ -28,17 +28,17 @@
                   </div>
                 </div>
               {{else}}
-                <a id="tag" class="item steemstem {{color}} {{category}} top cat">{{category}}</a>
+                <a id="tag" class="item stemsocial {{color}} {{category}} top cat">{{category}}</a>
               {{/if}}
             {{/if}}
           {{/each}}
         </div>
         <div class="ui grid padded tablet only mobile only">
-          <div class="ui pointing dropdown link item steemstem {{color}} {{category}} top cat">
+          <div class="ui pointing dropdown link item stemsocial {{color}} {{category}} top cat">
             <span class="text cat">Menu</span>
             <i class="dropdown icon"></i>
             <div class="ui labeled icon menu">
-              <a id="tag" class="item steemstem red home top cat">home</a>
+              <a id="tag" class="item stemsocial red home top cat">home</a>
               {{#each customTags}}
                 {{#if this.mainmenu}}
                   <div class="divider"></div>

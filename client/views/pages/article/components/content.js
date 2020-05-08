@@ -26,10 +26,10 @@ Template.content.helpers({
   // Function allowing to display a share of a single beneficiary
   DisplayShare: function(beneficiary) { return beneficiary[1] },
 
-  // Check whether the post has been posted with steemstem.io
+  // Check whether the post has been posted with the app
   UsingSSio: function() { return (this.json_metadata && ['steemstem', 'stemsocial'].includes(this.json_metadata.app)) },
 
-  // Check whether the author has set SteemSTEM as a beneficiary
+  // Check whether the author has set STEMsocial as a beneficiary
   SetBeneficiary: function()
   {
     bnf_list = []

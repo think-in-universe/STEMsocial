@@ -5,6 +5,6 @@ Template.tosmodal.rendered = function () { }
 
 // Initialization of the modal
 Template.tosmodal.init = function () {
-  $('#tosok').click(function() { set('steemstem_storage',sessionStorage.getItem('tos')); });
+  $('#tosok').click(function() { set('stemsocial_storage',sessionStorage.getItem('tos')); });
 }
 

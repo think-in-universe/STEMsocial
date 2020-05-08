@@ -5,13 +5,13 @@ Template.dropdownlogin.rendered = function () {
 
 // Events
 Template.dropdownlogin.events({
-  // login with SteemConnect
+  // login with Hivesigner
   'click #hivesigner': function (event) {
     event.preventDefault()
     sessionStorage.setItem('currentroute', FlowRouter.current().path)
     window.location.href = sc2.getLoginURL()
   },
-  // login with SteemKeychain
+  // login with Hive Keychain
   'click #hivekeychain': function (event)
   {
     event.preventDefault();

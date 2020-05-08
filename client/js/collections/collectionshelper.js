@@ -1,11 +1,11 @@
-// New main function to get the list of new steemstem posts
-Template.registerHelper('NewSteemSTEMContent', function (loaded_week)
+// New main function to get the list of new STEMsocial posts
+Template.registerHelper('STEMsocialContent', function (loaded_week)
 {
   // Define the query according to the needs
   let query = { language: Session.get('lang'), parent_author: "", week:loaded_week };
   if (Session.get('currentSearch'))
     query["json_metadata.tags"] = new RegExp('.*' + Session.get('currentSearch'), 'i');
-  if (!Session.get('unfiltered')) { query.type = 'steemstem'; }
+  if (!Session.get('unfiltered')) { query.type = 'stemsocial'; }
   if(Session.get('superfilter')=='medium') { query.upvoted = {$gte:20}; }
   if(Session.get('superfilter')=='top')    { query.upvoted = {$gte:65}; }
 
@@ -26,7 +26,7 @@ Template.registerHelper('whitelistedContent', function ()
   stamp = stamp.toISOString().slice(0, 19);
 
   // Get the whitelisted content opf the last week
-  let filtered = Session.get('settings').whitelist.filter(function(value, index, arr){ return value != 'steemstem';});
+  let filtered = Session.get('settings').whitelist.filter(function(value, index, arr){ return value != 'stemsocial';});
   let query = { language: 'en', parent_author: '', created: {$gt: stamp}, author: {$in: filtered} };
   let content = Content.find(query).fetch();
   if(content.length > Session.get('N_whitelist')) Session.set('N_whitelist', content.length);

@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { get, set } from 'idb-keyval'
 
 // Helpers
@@ -8,7 +7,7 @@ Template.home.helpers({
 
   ShortTitle: function(title)
   {
-    if(title.length>75) return title.substring(0,75)+'...';
+    if(title.length>60) return title.substring(0,60)+'...';
     else return title;
   },
 
@@ -29,11 +28,11 @@ Template.home.helpers({
     let content = []; let titles = [];
     for (let i=0; i<promo_content.length; i++)
     {
-      if( (promo_content[i].type=='steemstem') || (Session.get('settings').whitelist.includes(promo_content[i].author)) )
+      if( (promo_content[i].type=='stemsocial') || (Session.get('settings').whitelist.includes(promo_content[i].author)) )
          { content.push(promo_content[i]); titles.push(promo_content[i].permlink); continue; }
     }
 
-    // Add the last steemstem and lemouth-dev posts
+    // Add the last posts from steemstem and lemouth-dev
     let last_stem = Content.find({ parent_author:'', author:'steemstem' }, { sort: {created:-1} }).fetch();
     let last_dev = Content.find({ parent_author:'', author:'lemouth-dev' }, { sort: {created:-1} }).fetch();
     while(content.length<3)
@@ -63,7 +62,7 @@ Template.home.helpers({
 // Rendering
 Template.home.rendered = function () {
   // TOS
-  get('steemstem_storage').then((k) => {
+  get('stemsocial_storage').then((k) => {
     let are_tos_read = k;
     if(!are_tos_read)
     {

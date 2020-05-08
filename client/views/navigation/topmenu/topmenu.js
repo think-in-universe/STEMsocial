@@ -28,7 +28,7 @@ Template.topmenu.rendered = function ()
   }
 
   // show dropdown on hover
-  $('.ui.dropdown.steemstem').dropdown({});
+  $('.ui.dropdown.stemsocial').dropdown({});
   $('.ui.sidebar').sidebar('setting', 'transition', 'overlay')
 
 }
@@ -38,9 +38,9 @@ Template.topmenu.events({
   'click #tag': function (event) {
     event.preventDefault()
     $('.actived').removeClass('actived')
-    $('.steemstem.' + this.category).addClass('actived')
+    $('.stemsocial.' + this.category).addClass('actived')
     if (!this.category) {
-      $('.steemstem.home').addClass('actived')
+      $('.stemsocial.home').addClass('actived')
       FlowRouter.go('/')
       Session.set('currentSearch', false)
     }
@@ -51,9 +51,9 @@ Template.topmenu.events({
   },
   'click .item.submenu': function (event) {
     $('.actived').removeClass('actived')
-    $('.steemstem.' + this.category).addClass('actived')
+    $('.stemsocial.' + this.category).addClass('actived')
     if (!this.category) {
-      $('.steemstem.home').addClass('actived')
+      $('.stemsocial.home').addClass('actived')
       FlowRouter.go('/')
       Session.set('currentSearch', false)
     }

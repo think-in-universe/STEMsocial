@@ -19,8 +19,8 @@
             <input  id="operation-class" type="hidden">
             <i class="dropdown icon"></i>
             <div class="menu">
-              <div class="item transfer" data-value="steem-transfer">Transfer</div>
-              <div class="item transfer" data-value="steem-savingtransfer">Transfer to Savings</div>
+              <div class="item transfer" data-value="hive-transfer">Transfer</div>
+              <div class="item transfer" data-value="hive-savingtransfer">Transfer to Savings</div>
               <div class="item transfer" data-value="powerup">Power Up</div>
             </div>
             <script>
@@ -45,24 +45,24 @@
 
     <div class="item">
       <div class="middle aligned content">
-        <div class="ui left aligned header">HIVE POWER (SP)</div>
-        <div class="ui dropdown steempower right floated item">
-          <a>{{DisplaySteemPower vesting_shares}}</a>
+        <div class="ui left aligned header">HIVE POWER (HP)</div>
+        <div class="ui dropdown hivepower right floated item">
+          <a>{{DisplayHivePower vesting_shares}}</a>
           {{#if equals currentAuthor.name mainuser.name}}
-            <input  id="operation-class-SP" type="hidden">
+            <input  id="operation-class-HP" type="hidden">
             <i class="dropdown icon"></i>
             <div class="menu">
-              <div class="item transferSP" data-value="powerdown">Power Down</div>
-              <div class="item transferSP" data-value="delegate">Delegate</div>
+              <div class="item transferHP" data-value="powerdown">Power Down</div>
+              <div class="item transferHP" data-value="delegate">Delegate</div>
             </div>
-            <script>$('.ui.dropdown.steempower').dropdown()</script>
+            <script>$('.ui.dropdown.hivepower').dropdown()</script>
           {{/if}}
         </div><br />
         <span style="font-size:10pt">
-          [Delegated SP: <a>{{DisplayDelegatedSteemPower delegated_vesting_shares}}</a>;
-           Received SP: <a>{{DisplayReceivedSteemPower received_vesting_shares}}</a>;
-           Effective SP:
-          <a>{{DisplayEffectiveSteemPower vesting_shares delegated_vesting_shares received_vesting_shares}}</a> ]
+          [Delegated HP: <a>{{DisplayDelegatedHivePower delegated_vesting_shares}}</a>;
+           Received HP: <a>{{DisplayReceivedHivePower received_vesting_shares}}</a>;
+           Effective HP:
+          <a>{{DisplayEffectiveHivePower vesting_shares delegated_vesting_shares received_vesting_shares}}</a> ]
         </span>
         <div class="ui message description">
           <p><b>Influence tokens</b></p>
@@ -83,17 +83,17 @@
     <div class="item">
       <div class="middle aligned content">
         <div class="ui left aligned header">Hive-Backed Dollars (HBD) Tokens</div>
-        <div class="ui dropdown balancesbd right floated">
+        <div class="ui dropdown balancehbd right floated">
           <a>{{sbd_balance}}</a>
           {{#if equals currentAuthor.name mainuser.name}}
-            <input id="operation-class-SBD" type="hidden">
+            <input id="operation-class-HBD" type="hidden">
             <i class="dropdown icon"></i>
             <div class="menu">
-              <div class="item transferSBD" data-value="sbd-transfer">Transfer</div>
-              <div class="item transferSBD" data-value="sbd-savingtransfer">Transfer to Savings</div>
+              <div class="item transferHBD" data-value="hbd-transfer">Transfer</div>
+              <div class="item transferHBD" data-value="hbd-savingtransfer">Transfer to Savings</div>
             </div>
             <script>
-              $('.ui.dropdown.balancesbd').dropdown()
+              $('.ui.dropdown.balancehbd').dropdown()
             </script>
           {{/if}}
         </div>
@@ -119,23 +119,23 @@
               <input  id="operation-class-savings" type="hidden">
               <i class="dropdown icon"></i>
               <div class="menu">
-                <div class="item transfersavings" data-value="fromsavings-steem">Withdraw HIVE</div>
+                <div class="item transfersavings" data-value="fromsavings-hive">Withdraw HIVE</div>
               </div>
               <script>
                 $('.ui.dropdown.savings').dropdown()
               </script>
             {{/if}}
           </div><span style="display:inline-block; width:40px;"></span>
-          <div class="ui dropdown sbdsavings">
+          <div class="ui dropdown hbdsavings">
             <a>{{savings_sbd_balance}}</a>
             {{#if equals currentAuthor.name mainuser.name}}
-              <input  id="operation-class-sbdsavings" type="hidden">
+              <input  id="operation-class-hbdsavings" type="hidden">
               <i class="dropdown icon"></i>
               <div class="menu">
-                <div class="item transfersbdsavings" data-value="fromsavings-sbd">Withdraw HBD</div>
+                <div class="item transferhbdsavings" data-value="fromsavings-hbd">Withdraw HBD</div>
               </div>
               <script>
-                $('.ui.dropdown.sbdsavings').dropdown()
+                $('.ui.dropdown.hbdsavings').dropdown()
               </script>
             {{/if}}
           </div>
@@ -147,7 +147,7 @@
     </div>
 
     <div class="ui divider"></div>
-
+<!--
     <div class="item">
       <div class="middle aligned content">
         <div class="ui left aligned header">ESTIMATED ACCOUNT VALUE</div>
@@ -159,6 +159,7 @@
         </div>
       </div>
     </div>
+-->
   </div>
   {{/with}}
 

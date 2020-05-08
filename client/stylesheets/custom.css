@@ -195,122 +195,122 @@ td, thead {
     overflow: hidden;
 }
 
-.item.steemstem.teal{
+.item.stemsocial.teal{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #00b5ad;
 }
 
-.item.steemstem.blue{
+.item.stemsocial.blue{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #2185d0;
 }
 
-.item.steemstem.olive{
+.item.stemsocial.olive{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #b5cc18;
 }
 
-.item.steemstem.green{
+.item.stemsocial.green{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #21ba45;
 }
 
-.item.steemstem.red{
+.item.stemsocial.red{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #db2828;
 }
 
-.item.steemstem.orange{
+.item.stemsocial.orange{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #f2711c;
 }
 
-.item.steemstem.yellow{
+.item.stemsocial.yellow{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #fbbd08;
 }
 
-.item.steemstem.pink{
+.item.stemsocial.pink{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #e03997;
 }
 
-.item.steemstem.purple{
+.item.stemsocial.purple{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #e03997;
 }
 
-.item.steemstem.violet{
+.item.stemsocial.violet{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #502aa1;;
 }
 
-.item.steemstem.brown{
+.item.stemsocial.brown{
 	text-transform: uppercase;
 	box-shadow: inset 0px -4px #a5673f;;
 }
 
-.item.steemstem.teal.actived{
+.item.stemsocial.teal.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #00b5ad;
 }
 
-.item.steemstem.blue.actived{
+.item.stemsocial.blue.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #2185d0;
 }
 
-.item.steemstem.olive.actived{
+.item.stemsocial.olive.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #b5cc18;
 }
 
-.item.steemstem.green.actived{
+.item.stemsocial.green.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #21ba45;
 }
 
-.item.steemstem.red.actived{
+.item.stemsocial.red.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #db2828;
 }
 
-.item.steemstem.orange.actived{
+.item.stemsocial.orange.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #f2711c;
 }
 
-.item.steemstem.yellow.actived{
+.item.stemsocial.yellow.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #fbbd08;
 }
 
-.item.steemstem.pink.actived{
+.item.stemsocial.pink.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #e03997;
 }
 
-.item.steemstem.purple.actived{
+.item.stemsocial.purple.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #e03997;
 }
 
-.item.steemstem.violet.actived{
+.item.stemsocial.violet.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #502aa1;;
 }
 
-.item.steemstem.brown.actived{
+.item.stemsocial.brown.actived{
 	text-transform: uppercase;
 	background:#000;
 	box-shadow: inset 0px -7px #a5673f;;
@@ -351,13 +351,9 @@ img{
     margin-bottom: 3.5em!important;
 }
 
-.ui.steem.icon{
-	background: #ededed;
-}
-
-.ui.steem.button{
-	background: #ededed;
-}
+/* Hive icones */
+.ui.hive.icon  {border-style:solid; border-width:1px; border-color:#777777; background: #FFFFFF;}
+.ui.hive.button{border-style:solid; border-width:1px; border-color:#777777; background: #FFFFFF;}
 
 /* ------- Footer ------- */
 
@@ -638,7 +634,7 @@ article{
  box-shadow:none!important;
 }
 
-.steemstem.title{
+.stemsocial.title{
 	border-top:4px solid #00b5ad!important;
 	padding-top: 1.4em;
 }
@@ -749,10 +745,12 @@ article{
 	overflow: hidden;
 }
 
-.ui.items.blog > .item > .image{
-	width: 200px;
-	max-height:220px;
-	overflow: hidden;
+.ui.items.blog > .item > .image
+{
+  width: 275px;
+  overflow: hidden;
+  max-height:165px;
+  margin:2px;
 }
 
 .ui.items > .item > .image > img{

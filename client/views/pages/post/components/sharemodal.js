@@ -5,7 +5,7 @@ Template.sharemodal.rendered = function() { }
 Template.sharemodal.init = function(author, permlink)
 {
   // buttons
-  document.getElementById("resteem").addEventListener("click", Proceed);
+  document.getElementById("reblog").addEventListener("click", Proceed);
 
   // Submit button
   function Proceed()
@@ -13,7 +13,7 @@ Template.sharemodal.init = function(author, permlink)
     if (localStorage.kc)
     {
       let json = JSON.stringify(['reblog', { account: localStorage.username, author: author, permlink: permlink }]);
-      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "resteem", function(response)
+      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "reblog", function(response)
         { console.log(response);});
     }
     else

@@ -26,7 +26,7 @@ Template.drafts.addToDraft = function(form){
     }
     // Get the custom json id
     return;
-//    steem.api.getAccountHistory(localStorage.username,0,10000, function(err, res)
+//    hive.api.getAccountHistory(localStorage.username,0,10000, function(err, res)
 //    {
 //       if (err) {console.log('error with account history: ', err); return; }
 //       for (let i = 0; i<res.length; i++)
@@ -62,7 +62,7 @@ Template.drafts.addToDraft = function(form){
 //        userdata = []
 //        userdata.push({ drafts: [draft] } );
 //    }
-//    steemconnect.updateUserMetadata(userdata,function(error){
+//    hivesigner.updateUserMetadata(userdata,function(error){
 //        if(error)
 //        {
 //            console.log('err = ', error)
@@ -77,7 +77,7 @@ Template.drafts.removeDraft = function(draft){
     userdata.drafts = userdata.drafts.filter(function(el) {
         return el.body !== draft.body;
     });
-    steemconnect.updateUserMetadata(userdata,function(error){
+    hivesigner.updateUserMetadata(userdata,function(error){
         if(error)
         {
             console.log(error)

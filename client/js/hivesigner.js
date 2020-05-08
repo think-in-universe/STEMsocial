@@ -14,7 +14,7 @@ tokentest = function()
   else { return true }
 }
 
-// Steemconnect machinery
+// Hivesigner machinery
 hivesigner = {
   // Voting function
   vote: function (author, permlink, weight, cb)
@@ -30,14 +30,14 @@ hivesigner = {
   },
 
   // Claiming rewards
-  claimRewardBalance: function (reward_steem_balance, reward_sbd_balance, reward_vesting_balance, cb)
+  claimRewardBalance: function (reward_hive_balance, reward_hbd_balance, reward_vesting_balance, cb)
   {
-    localStorage.setItem('sc2_command','claim_'+reward_steem_balance +'_'+ reward_sbd_balance +'_'+ reward_vesting_balance)
+    localStorage.setItem('sc2_command','claim_'+reward_hive_balance +'_'+ reward_hbd_balance +'_'+ reward_vesting_balance)
     if(tokentest())
     {
       var voter = localStorage.username
       sc2.setAccessToken(localStorage.accesstoken);
-      sc2.claimRewardBalance(voter, reward_steem_balance, reward_sbd_balance, reward_vesting_balance,
+      sc2.claimRewardBalance(voter, reward_hive_balance, reward_hbd_balance, reward_vesting_balance,
          function (err, result) { cb(err, result) })
       delete localStorage.sc2_command
     }
@@ -119,7 +119,7 @@ hivesigner = {
     }
   },
 
-  // Resteeming
+  // Reblogging
   reblog: function (author, permlink, cb)
   {
     localStorage.setItem('sc2_command','reblog_'+author+'_'+permlink)

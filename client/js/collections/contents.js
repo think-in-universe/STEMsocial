@@ -3,13 +3,13 @@ Content = new Mongo.Collection(null)
 
 Content.getContentByAuthor = function (author, lastPermlink, cb) {
     var now = new Date();
-    steem.api.getDiscussionsByAuthorBeforeDate(author, lastPermlink, dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss"), 5, function (err, result) {
+    hive.api.getDiscussionsByAuthorBeforeDate(author, lastPermlink, dateFormat(now, "yyyy-mm-dd'T'HH:MM:ss"), 5, function (err, result) {
         console.log(err, result);
     });
 }
 
 Content.getContent = function (author, permlink,type, cb) {
-    steem.api.getContent(author, permlink, function (error, result) {
+    hive.api.getContent(author, permlink, function (error, result) {
         if (!result)
             return cb(true)
         else {

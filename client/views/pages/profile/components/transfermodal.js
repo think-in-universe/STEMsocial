@@ -7,7 +7,7 @@ Template.transfermodal.helpers(
   // Is the memo field needed
   NeedsMemo: function()
   {
-    if(['steem-transfer', 'steem-savingtransfer', 'sbd-transfer', 'sbd-savingtransfer','fromsavings-steem', 'fromsavings-sbd'].includes(this.data.current_op)) {return true}
+    if(['hive-transfer', 'hive-savingtransfer', 'hbd-transfer', 'hbd-savingtransfer','fromsavings-hive', 'fromsavings-hbd'].includes(this.data.current_op)) {return true}
     return false
   },
 
@@ -18,7 +18,7 @@ Template.transfermodal.helpers(
     return true
   },
 
-  // Do we need to calculate the balance from the available SP
+  // Do we need to calculate the balance from the available HP
   NeedsHPBalance: function()
   {
     if(['powerdown', 'delegate'].includes(this.data.current_op)) {return  true}
@@ -26,30 +26,30 @@ Template.transfermodal.helpers(
   },
 
   // Do we need to calculate the balance from the available liquid HIVE tokens
-  NeedsSteemBalance: function()
+  NeedsHiveBalance: function()
   {
-    if(['steem-transfer', 'steem-savingtransfer', 'powerup'].includes(this.data.current_op)) {return true}
+    if(['hive-transfer', 'hive-savingtransfer', 'powerup'].includes(this.data.current_op)) {return true}
     return false
   },
 
   // Do we need to calculate the balance from the available HBD tokens
   NeedsHBDBalance: function()
   {
-    if(['sbd-transfer', 'sbd-savingtransfer'].includes(this.data.current_op)) {return true}
+    if(['hbd-transfer', 'hbd-savingtransfer'].includes(this.data.current_op)) {return true}
     return false
   },
 
    // Do we need to calculate the balance from the HBD tokens avaialble in savings
   NeedsHBDSavingsBalance: function()
   {
-    if(['fromsavings-sbd'].includes(this.data.current_op)) {return true}
+    if(['fromsavings-hbd'].includes(this.data.current_op)) {return true}
     return false
   },
 
    // Do we need to calculate the balance from the available HBD tokens
-  NeedsSteemSavingsBalance: function()
+  NeedsHiveSavingsBalance: function()
   {
-    if(['fromsavings-steem'].includes(this.data.current_op)) {return true}
+    if(['fromsavings-hive'].includes(this.data.current_op)) {return true}
     return false
   },
 
@@ -59,15 +59,15 @@ Template.transfermodal.helpers(
     var title=''
     switch(this.data.current_op)
     {
-      case 'steem-transfer':       title="HIVE wallet transfer"; break;
-      case 'steem-savingtransfer': title="HIVE transfer to savings"; break;
-      case 'fromsavings-steem':    title="Withdraw HIVE from savings"; break;
-      case 'sbd-transfer':         title="HBD wallet transfer"; break;
-      case 'sbd-savingtransfer':   title="HBD transfer to savings"; break;
-      case 'fromsavings-sbd':      title="Withdraw HBD from savings"; break;
-      case 'powerup':              title="Convert to HIVE POWER."; break;
-      case 'powerdown':            title="Withdraw HIVE POWER."; break;
-      case 'delegate':             title="Delegate HIVE POWER."; break;
+      case 'hive-transfer':       title="HIVE wallet transfer"; break;
+      case 'hive-savingtransfer': title="HIVE transfer to savings"; break;
+      case 'fromsavings-hive':    title="Withdraw HIVE from savings"; break;
+      case 'hbd-transfer':        title="HBD wallet transfer"; break;
+      case 'hbd-savingtransfer':  title="HBD transfer to savings"; break;
+      case 'fromsavings-hbd':     title="Withdraw HBD from savings"; break;
+      case 'powerup':             title="Convert to HIVE POWER."; break;
+      case 'powerdown':           title="Withdraw HIVE POWER."; break;
+      case 'delegate':            title="Delegate HIVE POWER."; break;
     }
     return title
   },
@@ -80,8 +80,8 @@ Template.transfermodal.helpers(
     {
       case 'powerdown': AmountClass="Amount to Power Down"; break;
       case 'delegate': AmountClass="Amount to delegate"; break;
-      case 'fromsavings-sbd':
-      case 'fromsavings-steem': AmountClass="Amount to withdraw"; break;
+      case 'fromsavings-hbd':
+      case 'fromsavings-hive': AmountClass="Amount to withdraw"; break;
     }
     return AmountClass
   },
@@ -92,10 +92,10 @@ Template.transfermodal.helpers(
     var descr=''
     switch(this.data.current_op)
     {
-      case 'steem-transfer':
+      case 'hive-transfer':
         descr="Move HIVE funds to another Hive account."
         break;
-      case 'steem-savingtransfer':
+      case 'hive-savingtransfer':
         descr="Move HIVE funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
         break;
       case 'powerup':
@@ -107,16 +107,16 @@ Template.transfermodal.helpers(
       case 'delegate':
         descr="Delegate HIVE POWER to another Hive account. Delegated HIVE POWER can be recovered 5 days after undelegating."
         break;
-      case 'sbd-transfer':
+      case 'hbd-transfer':
         descr="Move HBD funds to another Hive account."
         break;
-      case 'sbd-savingtransfer':
+      case 'hbd-savingtransfer':
         descr="Move HBD funds to a saving account (protect funds by requiring a three-day withdraw waiting period)."
         break;
-      case 'fromsavings-steem':
+      case 'fromsavings-hive':
         descr="Withdraw HIVE funds from a saving account (a three-day withdraw waiting period is required)."
         break;
-      case 'fromsavings-sbd':
+      case 'fromsavings-hbd':
         descr="Withdraw HBD funds from a saving account (a three-day withdraw waiting period is required)."
         break;
     }
@@ -133,11 +133,11 @@ Template.transfermodal.init = function (operation)
   Session.set('memo','')
 
   // The destination field
-  if(['fromsavings-sbd', 'fromsavings-steem', 'sbd-transfer', 'sbd-savingtransfer', 'steem-transfer', 'steem-savingtransfer', 'delegate', 'powerup'].includes(operation))
+  if(['fromsavings-hbd', 'fromsavings-hive', 'hbd-transfer', 'hbd-savingtransfer', 'hive-transfer', 'hive-savingtransfer', 'delegate', 'powerup'].includes(operation))
   {
     $("#to").change(function ()
     {
-      steem.api.lookupAccountNames([$("#to").val()], function (error, result)
+      hive.api.lookupAccountNames([$("#to").val()], function (error, result)
       {
         if (result[0] === null)
         {
@@ -191,7 +191,7 @@ Template.transfermodal.init = function (operation)
   });
 
   // Control of the memo field (if necessary)
-  if(['fromsavings-steem', 'fromsavings-sbd', 'sbd-transfer', 'sbd-savingtransfer', 'steem-transfer', 'steem-savingtransfer'].includes(operation))
+  if(['fromsavings-hive', 'fromsavings-hbd', 'hbd-transfer', 'hbd-savingtransfer', 'hive-transfer', 'hive-savingtransfer'].includes(operation))
     $("#memo").change(function () { Session.set('memo',$("#memo").val()) })
 
   // Submit button
@@ -205,17 +205,17 @@ Template.transfermodal.init = function (operation)
     {
       $('.ui.transfer.modal').modal('hide')
       coin = 'HIVE'
-      if(['fromsavings-sbd', 'sbd-transfer', 'sbd-savingtransfer'].includes(operation)) { coin = 'HBD' }
+      if(['fromsavings-hbd', 'hbd-transfer', 'hbd-savingtransfer'].includes(operation)) { coin = 'HBD' }
       switch(operation)
       {
-        case 'steem-transfer':
-        case 'sbd-transfer':
+        case 'hive-transfer':
+        case 'hbd-transfer':
           url = "https://hivesigner.com/sign/transfer?to=" + Session.get('to') + 
             "&amount=" + parseFloat(Session.get('amount')).toFixed(3) + " " + coin +
             "&memo=" + Session.get('memo')
           break;
-        case 'steem-savingtransfer':
-        case 'sbd-savingtransfer':
+        case 'hive-savingtransfer':
+        case 'hbd-savingtransfer':
           if(Session.get('memo')=='') Session.set('memo', '.')
           url = "https://hivesigner.com/sign/transfer-to-savings?to=" + Session.get('to') +
              "&amount=" + parseFloat(Session.get('amount')).toFixed(3) + " " + coin +
@@ -233,8 +233,8 @@ Template.transfermodal.init = function (operation)
           url = "https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=" + Session.get('to') +
               "&vesting_shares=" + parseFloat(Session.get('amount')).toFixed(3) + "%20HP"
           break;
-        case 'fromsavings-steem':
-        case 'fromsavings-sbd':
+        case 'fromsavings-hive':
+        case 'fromsavings-hbd':
           reqid = (Math.random()*1000000000).toString().replace('.','');
           if(Session.get('memo')=='') Session.set('memo', '.')
           url = 'https://hivesigner.com/sign/transfer_from_savings?request_id=' + reqid +

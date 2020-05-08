@@ -5,10 +5,10 @@ var moment = require('moment');
 PersonalHistory.getPersonalHistory = function (username, limit)
 {
   // Getting the last transactions of the account
-  steem.api.getAccountHistory(username, -1, limit, (err, res) =>
+  hive.api.getAccountHistory(username, -1, limit, (err, res) =>
   {
     // Error
-    if (!res) {console.log('steem API error (account history): ', err); return; }
+    if (!res) {console.log('Hive API error (account history): ', err); return; }
 
     // Everything is fine
     for (let i=0; i<res.length; i++) { PersonalHistory.filterhistory(res[i], username); }
@@ -49,8 +49,8 @@ PersonalHistory.filterhistory = function (transaction, username)
     case 'claim_reward_balance':
       result.date = transaction[1].timestamp
       result.name = transaction[1].op[1].account
-      result.reward_sbd = transaction[1].op[1].reward_sbd
-      result.reward_steem = transaction[1].op[1].reward_steem
+      result.reward_hbd = transaction[1].op[1].reward_sbd
+      result.reward_hive  = transaction[1].op[1].reward_steem
       result.reward_vests = transaction[1].op[1].reward_vests
       break;
     default:

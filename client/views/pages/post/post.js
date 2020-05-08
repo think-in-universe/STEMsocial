@@ -9,19 +9,7 @@ Template.post.rendered = function ()
 }
 
 // Helpers
-Template.post.helpers({
-  // Check whether the post has been posted with steemstem.io
-  UsingSSio: function() { return (this.json_metadata && this.json_metadata.app=='steemstem') },
-
-  // Check whether the author has set SteemSTEM as a beneficiary
-  SetBeneficiary: function()
-  {
-    bnf_list = []
-    for(i=0; i<this.beneficiaries.length;i++)
-      bnf_list.push(this.beneficiaries[i].account)
-    return bnf_list.includes('steemstem')
-  }
-})
+Template.post.helpers({});
 
 // Events
 Template.post.events(

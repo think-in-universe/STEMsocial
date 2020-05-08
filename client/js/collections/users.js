@@ -2,7 +2,7 @@ MainUser = new Mongo.Collection(null)
 User = new Mongo.Collection(null)
 
 MainUser.add = function (username, cb) {
-    steem.api.getAccounts([username], function (error, result) {
+    hive.api.getAccounts([username], function (error, result) {
         if (!result || result.length < 1) {
             cb(true)
             return
@@ -23,7 +23,7 @@ MainUser.add = function (username, cb) {
 }
 
 User.add = function (username, cb) {
-    steem.api.getAccounts([username], function (error, result) {
+    hive.api.getAccounts([username], function (error, result) {
         if (!result || result.length < 1) {
             cb(true)
             return
@@ -34,7 +34,7 @@ User.add = function (username, cb) {
             } catch (error) {
                 //console.log(error)
             }
-            steem.api.getFollowCount(username, function (err, res) {
+            hive.api.getFollowCount(username, function (err, res) {
                 if(!error)
                 {
                     result[0].follower_count = res.follower_count

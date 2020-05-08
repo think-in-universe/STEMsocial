@@ -1,4 +1,4 @@
-import steem from 'steem';
+import hive from '@hiveio/hive-js';
 // ----------------------------------------------------------------------------
 // picker definition. Use this to figure out if a crawler is hitting you
 // ----------------------------------------------------------------------------

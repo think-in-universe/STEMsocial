@@ -1,6 +1,6 @@
 <template name="mainlist">
   <div class="ui items">
-    {{#if NewSteemSTEMContent currentWeek}}
+    {{#if STEMsocialContent currentWeek}}
 
       <!-- Menu to navigate between weeks -->
       {{#each GetToLoad}}
@@ -18,7 +18,7 @@
 
       <!-- The posts themselves -->
       <div class='ui items blog'>
-        {{#each NewSteemSTEMContent currentWeek}}
+        {{#each STEMsocialContent currentWeek}}
           {{>post}}
           <div class="ui divider"></div>
         {{/each}}
@@ -46,7 +46,7 @@
             <div class="ui active dimmer inverted"><h4 class="ui text loader">Loading...</h4></div>
           </div>
         </div>
-      {{else if equals currentSearch 'steemstem'}}
+      {{else if equals currentSearch 'STEMsocial'}}
         {{#each GetToLoad}}
           <a class="go-to-wk go-to-wk-{{this}}">
             {{#if MyWeek}}

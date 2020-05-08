@@ -1,40 +1,42 @@
-import showdown from 'showdown'
-const steemMarkdown = require('steem-markdown-only')
-
 SSR.compileTemplate('seoblog', Assets.getText('blog.html'));
 
 Template.seoblog.helpers(
 {
   desc: function(body)
   {
-    var text = body.replace(/<span([^>]*)>/g,'ssioMUF[$1]');
-    text = text.replace(/<\/span>/g,'ENDssioMUF');
-    text = steemMarkdown(text)
-    text = text.replace(/ssioMUF\[([^\]]*)\]/g,'<span $1>');
-    text = text.replace(/ENDssioMUF/g,'</span>');
-    var converter = new showdown.Converter(),
-    text = converter.makeHtml(text);
-    var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
+    text = Blaze._globalHelpers['ToHTML'](body);
+    let urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
     text = text.replace(urlPattern, "")
     text = text.replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g, "");
     text = text.replace(/<(?:.|\n)*?>/gm, '');
-    text = text.replace(/<br>/gi, "");
-    text = text.replace(/<br\s\/>/gi, "");
-    text = text.replace(/<br\/>/gi, "");
-    text = text.replace(/<p.*>/gi, "");
+    //-- remove BR tags and replace them with line break
+    text = text.replace(/<br>/gi, "\n");
+    text = text.replace(/<br\s\/>/gi, "\n");
+    text = text.replace(/<br\/>/gi, "\n");
+
+    //-- remove P and A tags but preserve what's inside of them
+    text = text.replace(/<p.*>/gi, "\n");
     text = text.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 ($1)");
+
+    //-- remove all inside SCRIPT and STYLE tags
     text = text.replace(/<script.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/script>/gi, "");
     text = text.replace(/<style.*>[\w\W]{1,}(.*?)[\w\W]{1,}<\/style>/gi, "");
+    //-- remove all else
     text = text.replace(/<(?:.|\s)*?>/g, "");
-    text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "");
+
+    //-- get rid of more than 2 multiple line breaks:
+    text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2,}/gim, "\n\n");
+
+    //-- get rid of more than 2 spaces:
     text = text.replace(/ +(?= )/g, '');
+
+    //-- get rid of html-encoded characters:
     text = text.replace(/&nbsp;/gi, " ");
     text = text.replace(/&amp;/gi, "&");
     text = text.replace(/&quot;/gi, '"');
     text = text.replace(/&lt;/gi, '<');
     text = text.replace(/&gt;/gi, '>');
     text = text.replace(/\.[^/.]+$/, "")
-    text = text.split('\n').join(" ")
     return text.slice(0,150)+'...';
   },
 
