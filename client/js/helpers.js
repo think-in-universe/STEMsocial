@@ -578,15 +578,19 @@ Template.registerHelper('ToHTML', function(text)
 
     // Tables
     let splitted = line.split('|'), is_table = true;
-    if (splitted[0].trim()=='') { splitted.splice(0,1); }
-    if (splitted[splitted.length-1].trim()=='') { splitted.splice(splitted.length-1,1); }
-    for(let j=0; j<splitted.length; j++)
+    if(splitted.length==1) is_table = false;
+    else
     {
-      if(!splitted[j].match(/(\s|\:)\-{3,}(\s|\:)/g)) { is_table=false; break; }
-      splitted[j] = splitted[j].trim();
-      if(splitted[j][0]==':' &&  splitted[j][splitted[j].length-1]==':') { cell_natures.push('center'); }
-      else if(splitted[j][splitted[j].length-1]==':')                    { cell_natures.push('right');  }
-      else                                                               { cell_natures.push('left');    }
+      if (splitted[0].trim()=='') { splitted.splice(0,1); }
+      if (splitted[splitted.length-1].trim()=='') { splitted.splice(splitted.length-1,1); }
+      for(let j=0; j<splitted.length; j++)
+      {
+        if(!splitted[j].match(/(\s|\:)?\-{1,}(\s|\:)?/g)) { is_table=false; break; }
+        splitted[j] = splitted[j].trim();
+        if(splitted[j][0]==':' &&  splitted[j][splitted[j].length-1]==':') { cell_natures.push('center'); }
+        else if(splitted[j][splitted[j].length-1]==':')                    { cell_natures.push('right');  }
+        else                                                               { cell_natures.push('left');    }
+      }
     }
 
     // New table -> the header
@@ -613,7 +617,8 @@ Template.registerHelper('ToHTML', function(text)
       let tline = line.split('|');
       if (tline[0].trim()=='') { tline.splice(0,1); }
       if (tline[tline.length-1].trim()=='')    { tline.splice(tline.length-1,1); }
-      if (tline.length!=in_table) { new_text[i-1] = new_text[i-1] + '  </tbody>\n</table>\n'; in_table=0; cell_natures = [];}
+      if(line=='|' || line.trim()=='|') {new_text[i]='';continue;}
+      else if(tline.length!=in_table) {new_text[i-1]=new_text[i-1]+'  </tbody>\n</table>\n'; in_table=0; cell_natures = [];}
       else
       {
         let new_line='  <tr>\n';
