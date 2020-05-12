@@ -158,11 +158,11 @@ AccountHistory.GetInfo= function(author, permlink, weight, update_tag=false)
 AccountHistory.UpgradeInfo = function (post, weight)
 {
   // metadata
-  try { post.json_metadata = JSON.parse(post.json_metadata) } catch (error) { }
+  try { post.json_metadata = JSON.parse(post.json_metadata.replace('\"','"')); } catch (error) { }
   post.search = ''
 
   // Tags and language
-  if('tags' in post.json_metadata)
+  if(post.json_metadata['tags'])
   {
     if(!Array.isArray(post.json_metadata.tags)) post.json_metadata.tags = [post.json_metadata.tags]
     post.search = post.json_metadata.tags.join(' ')
@@ -194,5 +194,5 @@ AccountHistory.UpgradeInfo = function (post, weight)
 // Get the langage of a post
 FilterLanguage = function(tag)
 {
-  for (var key in Session.get('settings').languages) if (Session.get('settings').languages[key].includes(tag)) return key;
+  for (var key in Session.get('settings').languages) if (Session.get('settings').languages[key].includes(tag.toLowerCase())) return key;
 }
