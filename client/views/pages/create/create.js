@@ -173,7 +173,7 @@ Template.create.events({
     }
 
     // submission
-//    Template.create.submit(post_object);
+    Template.create.submit(post_object);
   }
 });
 
