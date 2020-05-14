@@ -4,7 +4,7 @@ Template.create.rendered = function () {
   if(Session.get('edit-post'))
   {
     Session.set('preview-title',Session.get('edit-post').title);
-    Session.set('preview-body', Session.get('edit-post').body);
+    Session.set('preview-body',  Blaze._globalHelpers['ToHTML'](Session.get('edit-post').body));
     document.getElementById('newarticle').posttitle.value = Session.get('edit-post').title;
     document.getElementById('newarticle').postbody.value = Session.get('edit-post').body;
     let json = Session.get('edit-post').json_metadata;
