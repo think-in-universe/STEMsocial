@@ -158,7 +158,7 @@ AccountHistory.GetInfo= function(author, permlink, weight, update_tag=false)
 AccountHistory.UpgradeInfo = function (post, weight)
 {
   // metadata
-  try { post.json_metadata = JSON.parse(post.json_metadata.replace('\"','"')); } catch (error) { }
+  try { post.json_metadata = JSON.parse(post.json_metadata); } catch (error) { }
   post.search = ''
 
   // Tags and language

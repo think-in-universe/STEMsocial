@@ -244,9 +244,9 @@ Template.create.submit= function(project)
       $('#postprob').addClass("hidden")
       // Updating the database
       Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
-        {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: project[0][1].json_metadata}});
+        {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: JSON.parse(project[0][1].json_metadata)}});
       // Redirection
-      FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);      var start = new Date().getTime();
+      FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);
     });
   }
   else
@@ -267,7 +267,7 @@ Template.create.submit= function(project)
         $('#postprob').addClass("hidden")
         // Updating the database
         Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
-          {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: project[0][1].json_metadata}});
+          {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: JSON.parse(project[0][1].json_metadata)}});
         // Redirection
         FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);
       }
