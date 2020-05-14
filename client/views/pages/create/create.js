@@ -7,7 +7,9 @@ Template.create.rendered = function () {
     Session.set('preview-body', Session.get('edit-post').body);
     document.getElementById('newarticle').posttitle.value = Session.get('edit-post').title;
     document.getElementById('newarticle').postbody.value = Session.get('edit-post').body;
-    document.getElementById('newarticle').posttags.value = Session.get('edit-post').json_metadata.tags;
+    let json = Session.get('edit-post').json_metadata;
+    if(typeof json==='string' || json instanceof String) json = JSON.parse(json);
+    document.getElementById('newarticle').posttags.value = json.tags;
   }
 
   // Saving the post title for the post preview method
@@ -159,7 +161,10 @@ Template.create.events({
     // Post edition
     if(Session.get('edit-post'))
     {
-      let old = Session.get('edit-post'); old.json_metadata.tags=tags;
+      let old = Session.get('edit-post');
+      if(typeof old.json_metadata === 'string' || old.json_metadata instanceof String) old.json_metadata = JSON.parse(old.json_metadata);
+      old.json_metadata.tags=tags;
+
       post_object = [
         ['comment', { parent_author: old.parent_author, parent_permlink :old.parent_permlink, author: old.author,
                       permlink:old.permlink, title:title, body:body, json_metadata: JSON.stringify(old.json_metadata)}]
@@ -168,7 +173,7 @@ Template.create.events({
     }
 
     // submission
-    Template.create.submit(post_object);
+//    Template.create.submit(post_object);
   }
 });
 
