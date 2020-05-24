@@ -135,22 +135,13 @@ background:transparent!important;
 }
 
 blockquote{
-    background: #091420;
+    background: #F1F1F1;
     margin: 0px 0px 5px;
     padding: 20px;
-    color: white;
+    color: black;
     font-style: italic;
-    display: -webkit-box;
-    border: 2px solid #01b5ad;
+    border: 2px solid #C5C5C5;
     border-radius: 5px;
-}
-
-blockquote::before { 
-    content: "\"";
-}
-
-blockquote::after { 
-    content: "\"";
 }
 
 table {
@@ -888,9 +879,19 @@ pre  {
   display: block;
   white-space: pre-wrap;
   background-color: #eee;
+  font-family:courier;
   padding: 20px;
   margin: 20px;
 }
 
-code  { background-color: #eee; }
+code  { background-color: #eee; color:red}
+
+/* toolbar of the editor */
+.editor-toolbar {
+  width: 100% !important;
+  border-top: 1px solid #C8C8C8;
+  border-left: 1px solid #C8C8C8;
+  border-right: 1px solid #C8C8C8;
+  border-bottom: none;
+}
 

@@ -63,7 +63,290 @@ Template.create.rendered = function () {
     }
   });
 
+  // For image upload
+  $('#image-input').on('change',Template.create.HandleImageUpload);
+
+
 };
+
+
+// Editor toolbar: generic buttons
+Template.create.EditorTool = function(html, markdown, type)
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let text  = body.value.substring(start,end);
+  if(!text) text = type;
+  let imkd  = markdown.length;
+  let ihtml = html.length;
+  let mkd_cls = markdown;
+  if(markdown.startsWith('#') || ['> '].includes(markdown)) mkd_cls = '';
+
+  // Checking whether the font is already modified - > we need to remove the modifier
+  if(markdown!='' && body.value.substring(start-imkd,start)==markdown && (mkd_cls=='' || body.value.substring(end,end+imkd)==markdown) )
+  {
+    body.value = body.value.substring(0,start-imkd) + text + body.value.substring(end+mkd_cls.length,body.value.length);
+    body.selectionStart=start-imkd; body.selectionEnd=end-imkd;
+  }
+  else if(body.value.substring(start-(ihtml+2),start)=='<'+html+'>' && body.value.substring(end,end+ihtml+3)=='</'+html+'>')
+  {
+    body.value = body.value.substring(0,start-(ihtml+2)) + text + body.value.substring(end+ihtml+3,body.value.length);
+    body.selectionStart=start-(ihtml+2); body.selectionEnd=end-(ihtml+2);
+  }
+
+  // the text is normal -> we need to add the modifier
+  else if(markdown!='')
+  {
+    body.value = body.value.substring(0,start) + markdown + text + mkd_cls + body.value.substring(end,body.value.length);
+    body.selectionStart=start+imkd; body.selectionEnd=start+imkd+text.length;
+  }
+  else
+  {
+    body.value = body.value.substring(0,start) + '<' + html + '>' + text + '</' + html + '>' + body.value.substring(end,body.value.length);
+    body.selectionStart=start+ihtml+2; body.selectionEnd=start+ihtml+2+text.length;
+  }
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+// Editor toolbar: the div align environment
+Template.create.EditorToolDiv = function(html, type)
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let text  = body.value.substring(start,end);
+  if(!text) text = type;
+  let ihtml = html.length;
+
+  // Checking whether the font is already modified - > we need to remove the modifier
+  if(body.value.substring(start-(ihtml+14),start)=='<div class=\"'+html+'\">' && body.value.substring(end,end+6)=='</div>')
+  {
+    body.value = body.value.substring(0,start-(ihtml+14)) + text + body.value.substring(end+6,body.value.length);
+    body.selectionStart=start-(ihtml+14); body.selectionEnd=start-(ihtml+14) + text.length;
+  }
+
+  // the text is normal -> we need to add the modifier
+  else
+  {
+    body.value = body.value.substring(0,start) + '<div class=\"' + html + '\">' + text + '</div>' + body.value.substring(end,body.value.length);
+    body.selectionStart=start+ihtml+14; body.selectionEnd=start+ihtml+14+text.length;
+  }
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+// Editor toolbar: lists
+Template.create.EditorToolList = function(tag)
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let text  = body.value.substring(start,end);
+
+  // No text is provided: template list
+  if(!text)
+  {
+    if(tag=='u')
+    {
+      body.value = body.value.substring(0,start) + '- item 1\n- item 2\n- item 3\n' +
+        body.value.substring(end,body.value.length);
+      body.selectionStart=start; body.selectionEnd=start+26;
+    }
+    else if(tag=='o')
+    {
+      body.value = body.value.substring(0,start) + '1. item 1\n2. item 2\n3. item 3\n' +
+        body.value.substring(end,body.value.length);
+      body.selectionStart=start; body.selectionEnd=start+29;
+    }
+  }
+
+  // Some text is provided: inside the list
+  else
+  {
+    if(tag=='u')
+    {
+      text = '- ' + text.replace(/\n/gm,'\n- ');
+      if(text.match(/-\s{1,}- /gm)) { text=text.replace(/\n-/gm,'\n'); text=text.substring(1,text.length);}
+    }
+    else if(tag=='o')
+    {
+      text = text.split('\n');
+      for(let i=0; i<text.length;i++) text[i] = (i+1).toString() + '. ' + text[i];
+      text = text.join('\n');
+      if(text.match(/\d+\.\s{1,}\d+\. /gm)) { text=text.replace(/\n\d+\./gm,'\n'); text=text.substring(2,text.length);}
+    }
+    body.value = body.value.substring(0,start) + text + body.value.substring(end,body.value.length);
+    body.selectionStart=start; body.selectionEnd=start+text.length;
+  }
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+// Editor toolbar: adding tables
+Template.create.EditorToolTable = function()
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+
+  // Nothing is provided: we create a template
+  body.value = body.value.substring(0,start) + '| Title column1 | Title column2 | Title column3 |\n' +
+    '|-|-|-|\n' + '| Content column1 | Content column2 | Content column3 |\n' +
+    '| ... | ... | ... |\n' +
+  body.value.substring(end,body.value.length);
+  body.selectionStart=start; body.selectionEnd=start+133;
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+
+// Editor toolbar: image through a link
+Template.create.EditorToolLink= function()
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let text  = body.value.substring(start,end);
+
+  // Nothing is provided: we create a template
+  if(!text)
+  {
+    body.value = body.value.substring(0,start)+'[Link description](Link) '+ body.value.substring(end,body.value.length);
+    body.selectionStart=start; body.selectionEnd=start+24;
+  }
+
+  // A link is provided (assume it is the link itself)
+  else if (text.startsWith('http'))
+  {
+    body.value = body.value.substring(0,start) + '[Link description]('+text+') ' +
+        body.value.substring(end,body.value.length);
+    body.selectionStart=start+1; body.selectionEnd=start+17;
+  }
+
+  // Something else is provided (assumes it it the link description)
+  else
+  {
+    body.value = body.value.substring(0,start) + '['+text+'](Link) ' +
+        body.value.substring(end,body.value.length);
+    body.selectionStart=start+3+text.length; body.selectionEnd=start+7+text.length;
+  }
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+// Editor toolbar: links
+Template.create.EditorToolImageLink= function()
+{
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let text  = body.value.substring(start,end);
+
+  // Nothing is provided: we create a template
+  if(!text)
+  {
+    body.value = body.value.substring(0,start) + '![Image description](Image link) ' +
+        body.value.substring(end,body.value.length);
+    body.selectionStart=start; body.selectionEnd=start+32;
+  }
+
+  // A link is provided (included in the code)
+  else if (text.startsWith('http'))
+  {
+    body.value = body.value.substring(0,start) + '![Image description]('+text+') ' +
+        body.value.substring(end,body.value.length);
+    body.selectionStart=start; body.selectionEnd=start+22+text.length;
+  }
+
+  // Something else is provided (included in the description)
+  else
+  {
+    body.value = body.value.substring(0,start) + '!['+text+'](Image link) ' +
+        body.value.substring(end,body.value.length);
+    body.selectionStart=start; body.selectionEnd=start+15+text.length;
+  }
+
+  // Updating the content
+  Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+  body.focus();
+};
+
+
+
+// Handling image upload
+Template.create.HandleImageUpload = event =>
+{
+  // Security
+  if(event.target.files.length<1) return;
+  let file  = event.target.files[0];
+  if(!file.type.startsWith('image')) { alert('Error : Incorrect file type'); return; }
+  if(file.size > 2*1024*1024)        { alert('Error : Exceeded size [2MB]'); return; }
+
+  // Useful variables
+  let body  = document.getElementById('newarticle').postbody;
+  let start = body.selectionStart;
+  let end   = body.selectionEnd;
+  let alt   = body.value.substring(start,end);
+
+  // Processing the file
+  let url   = `https://api.cloudinary.com/v1_1/drrz8xekm/upload`;
+  let xhr   = new XMLHttpRequest();
+  xhr.open('POST', url, true);
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  // upload progress event
+  xhr.upload.addEventListener("progress", function (e)
+   { console.log('upload progress...', percent_complete = (e.loaded / e.total)*100, '%'); }
+  );
+
+  // On change
+  xhr.onreadystatechange = function (e)
+  {
+    if (xhr.readyState == 4 && xhr.status == 200)
+    {
+      // Adding the image to the post source
+      let response = JSON.parse(xhr.responseText);
+      if(!alt) alt = response.public_id;
+      body.value = body.value.substring(0,start) + '![' + alt + '](' + response.secure_url + ') ' +
+        body.value.substring(end,body.value.length);
+      body.selectionStart = start+2; body.selectionEnd=start+2+alt.length;
+
+      // Updating the content
+      Session.set('preview-body', Blaze._globalHelpers['ToHTML'](body.value));
+      body.focus();
+    }
+  };
+
+  // Sending the form
+  let dform = new FormData();
+  dform.append('upload_preset', 'steemstem');
+  dform.append('tags', 'browser_upload');
+  dform.append('file', file);
+  xhr.send(dform);
+}
 
 
 // Control of the different buttons
@@ -97,6 +380,32 @@ Template.create.events({
     delete json[event.target.getAttribute('name')];
     Session.set('preview-beneficiaries', JSON.stringify(json));
   },
+
+  // toolbar
+  'click .ui.button.bold'         : function(event) { Template.create.EditorTool('b'  ,'**','bold'); },
+  'click .ui.button.italic'       : function(event) { Template.create.EditorTool('i'  ,'*','italic'); },
+  'click .ui.button.underline'    : function(event) { Template.create.EditorTool('u'  ,'','underlined'); },
+  'click .ui.button.strikethrough': function(event) { Template.create.EditorTool('del','~~','strikedthrough'); },
+  'click .ui.button.subscript'    : function(event) { Template.create.EditorTool('sub','','superscripted'); },
+  'click .ui.button.superscript'  : function(event) { Template.create.EditorTool('sup','','subscripted'); },
+  'click .ui.button.h1'           : function(event) { Template.create.EditorTool('h1','# ','Header 1'); },
+  'click .ui.button.h2'           : function(event) { Template.create.EditorTool('h2','## ','Header 2'); },
+  'click .ui.button.h3'           : function(event) { Template.create.EditorTool('h3','### ','Header 3'); },
+  'click .ui.button.h4'           : function(event) { Template.create.EditorTool('h4','#### ','Header 4'); },
+  'click .ui.button.h5'           : function(event) { Template.create.EditorTool('h5','##### ','Header 5'); },
+  'click .ui.button.h6'           : function(event) { Template.create.EditorTool('h6','###### ','Header 6'); },
+  'click .ui.button.lefty'        : function(event) { Template.create.EditorToolDiv('pull-left','left-aligned'); },
+  'click .ui.button.righty'       : function(event) { Template.create.EditorToolDiv('pull-right','right-aligned'); },
+  'click .ui.button.justifyy'     : function(event) { Template.create.EditorToolDiv('text-justify','justified'); },
+  'click .ui.button.centery'      : function(event) { Template.create.EditorTool('center','','centered'); },
+  'click .ui.button.quote'        : function(event) { Template.create.EditorTool('blockquote','> ','a quote'); },
+  'click .ui.button.codify'       : function(event) { Template.create.EditorTool('pre','```\n','some code\n'); },
+  'click .ui.button.listuly'      : function(event) { Template.create.EditorToolList('u'); },
+  'click .ui.button.listoly'      : function(event) { Template.create.EditorToolList('o'); },
+  'click .ui.button.imagelink'    : function(event) { Template.create.EditorToolImageLink(); },
+  'click .ui.button.link'         : function(event) { Template.create.EditorToolLink(); },
+  'click .ui.button.imageup'      : function(event) { $('#image-input').click(); },
+  'click .ui.button.tablify'      : function(event) { Template.create.EditorToolTable(); },
 
   // Submission of the post
   'click .ui.button.submit': function (event)

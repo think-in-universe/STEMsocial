@@ -545,7 +545,7 @@ Template.registerHelper('ToHTML', function(text)
     for(let j=0; j<nspaces.length; j++)
     {
       let sp = new Array(2*(nspaces.length-j)).join(' ');
-      res = res + sp + '</' + natures[natures.length-j-1] +'>\n';
+      res = res + sp + '</' + natures[natures.length-j-1] +'> ';
     }
     return res;
   }
@@ -562,14 +562,17 @@ Template.registerHelper('ToHTML', function(text)
     // quotes
     if(line.startsWith('>'))
     {
-      in_quote++;
-      line='<blockquote>'+line.substring(1,line.length);
+      if(in_quote==0) { in_quote++; line='<blockquote>\"'+line.substring(1,line.length); }
+      else             line=line.substring(1,line.length);
+      if(i==(new_text.length-1) || !new_text[i+1].startsWith('>'))
+        { in_quote--; line=line+'\"</blockquote>';}
     }
 
     // protection
+    if(nspaces!=[] && line.length==0)
+      { new_text[i]=close_all_lists(nspaces,list_natures); nspaces = []; list_natures = []; continue;}
     if(in_quote==0 && in_table==0 && line.length==0) { new_text[i]='<br />'; continue; }
     if(in_quote==0 && in_table==0 && line.trim().length==0) { new_text[i]='<br />'; continue; }
-    if(in_quote!=0 && line.length==0) { new_text[i]='</blockquote>'; in_quote--; continue; }
     if(in_table>0 && line.length==0)  { new_text[i-1] = new_text[i-1] + '  </tbody>\n</table>\n'; in_table=0; cell_natures = []; continue;}
 
     // Lists
@@ -631,7 +634,8 @@ Template.registerHelper('ToHTML', function(text)
     if(!is_ul && !is_ol && idx>0 && nspaces.length>0)
     {
       let sp = new Array(2*(nspaces.length+1)).join(' ');
-      line = sp + line;
+      new_text[i-1] = new_text[i-1].replace('</li>','');
+      line = sp + line + '</li>';
     }
     else if(is_ul || is_ol)
     {
@@ -647,7 +651,7 @@ Template.registerHelper('ToHTML', function(text)
         if(is_ul) {list_natures.push('ul');}
         if(is_ol) {list_natures.push('ol');}
         let sp = new Array(2*nspaces.length).join(' ');
-        line = sp + '<' + list_natures[list_natures.length-1] + '>\n' + sp + '  <li style="margin-top:3px; margin-bottom:3px">'+line.substring(2,line.length)+'</li>';
+        line = sp + '<' + list_natures[list_natures.length-1] + '>' + sp + '  <li style="margin-top:3px; margin-bottom:3px">'+line.substring(2,line.length)+'</li>';
       }
       // No new list are needed
       else
@@ -656,7 +660,7 @@ Template.registerHelper('ToHTML', function(text)
         line = sp + '  <li style="margin-top:7px; margin-bottom:3px">'+line.substring(2,line.length)+'</li>';
         // Do we need to close some lists
         for(let j=my_ul+1; j<nspaces.length; j++)
-          { sp = new Array(2*j+2).join(' '); line = sp + '</' + list_natures[list_natures.length-(j-my_ul)] + '>\n' + line; }
+          { sp = new Array(2*j+2).join(' '); line = sp + '</' + list_natures[list_natures.length-(j-my_ul)] + '> ' + line; }
         nspaces     = nspaces.slice(0,my_ul+1);
         list_natures = list_natures.slice(0,my_ul+1);
       }
@@ -777,12 +781,13 @@ Template.registerHelper('ToHTML', function(text)
   new_text = new_text.replace(/\n/g,'<br />');
   new_text = new_text.replace(/(<br ?\/?>){3,}/gm,'<br /><br />');
   new_text = new_text.replace(/<\/table><br ?\/?><br ?\/?>/gm,'</table><br />');
+  new_text = new_text.replace(/<\/blockquote><br ?\/?><br ?\/?>/gm,'</blockquote><br />');
   let divs = new_text.match(/<\/div>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], '<\/div>');
   divs = new_text.match(/<div[^\>\<]*>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], divs[i].match(/<div[^\>\<]*>/g)[0]);
   let to_clean = ['\/ul', 'ul', '\/li', '\/h1', '\/h2', '\/h3', '\/h4', '\/h5','\/h6','tr','\/td','\/tr',
-   '\/thead', 'hr','tbody','\/tbody'];
+   '\/thead', 'hr','tbody','\/tbody', '\/ol', 'ol'];
   for(let i=0; i<to_clean.length;i++)
   {
     let rep = new RegExp('<'+to_clean[i]+' ?\/?>\\s*(<br ?\/?>)+',"gm");
@@ -792,6 +797,7 @@ Template.registerHelper('ToHTML', function(text)
   // code environement
   if(codetags)  { for (let i=0;i<codetags.length;i++) { new_text = restore(new_text,'--ssioa--'+parseInt(i)+'-', '<pre>'+codetags[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</pre>'); } }
   if(codetags2) { for (let i=0;i<codetags2.length;i++) { new_text = restore(new_text,'--ssiob--'+parseInt(i)+'-', '<code>'+codetags2[i].replace(/`/g,'').replace(/>/g,'&gt;').replace(/</g,'&lt;')+'</code>'); } }
+  new_text = new_text.replace(/<\/pre><br ?\/?>/gm,'</pre>');
 
   // Output
   return new_text;
