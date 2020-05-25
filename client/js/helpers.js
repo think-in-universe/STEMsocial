@@ -499,7 +499,6 @@ Template.registerHelper('ToHTML', function(text)
   // Covering markdown link into HTML
   let fixlinks =  new_text.match(/\]\(\s+http/gi);
   if(fixlinks) { for (let i=0;i<fixlinks.length;i++) { new_text = new_text.replace(fixlinks[i], fixlinks[i].replace(' ','')); } }
-//  let mkdtags = new_text.match(/\[.+\]\(\S+\)/gi);
   let mkdtags = new_text.match(/\[[^\[\]]+\]\([^\s]+[^\s\)]\)/gi);
   if(mkdtags) { for (let i=0;i<mkdtags.length;i++) { new_text = new_text.replace(mkdtags[i], ' --ssiod--'+parseInt(i)+'- '); } }
 

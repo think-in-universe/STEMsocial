@@ -88,24 +88,26 @@ Template.create.EditorTool = function(html, markdown, type)
   if(markdown!='' && body.value.substring(start-imkd,start)==markdown && (mkd_cls=='' || body.value.substring(end,end+imkd)==markdown) )
   {
     body.value = body.value.substring(0,start-imkd) + text + body.value.substring(end+mkd_cls.length,body.value.length);
-    body.selectionStart=start-imkd; body.selectionEnd=end-imkd;
+    body.selectionStart=end-imkd; body.selectionEnd=end-imkd;
   }
   else if(body.value.substring(start-(ihtml+2),start)=='<'+html+'>' && body.value.substring(end,end+ihtml+3)=='</'+html+'>')
   {
     body.value = body.value.substring(0,start-(ihtml+2)) + text + body.value.substring(end+ihtml+3,body.value.length);
-    body.selectionStart=start-(ihtml+2); body.selectionEnd=end-(ihtml+2);
+    body.selectionStart=end-(ihtml+2); body.selectionEnd=end-(ihtml+2);
   }
 
   // the text is normal -> we need to add the modifier
   else if(markdown!='')
   {
     body.value = body.value.substring(0,start) + markdown + text + mkd_cls + body.value.substring(end,body.value.length);
-    body.selectionStart=start+imkd; body.selectionEnd=start+imkd+text.length;
+    if(start==end) {body.selectionStart=start+imkd; body.selectionEnd=start+imkd+text.length;}
+    else           {body.selectionStart=start+imkd+2+text.length; body.selectionEnd=start+imkd+2+text.length; }
   }
   else
   {
     body.value = body.value.substring(0,start) + '<' + html + '>' + text + '</' + html + '>' + body.value.substring(end,body.value.length);
-    body.selectionStart=start+ihtml+2; body.selectionEnd=start+ihtml+2+text.length;
+    if(start==end) {body.selectionStart=start+ihtml+2; body.selectionEnd=start+ihtml+2+text.length; }
+    else           {body.selectionStart=start+ihtml+2+text.length; body.selectionEnd=start+ihtml+2+text.length; }
   }
 
   // Updating the content
@@ -546,7 +548,7 @@ Template.create.submit= function(project)
       {
         console.log("Error with keychain (cannot post):", response);
         $('#postprob').removeClass("hidden")
-        $('#postprob').text(JSON.stringify(response.error));
+        $('#postprob').text(JSON.stringify(response.message));
         $('.ui.button.submit').removeClass('loading')
         return;
       }
