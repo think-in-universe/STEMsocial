@@ -458,7 +458,18 @@ Template.registerHelper('ToHTML', function(text)
   }
 
   // Converting markdown images to HTML
-  let img_mkd = new_text.match(/\!\[.*\]\(\S+\)/gi);
+//  let imglink_mkd = new_text.match(/\[\!\[.*?\]\(\S+\)\]\([^\]+?[^\s\)]\)/gi);
+//  if(imglink_mkd)
+//  {
+//    for (let i=0; i<imglink_mkd.length; i++)
+//    {
+//      let src = imglink_mkd[i].match(/\]\(\S+\)/g);
+//      if(!src) continue;
+//      src = src[0].substring(2,src[0].length-1);
+//      new_text = new_text.replace(imglink_mkd[i], '<img src=\"'+src+'\" />]');
+//    }
+//  }
+  let img_mkd = new_text.match(/\!\[.*?\]\(\S+\)/gi);
   if(img_mkd)
   {
     for (let i=0; i<img_mkd.length; i++)
@@ -486,7 +497,7 @@ Template.registerHelper('ToHTML', function(text)
   if(userid) { for (let i=0;i<userid.length;i++) { new_text = new_text.replace(userid[i], ' --ssioe--'+parseInt(i)+'- '); } }
 
   // video embedding
-  let vid_urls = new_text.match(/(\bhttps?:\/\/\S+youtu.?be\S+)|(\bhttps?:\/\/youtu.?be\S+)/gi);
+  let vid_urls = new_text.match(/(\bhttps?:\/\/\S+?youtu.?be[^\s\|]+)|(\bhttps?:\/\/youtu.?be[^\s\|]+)/gi);
   if(vid_urls) { for (let i=0;i<vid_urls.length;i++) { new_text = new_text.replace(vid_urls[i], ' --ssiof--'+parseInt(i)+'- '); } }
 
   // image embedding
@@ -562,10 +573,10 @@ Template.registerHelper('ToHTML', function(text)
     // quotes
     if(line.startsWith('>'))
     {
-      if(in_quote==0) { in_quote++; line='<blockquote>\"'+line.substring(1,line.length); }
+      if(in_quote==0) { in_quote++; line='<blockquote>'+line.substring(1,line.length); }
       else             line=line.substring(1,line.length);
       if(i==(new_text.length-1) || !new_text[i+1].startsWith('>'))
-        { in_quote--; line=line+'\"</blockquote>';}
+        { in_quote--; line=line+'</blockquote>';}
     }
 
     // protection
@@ -689,7 +700,16 @@ Template.registerHelper('ToHTML', function(text)
     return mod_text;
   }
 
-  if(htmltags)  { for (let i=0;i<htmltags.length;i++)  { new_text = restore(new_text,'--ssioc--'+parseInt(i)+'-', htmltags[i]); } }
+  // Restoring the html tags
+  if(htmltags)
+  {
+    for (let i=0;i<htmltags.length;i++)
+    {
+      if(htmltags[i].match(/<audio/g) && !htmltags[i].match(/controls/g))
+        htmltags[i] = htmltags[i].replace('>','controls>');
+      new_text = restore(new_text,'--ssioc--'+parseInt(i)+'-', htmltags[i]);
+    }
+  }
   if(mkdtags)
   {
     for (let i=0;i<mkdtags.length;i++)
@@ -723,10 +743,17 @@ Template.registerHelper('ToHTML', function(text)
         if(urls[0].includes('watch'))
         {
           let myurl = urls[0].split('<')[0].split(')')[0];
-          let code = myurl.split('=')[1];
+          let decoding = myurl.split('?')[1].split('&');
+          let code  = '';
+          let start = '';
+          for (let j=0; j<decoding.length;j++)
+          {
+            if     (decoding[j].split('=')[0]=='v')             code  = decoding[j].split('=')[1];
+            else if(decoding[j].split('=')[0]=='time_continue') start = '?start='+decoding[j].split('=')[1];
+          }
           if(!vid_urls.includes('('+myurl+')'))
             new_text = restore(new_text,'--ssiof--'+parseInt(i)+'-',
-              '<br /><iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+code+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
+              '<br /><iframe frameborder=\"0\" src=\"//www.youtube.com/embed/'+code+start+'\" width=\"640\" height=\"360\" class=\"note-video-clip\"></iframe>');
         }
       }
       urls = vid_urls[i].match(/\bhttps?:\/\/youtu\.be\S+/gi);
