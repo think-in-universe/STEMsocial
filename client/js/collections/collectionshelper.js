@@ -90,8 +90,24 @@ Template.registerHelper('currentArticleComments', function ()
 // Getting the replies to a comment
 Template.registerHelper('currentCommentsSubcomments', function (comment) {
   if (Comments.find({ 'parent_permlink': comment.permlink }).fetch())
-    { return Comments.find({ 'parent_permlink': comment.permlink }).fetch() }
-})
+  {
+    comments=Comments.find({'parent_permlink':comment.permlink}).fetch();
+    comments.sort(function(a,b) {
+      let wa1 = parseInt(a.vote_rshares)
+      let wb1 = parseInt(b.vote_rshares)
+      weight_1 = wa1 > wb1 ? -1 : wa1 < wb1 ? 1 : 0
+      wa1 = parseInt(a.net_votes)
+      wb1 = parseInt(b.net_votes)
+      weight_2 = wa1 > wb1 ? -1 : wa1 < wb1 ? 1 : 0
+      wa1 = new Date(a.created).getTime();
+      wb1 = new Date(b.created).getTime();
+      weight_3 = wa1 > wb1 ? -1 : wa1 < wb1 ? 1 : 0
+      weight = weight_1+weight_2
+      return weight<0 ? -1 : weight>0 ? 1 : weight_3
+    });
+    return comments;
+  }
+});
 
 
 // Get the list of followers to a given author
