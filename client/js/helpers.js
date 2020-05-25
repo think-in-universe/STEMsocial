@@ -458,17 +458,28 @@ Template.registerHelper('ToHTML', function(text)
   }
 
   // Converting markdown images to HTML
-//  let imglink_mkd = new_text.match(/\[\!\[.*?\]\(\S+\)\]\([^\]+?[^\s\)]\)/gi);
-//  if(imglink_mkd)
-//  {
-//    for (let i=0; i<imglink_mkd.length; i++)
-//    {
-//      let src = imglink_mkd[i].match(/\]\(\S+\)/g);
-//      if(!src) continue;
-//      src = src[0].substring(2,src[0].length-1);
-//      new_text = new_text.replace(imglink_mkd[i], '<img src=\"'+src+'\" />]');
-//    }
-//  }
+  let imglink_mkd = new_text.match(/\[\!\[.*?\]\(\S+\)\]\([^\s]+[^\s\)]\)/gi);
+  if(imglink_mkd)
+  {
+    for (let i=0; i<imglink_mkd.length; i++)
+    {
+      console.log(i, imglink_mkd[i]);
+      let img_src = imglink_mkd[i].match(/\]\(\S+?\)\]/g);
+      if(!img_src) continue;
+      img_src = img_src[0].substring(2,img_src[0].length-2);
+      let img_tmp = imglink_mkd[i].replace(img_src,'');
+      let img_alt = img_tmp.match(/!\[.*?\]\(\)/g);
+      if(img_alt)
+      {
+        img_tmp = img_tmp.replace(img_alt[0],'![](');
+        img_alt = 'alt=\"' + img_alt[0].substring(2,img_alt[0].length-3) + '\" ';
+      }
+      else img_alt = '';
+      let link = img_tmp.substring(7,img_tmp.length-1);
+      new_text = new_text.replace(imglink_mkd[i], '<a href=\"' + link + '\">' + 
+        '<img src=\"'+img_src+'\" l' + img_alt + '/></a>');
+    }
+  }
   let img_mkd = new_text.match(/\!\[.*?\]\(\S+\)/gi);
   if(img_mkd)
   {
