@@ -19,6 +19,9 @@
             <div id='submit-edited-comment-{{../permlink}}' style="margin-left:-15px; margin-top:5px; display:none"
               class="ui mini button primary labeled icon hidden"><i class="icon edit"></i>Update comment</div>
           </a>
+         {{#if Deletable}}
+            <div style="margin-left:-18px; margin-top:5px"  class="ui basic mini button teal del">Delete</div>
+         {{/if}}
         {{/if}}
       {{/if}}
 

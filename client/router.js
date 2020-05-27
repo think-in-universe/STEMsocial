@@ -124,6 +124,9 @@ FlowRouter.route('/login', {
               sc2.comment(command[1], command[2] ,localStorage.username, command[3], commandp[4], command[5], JSON.parse(command[6]),
                 function (err, result) { if(err) { console.log(err)} })
               break;
+            case 'deletecomment':
+              sc2.deleteComment(command[1], command[2], function (err, result) { if(err) { console.log(err)} });
+              break;
             case 'broadcast':
               var ops='';
               if(command[1]=='1')

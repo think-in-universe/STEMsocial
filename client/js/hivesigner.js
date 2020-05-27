@@ -74,6 +74,19 @@ hivesigner = {
     }
   },
 
+  // Deleting a comment
+  deleteComment: function(parentAuthor, parentPermlink, author, permlink, cb)
+  {
+    sessionStorage.setItem('currentroute', '@'+parentAuthor+'/'+parentPermlink);
+    localStorage.setItem('sc2_command','deletecomment_'+author+'_'+permlink);
+    if(tokentest())
+    {
+      sc2.setAccessToken(localStorage.accesstoken);
+      sc2.deleteComment(author, permlink, function (err, result) { cb(err, result) });
+      delete localStorage.sc2_command;
+    }
+  },
+
   // Sending a transaction (i.e. a post here) to the blockchain
   send: function (operations, cb)
   {

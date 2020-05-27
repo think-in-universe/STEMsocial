@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import hive from '@hiveio/hive-js';
-import sc2sdk from 'sc2-sdk';
+let hivesigner = require('hivesigner');
 
 // Pause the routing
 FlowRouter.wait();
@@ -123,14 +123,15 @@ function API_connect(url_id)
 BlazeLayout.setRoot('body');
 
 // Connection to hivesigner
-let sc2 = sc2sdk.Initialize({
-    baseURL: 'https://hivesigner.com',
-    app: 'hivestem-app',
-    callbackURL: 'https://stem.openhive.network/#!/login',
-//    app: 'hivestem-app.dev',
-//    callbackURL: 'http://localhost:3000/login',
-    accessToken: 'access_token'
+let sc2 = new hivesigner.Client({
+  app: 'hivestem-app',
+  callbackURL: 'https://stem.openhive.network/#!/login',
+  accessToken: 'access_token',
+//  app: 'hivestem-app.dev',
+//  callbackURL: 'http://localhost:3000/login',
+  scope: ['vote', 'comment', 'delete_comment']
 });
+
 window.sc2 = sc2
 window.hive= hive;
 
@@ -138,7 +139,7 @@ window.hive= hive;
 Meteor.startup(function ()
 {
   // printout
-  console.log(`%c STEMsocial OpenSource v0.11.18: https://github.com/BFuks/stemsocial`,
+  console.log(`%c STEMsocial OpenSource v0.11.19: https://github.com/BFuks/stemsocial`,
     "font-size: 11px; padding: 1px 1px;");
   console.log(`%c More informations on : https://stem.openhive.network/aboutus`,
     "font-size: 11px; padding: 1px 1px;");

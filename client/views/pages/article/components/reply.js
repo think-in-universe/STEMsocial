@@ -13,7 +13,11 @@ Template.reply.helpers(
   {
     if(Session.get('preview-reply-'+this.data.permlink))
       { return Blaze._globalHelpers['ToHTML'](Session.get('preview-reply-'+this.data.permlink)); }
-  }
+  },
+
+  // Is the comment deletable
+  Deletable: function() {
+   return ( (this.data.active_votes.length==0) && (this.data.children==0) && (this.data.last_payout<this.data.created) ); }
 });
 
 
@@ -77,11 +81,20 @@ Template.reply.events({
     event.preventDefault();
     document.getElementById('submit-edited-comment-'+this.data.permlink).classList.add('loading');
     Template.reply.updatecomment(this.data)
+  },
+
+  // Action when clicking on the 'delete comment' button
+  'click .ui.button.del': function(event)
+  {
+    $('.ui.delete.mini.modal').remove();
+    $('article').append(Blaze.toHTMLWithData(Template.deletemodal, { project: this.data }));
+    $('.ui.delete.mini.modal').modal('setting', 'transition', 'scale').modal('show');
+    Template.deletemodal.init();
   }
 
 })
 
-// Function dedicatsed to the reply submission
+// Function dedicated to the reply submission
 Template.reply.comment = function (article)
 {
   let body = $('#reply-content-'+ article.permlink).val();
@@ -93,21 +106,38 @@ Template.reply.comment = function (article)
     window.hive_keychain.requestPost(localStorage.username, '' , body, article.permlink, article.author, json_metadata,
       permlink, '' , function(response)
     {
+      // Updating the buttons
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
-      Comments.loadComments(article.author, article.permlink);
+
+      // Updating the comment information
+      if(!response.success) { console.log('Posting reply with keychain', response); return; }
+
+      // Updating the comment information
       document.getElementById('reply-button-'+article.permlink).style.display = "";
+      Comments.loadComments(article.author, article.permlink);
+      if( Comments.findOne({author:article.author, permlink:article.permlink}))
+        Comments.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
+      else if( Content.findOne({author:article.author, permlink:article.permlink}) )
+        Content.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
     });
   }
   else
   {
     hivesigner.comment(article.author, article.permlink, body, json_metadata, function (error, result)
     {
+      // Updating the reply buttons
+      document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
+
       // Error
-      if (error) { console.log('Posting reply with hivesigner', error); return; }
-      // Everything is fine
-      document.getElementById('submit-comment-'+article.permlink).classList.remove('loading')
-      Comments.loadComments(article.author, article.permlink);
+      if (error) { console.log('Posting reply with hivesigner', error, result); return; }
+
+      // Updating the comment information
       document.getElementById('reply-button-'+article.permlink).style.display = "";
+      Comments.loadComments(article.author, article.permlink);
+      if( Comments.findOne({author:article.author, permlink:article.permlink}))
+        Comments.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
+      else if( Content.findOne({author:article.author, permlink:article.permlink}) )
+        Content.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
     });
   }
 }

@@ -1,0 +1,17 @@
+<template name="deletemodal">
+  {{#with project}}
+  <div class="ui delete mini modal">
+    <div class="ui column">
+      <div class="row">
+        <h3 style="border-top:4px solid #db2828!important;padding-top: 0.5em;">Confirm deleting this comment</h3>
+        <div class="content">{{shortDescription (xssShortFormatter body)}}</div>
+      </div>
+    </div>
+    <div class="actions" style="background: transparent; margin-top:15px;">
+      <div class="ui cancel red button">Cancel</div>
+      <div id="confirmdelete" author='{{author}}' permlink='{{permlink}}' parent_author='{{parent_author}}'
+        parent_permlink='{{parent_permlink}}' class="ui confirmdelete green button">Confirm</div>
+    </div>
+  </div>
+  {{/with}}
+</template>

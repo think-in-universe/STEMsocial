@@ -895,3 +895,9 @@ code  { background-color: #eee; color:red}
   border-bottom: none;
 }
 
+.ui.delete {
+  width:460px;
+  padding: 5px;
+  left:63%!important;
+  right:37%!important;
+}
