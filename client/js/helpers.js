@@ -463,7 +463,6 @@ Template.registerHelper('ToHTML', function(text)
   {
     for (let i=0; i<imglink_mkd.length; i++)
     {
-      console.log(i, imglink_mkd[i]);
       let img_src = imglink_mkd[i].match(/\]\(\S+?\)\]/g);
       if(!img_src) continue;
       img_src = img_src[0].substring(2,img_src[0].length-2);
@@ -499,8 +498,12 @@ Template.registerHelper('ToHTML', function(text)
   // Covering markdown link into HTML
   let fixlinks =  new_text.match(/\]\(\s+http/gi);
   if(fixlinks) { for (let i=0;i<fixlinks.length;i++) { new_text = new_text.replace(fixlinks[i], fixlinks[i].replace(' ','')); } }
-  let mkdtags = new_text.match(/\[[^\[\]]+\]\([^\s]+[^\s\)]\)/gi);
-  if(mkdtags) { for (let i=0;i<mkdtags.length;i++) { new_text = new_text.replace(mkdtags[i], ' --ssiod--'+parseInt(i)+'- '); } }
+  let mkdtags = new_text.match(/\[[^\[\]]+\]\([^ ]+[^ \)]\)/gi);
+  if(mkdtags)
+  {
+    for (let i=0;i<mkdtags.length;i++)
+      { new_text=new_text.replace(mkdtags[i], ' --ssiod--'+parseInt(i)+'- '); mkdtags[i]=mkdtags[i].replace(/\n/g,''); }
+  }
 
   // adding links to user ids
   let userid = new_text.match(/@\b[\w.-]+\w+/gi);
@@ -543,12 +546,12 @@ Template.registerHelper('ToHTML', function(text)
       let tmp=mkd_hdr[i];
       if(tmp.endsWith('\n')) tmp = tmp.substring(0,tmp.length-1);
       if(mkd_hdr[i].startsWith('\n')) { tmp=tmp.substring(1,tmp.length); }
-      if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>'; }
-      else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>'; }
-      else if(tmp.startsWith('####'  )) { tmp = tmp.replace('####',  '<h4>')+'</h4>'; }
-      else if(tmp.startsWith('###'   )) { tmp = tmp.replace('###',   '<h3>')+'</h3>'; }
-      else if(tmp.startsWith('##'    )) { tmp = tmp.replace('##',    '<h2>')+'</h2>'; }
-      else if(tmp.startsWith('#'     )) { tmp = tmp.replace('#',     '<h1>')+'</h1>'; }
+      if     (tmp.startsWith('######')) { tmp = tmp.replace('######','<h6>')+'</h6>\n'; }
+      else if(tmp.startsWith('#####' )) { tmp = tmp.replace('#####', '<h5>')+'</h5>\n'; }
+      else if(tmp.startsWith('####'  )) { tmp = tmp.replace('####',  '<h4>')+'</h4>\n'; }
+      else if(tmp.startsWith('###'   )) { tmp = tmp.replace('###',   '<h3>')+'</h3>\n'; }
+      else if(tmp.startsWith('##'    )) { tmp = tmp.replace('##',    '<h2>')+'</h2>\n'; }
+      else if(tmp.startsWith('#'     )) { tmp = tmp.replace('#',     '<h1>')+'</h1>\n'; }
       new_text = new_text.replace(mkd_hdr[i],tmp);
     }
   }
