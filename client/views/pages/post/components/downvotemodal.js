@@ -54,28 +54,18 @@ Template.downvotemodal.init = function (iscomment=false)
     let weight = Session.get('currentVotingPercentage') * 100;
     let author = $("#confirmbutton").attr("data-author");
     let permlink = $("#confirmbutton").attr("data-permlink");
-    if (localStorage.kc)
+
+    HiveConnect(['vote', localStorage.username, permlink, author, weight], function(response)
     {
-      window.hive_keychain.requestVote(localStorage.username, permlink, author, weight, function(resp)
-      {
-        if(resp.success) UpdatePostInfo(author,permlink);
-        else $("#confirmbutton").removeClass('loading');
-      } );
-    }
-    else
-    {
-      hivesigner.vote(author, permlink, weight, function (error, result)
-      {
-        if (result) UpdatePostInfo(author,permlink);
-        else
-        {
-          $("#confirmbutton").removeClass('loading');
-          event.preventDefault()
-          sessionStorage.setItem('currentroute', FlowRouter.current().path)
-          window.location.href = sc2.getLoginURL()
-        }
-      });
-    }
+      // Updating the buttons
+      $("#confirmbutton").removeClass('loading');
+
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
+
+      // Everything was fine -> updating the post information
+      UpdatePostInfo(author,permlink);
+    });
   }
 }
 

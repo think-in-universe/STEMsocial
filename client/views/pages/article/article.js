@@ -14,6 +14,10 @@ Template.article.rendered = function () {
         Comments.loadComments(Session.get('user'), Session.get('article'));
     }
   });
+
+  // Do we have a comment to post?
+  if(localStorage.connect_command) HiveConnect(JSON.parse(localStorage.connect_command), function() {});
+
 }
 
 // Set of helper methods to be used in the HTML document

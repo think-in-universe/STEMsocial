@@ -54,7 +54,7 @@ Template.beneficiarymodal.init = function (bnf,shr)
   // Submit button
   document.getElementById("confirm-beneficiary").addEventListener("click", AddBeneficiary);
 
-  // Sending the required operation to hivesigner
+  // Sending the required operation to the main page
   function AddBeneficiary()
   {
       let json={}; if(Session.get('preview-beneficiaries')) json=JSON.parse(Session.get('preview-beneficiaries'));

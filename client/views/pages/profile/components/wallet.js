@@ -1,5 +1,9 @@
 // Rendering of the page (nothing special)
-Template.wallet.rendered = function () { }
+Template.wallet.rendered = function ()
+{
+  // Do we have to claim rewards?
+  if(localStorage.connect_command) HiveConnect(JSON.parse(localStorage.connect_command), function() { });
+}
 
 
 Template.wallet.helpers(
@@ -30,30 +34,23 @@ Template.wallet.events(
   // Claim reward button
   'click #claim': function (event)
   {
-    let user  = MainUser.findOne()
-    let hive  = user.reward_steem_balance;
-    let hbd   = user.reward_sbd_balance;
-    let vests = user.reward_vesting_balance;
-    event.preventDefault()
-    if (localStorage.kc)
+    let user  = MainUser.findOne({name:localStorage.username});
+    let json = ['claim_reward_balance',{ account:localStorage.username,reward_steem:user.reward_steem_balance,
+       reward_sbd:user.reward_sbd_balance, reward_vests:user.reward_vesting_balance}];
+
+    document.getElementById('claim').classList.add('loading');
+    HiveConnect(['claim', localStorage.username, [json], 'Posting'], function(response)
     {
-      let json = ['claim_reward_balance',{ account:localStorage.username,reward_steem:hive,reward_sbd:hbd,reward_vests:vests}];
-      window.hive_keychain.requestBroadcast(localStorage.username, [json], 'Posting', function(response)
-      {
-        if(!response.success) { console.log('Error with keychain (cannot claim rewards)', json, response); return; }
-        MainUser.add(localStorage.username, function (error) { if (error) { console.log(error) } });
-        FlowRouter.reload();
-      });
-    }
-    else
-    {
-      hivesigner.claimRewardBalance(hive, hbd, vests, function (error)
-      {
-        if (error) { console.log('Error when claiming rewards with hivesigner', error); return; }
-        MainUser.add(localStorage.username, function (error) { if (error) { console.log(error) } });
-        FlowRouter.reload();
-      });
-    }
+      // Updating the button
+      document.getElementById('claim').classList.remove('loading');
+
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
+
+      // Everything is fine -> resettng the balance
+      MainUser.remove(localStorage.username, function() { MainUser.add(localStorage.username, function ()
+        {   FlowRouter.reload();}); });
+    });
   },
 
   // Wrapper calling the transfer form when called from STEEM

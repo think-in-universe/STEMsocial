@@ -518,7 +518,7 @@ Template.registerHelper('ToHTML', function(text)
   if(img_urls) { for (let i=0;i<img_urls.length;i++) { new_text = new_text.replace(img_urls[i], ' --ssiog--'+parseInt(i)+'- '); } }
 
   // link embedding
-  let link_urls = new_text.match(/(\bhttps?:\/\/\S+)/g);
+  let link_urls = new_text.match(/(\bhttps?:\/\/[^\s\|]+)/g);
   if(link_urls) { for (let i=0;i<link_urls.length;i++) { new_text = new_text.replace(link_urls[i], ' --ssioh--'+parseInt(i)+'- '); } }
 
   // From markdown to html: bold
@@ -812,7 +812,10 @@ Template.registerHelper('ToHTML', function(text)
 
   // Images and links
   if(img_urls)
-  { for (let i=0;i<img_urls.length;i++) { new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<br /><img src=\"'+img_urls[i]+'\" /><br />'); } }
+  {
+    for (let i=0;i<img_urls.length;i++)
+      new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<br /><img src=\"https://images.hive.blog/1280x0/'+img_urls[i]+'\" /><br />');
+  }
 
   if(link_urls) { for (let i=0;i<link_urls.length;i++) { new_text = restore(new_text,'--ssioh--'+parseInt(i)+'-',
     '<a href=\"'+link_urls[i]+'\">'+link_urls[i]+'</a>'); } }
@@ -823,11 +826,11 @@ Template.registerHelper('ToHTML', function(text)
   new_text = new_text.replace(/<\/table><br ?\/?><br ?\/?>/gm,'</table><br />');
   new_text = new_text.replace(/<\/blockquote><br ?\/?><br ?\/?>/gm,'</blockquote><br />');
   let divs = new_text.match(/<\/div>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
-  if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], '<\/div>');
+  if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], '<\/div><br />');
   divs = new_text.match(/<div[^\>\<]*>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], divs[i].match(/<div[^\>\<]*>/g)[0]);
   let to_clean = ['\/ul', 'ul', '\/li', '\/h1', '\/h2', '\/h3', '\/h4', '\/h5','\/h6','tr','\/td','\/tr',
-   '\/thead', 'hr','tbody','\/tbody', '\/ol', 'ol'];
+   '\/thead', 'hr','tbody','\/tbody', '\/ol', 'ol', 'center','\/center'];
   for(let i=0; i<to_clean.length;i++)
   {
     let rep = new RegExp('<'+to_clean[i]+' ?\/?>\\s*(<br ?\/?>)+',"gm");

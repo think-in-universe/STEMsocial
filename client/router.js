@@ -85,11 +85,17 @@ FlowRouter.route('/edit/@:user/:permlink',
 FlowRouter.route('/login', {
     name: 'login',
     action: function (params, queryParams) {
+        // Setting the token information
         DocHead.removeDocHeadAddedTags()
-        localStorage.clear();
-        localStorage.setItem('accesstoken', queryParams.access_token)
-        localStorage.setItem('expires_in', queryParams.expires_in)
-        localStorage.setItem('username', queryParams.username)
+        localStorage.setItem('accesstoken', queryParams.access_token);  sc2.setAccessToken(localStorage.accesstoken);
+        localStorage.setItem('username', queryParams.username);
+        let time = new Date(); time = new Date(time.getTime() + 1000 * (parseInt(queryParams.expires_in) - 10000));
+        localStorage.setItem('expires_at', time);
+        FlowRouter.setQueryParams({ params: null, queryParams: null });
+
+        // Checking whether a command has to be submitted
+        if(localStorage.connect_command) { FlowRouter.go(localStorage.connect_route); return; }
+
         var state=''
         var command =''
         if(queryParams.state)
@@ -98,50 +104,11 @@ FlowRouter.route('/login', {
           command = state.substring(state.indexOf('----ssio----')+12).split('_')
           state = state.substring(0,state.indexOf('----ssio----'))
         }
-        var time = new Date();
-        FlowRouter.setQueryParams({ params: null, queryParams: null });
-        time = new Date(time.getTime() + 1000 * (parseInt(localStorage.expires_in) - 10000));
-        localStorage.setItem('expires_at', time)
         if(command!='')
         {
           sc2.setAccessToken(localStorage.accesstoken);
           switch(command[0])
           {
-            case 'vote':
-              sc2.vote(localStorage.username, command[1], command[2], parseInt(command[3]),
-                function (err, result) { if(err) { console.log(err)} })
-              break;
-            case 'claim':
-              sc2.claimRewardBalance(localStorage.username, command[1], command[2], command[3],
-                function (err, result) { if(err) { console.log(err)} })
-              break;
-            case 'comment':
-              var permlink = Math.random(localStorage.username + command[2]).toString(36).substr(2, 9)
-              sc2.comment(command[1], command[2] ,localStorage.username, permlink, permlink, command[3], JSON.parse(command[4]),
-                function (err, result) { if(err) { console.log(err)} })
-              break;
-            case 'commentupdate':
-              sc2.comment(command[1], command[2] ,localStorage.username, command[3], commandp[4], command[5], JSON.parse(command[6]),
-                function (err, result) { if(err) { console.log(err)} })
-              break;
-            case 'deletecomment':
-              sc2.deleteComment(command[1], command[2], function (err, result) { if(err) { console.log(err)} });
-              break;
-            case 'broadcast':
-              var ops='';
-              if(command[1]=='1')
-                { ops = [ ['comment', JSON.parse(command[2].split('UNDERSKORE').join('_')) ] ]; }
-              else if(command[1]=='2')
-              {
-                 ops = [
-                   ['comment', JSON.parse(command[2].split('UNDERSKORE').join('_')) ],
-                   ['comment_options', JSON.parse(command[3].split('UNDERSKORE').join('_')) ] ];
-                 ops[1][1].author=localStorage.username
-              }
-              ops[0][1].author=localStorage.username
-              sc2.broadcast(ops, function (err, result) { if(err) { console.log(err)} });
-              state = state.replace('undefined',localStorage.username)
-              break;
             case 'follow':
               sc2.follow(localStorage.username, command[1],  function (err, result) { if(err) { console.log(err)} });
               if (state=='undefined') { state='' }
@@ -149,16 +116,6 @@ FlowRouter.route('/login', {
             case 'unfollow':
               sc2.unfollow(localStorage.username, command[1],  function (err, result) { if(err) { console.log(err)} });
               if (state=='undefined') { state='' }
-              break;
-            case 'reblog':
-              sc2.reblog(localStorage.username, command[1], command[2],
-                function (err, result) { if(err) { console.log(err)} })
-              break;
-            case 'metadata':
-              sc2.updateUserMetadata(JSON.parse(command[2].split('UNDERSKORE').join('_')), function (err, result) {
-                if(result) { hivesigner.me(); cb(null) }
-                else       { console.log(err) }
-              });
               break;
           }
         }

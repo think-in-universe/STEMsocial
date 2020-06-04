@@ -39,6 +39,7 @@ Template.create.rendered = function () {
       }
       else
       {
+        $('.ui.multiple.dropdown').dropdown('setting', 'allowAdditions', true);
         $('.to.message.yellow').removeClass('visible');
         $('.to.message.yellow').addClass('hidden');
       }
@@ -473,8 +474,10 @@ Template.create.events({
     if(Session.get('edit-post'))
     {
       let old = Session.get('edit-post');
-      if(typeof old.json_metadata === 'string' || old.json_metadata instanceof String) old.json_metadata = JSON.parse(old.json_metadata);
+      if(typeof old.json_metadata === 'string' || old.json_metadata instanceof String)
+        old.json_metadata = JSON.parse(old.json_metadata);
       old.json_metadata.tags=tags;
+      old.json_metadata['app'] = 'stemsocial';
 
       post_object = [
         ['comment', { parent_author: old.parent_author, parent_permlink :old.parent_permlink, author: old.author,
@@ -522,71 +525,35 @@ Template.create.helpers({
   },
   // Function allowing to display a single beneficiary
   DisplayBeneficiary: function(beneficiary) { return beneficiary[0] },
-  DisplayShare: function(beneficiary) { return beneficiary[1] },
-
-
+  DisplayShare: function(beneficiary) { return beneficiary[1] }
 });
 
 
 // Submit the post
 Template.create.submit= function(project)
 {
-  if (localStorage.kc)
-  {
-    let comment =project[0][1];
-    let options = '';
-    if(project.length>1)
+  // Setup
+  let comment =project[0][1];
+  let options = '';
+  if(project.length>1) { options = project[1][1]; if(options.extensions.length==0) { options=''; } }
+  if (options!='') { options = JSON.stringify(options); }
+
+  // Sending the information
+  HiveConnect(['comment', comment.author, comment.title , comment.body, comment.parent_permlink, comment.parent_author,
+    comment.json_metadata, comment.permlink, options], function(response)
     {
-      options = project[1][1];
-      if(options.extensions.length==0) { options=''; }
-    }
-    if (options!='') { options = JSON.stringify(options); }
-    window.hive_keychain.requestPost(comment.author, comment.title , comment.body, comment.parent_permlink,
-      comment.parent_author, comment.json_metadata, comment.permlink, options, function(response)
-    {
-      if(!response.success)
-      {
-        console.log("Error with keychain (cannot post):", response);
-        $('#postprob').removeClass("hidden")
-        $('#postprob').text(JSON.stringify(response.message));
-        $('.ui.button.submit').removeClass('loading')
-        return;
-      }
-      $('#postprob').addClass("hidden")
-      // Updating the database
+      // Updating the buttons
+      $('.ui.button.submit').removeClass('loading')
+
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
+
+      // Everything is fine -> updating the database
+      let new_json = JSON.parse(project[0][1].json_metadata);
       Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
-        {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: JSON.parse(project[0][1].json_metadata)}});
+        {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: new_json}});
+
       // Redirection
       FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);
     });
-  }
-  else
-  {
-    hivesigner.send(project, function (error, result)
-    {
-      if (error)
-      {
-        $('#postprob').removeClass("hidden")
-        $('#postprob').text(error)
-        console.log("Error with hivesigner:", error.error_description)
-        console.log("status of the submission stuff:", project)
-        if(error.error_description)
-          $('#postprob').text(error.error_description)
-      }
-      else
-      {
-        $('#postprob').addClass("hidden")
-        // Updating the database
-        Content.update({author: project[0][1].author, permlink: project[0][1].permlink},
-          {$set: {body: project[0][1].body, title: project[0][1].title, json_metadata: JSON.parse(project[0][1].json_metadata)}});
-        // Redirection
-        FlowRouter.go('#!/@' + project[0][1].author + '/' + project[0][1].permlink);
-      }
-      $('.ui.button.submit').removeClass('loading')
-      return true
-    });
-  }
 }
-
-
-

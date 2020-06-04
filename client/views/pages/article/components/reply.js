@@ -101,18 +101,17 @@ Template.reply.comment = function (article)
   let json_metadata = { tags: 'hive-196387', app: 'stemsocial' };
   let permlink = 'stemsocial-app-comment-'+ (Math.round((new Date()).getTime() / 1000)).toString();
 
-  if (localStorage.kc)
-  {
-    window.hive_keychain.requestPost(localStorage.username, '' , body, article.permlink, article.author, json_metadata,
-      permlink, '' , function(response)
+  // Posting the comment
+  HiveConnect(['comment',localStorage.username,'',body,article.permlink,article.author,json_metadata,permlink,''],
+    function(response)
     {
       // Updating the buttons
       document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
 
-      // Updating the comment information
-      if(!response.success) { console.log('Posting reply with keychain', response); return; }
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
 
-      // Updating the comment information
+      // Everything is alright -> updating the comment information
       document.getElementById('reply-button-'+article.permlink).style.display = "";
       Comments.loadComments(article.author, article.permlink);
       if( Comments.findOne({author:article.author, permlink:article.permlink}))
@@ -120,67 +119,34 @@ Template.reply.comment = function (article)
       else if( Content.findOne({author:article.author, permlink:article.permlink}) )
         Content.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
     });
-  }
-  else
-  {
-    hivesigner.comment(article.author, article.permlink, body, json_metadata, function (error, result)
-    {
-      // Updating the reply buttons
-      document.getElementById('submit-comment-'+article.permlink).classList.remove('loading');
-
-      // Error
-      if (error) { console.log('Posting reply with hivesigner', error, result); return; }
-
-      // Updating the comment information
-      document.getElementById('reply-button-'+article.permlink).style.display = "";
-      Comments.loadComments(article.author, article.permlink);
-      if( Comments.findOne({author:article.author, permlink:article.permlink}))
-        Comments.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
-      else if( Content.findOne({author:article.author, permlink:article.permlink}) )
-        Content.update({author:article.author, permlink:article.permlink}, {$set: {children:article.children+1}});
-    });
-  }
 }
 
 
-// Updating an existing comment and send to hivesigner; then updating the post display
+// Updating an existing comment and send to Hive; then updating the post display
 Template.reply.updatecomment = function (article)
 {
   let newbody = Session.get('preview-comment-edit-'+article.author+'-'+article.permlink);
   let link = article.author+'-'+article.permlink
+  let json = article.json_metadata;
+  json['app'] = "stemsocial";
 
-  if (localStorage.kc)
-  {
-    window.hive_keychain.requestPost(localStorage.username, article.title, newbody, article.parent_permlink,
-    article.parent_author, article.json_metadata,
-      article.permlink, '' , function(response)
+  // Updating the comment
+  HiveConnect(['comment', localStorage.username, article.title, newbody, article.parent_permlink,
+    article.parent_author, json, article.permlink, ''], function(response)
     {
-      document.getElementById('comment-'+link).innerHTML=Blaze._globalHelpers['ToHTML'](newbody);
+      // Updating the buttons
       document.getElementById('submit-edited-comment-'+article.permlink).classList.remove('loading')
+
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
+
+      // Everything is fine
+      document.getElementById('comment-'+link).innerHTML=Blaze._globalHelpers['ToHTML'](newbody);
       Comments.loadComments(article.author, article.permlink);
       document.getElementById('comment-edit-'+link).style.display = "none";
       document.getElementById('submit-edited-comment-'+article.permlink).style.display = "none";
       document.getElementById('comment-'+link).style.display = "";
       document.getElementById('edit-button-'+article.permlink).style.display = "";
     });
-  }
-  else
-  {
-    hivesigner.updatecomment(article.parent_author, article.parent_permlink, article.permlink, article.title,
-      newbody, article.json_metadata, function (error, res)
-    {
-      if (error) { console.log(error); if (error.description) { console.log(error.description) } }
-      else
-      {
-        document.getElementById('comment-'+link).innerHTML=Blaze._globalHelpers['ToHTML'](newbody);
-        document.getElementById('submit-edited-comment-'+article.permlink).classList.remove('loading')
-        Comments.loadComments(article.author, article.permlink);
-        document.getElementById('comment-edit-'+link).style.display = "none";
-        document.getElementById('submit-edited-comment-'+article.permlink).style.display = "none";
-        document.getElementById('comment-'+link).style.display = "";
-        document.getElementById('edit-button-'+article.permlink).style.display = "";
-      }
-    });
-  }
 }
 

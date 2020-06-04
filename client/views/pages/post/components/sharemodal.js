@@ -1,6 +1,3 @@
-// No rendering
-Template.sharemodal.rendered = function() { }
-
 // Modal initialization
 Template.sharemodal.init = function(author, permlink)
 {
@@ -10,19 +7,14 @@ Template.sharemodal.init = function(author, permlink)
   // Submit button
   function Proceed()
   {
-    if (localStorage.kc)
+    let json = JSON.stringify(['reblog', { account: localStorage.username, author: author, permlink: permlink }]);
+    HiveConnect(['reblog', localStorage.username, 'follow', 'Posting', json, 'reblog'], function(response)
     {
-      let json = JSON.stringify(['reblog', { account: localStorage.username, author: author, permlink: permlink }]);
-      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "reblog", function(response)
-        { console.log(response);});
-    }
-    else
-    {
-      hivesigner.reblog(author, permlink, function (error, result) { if (error) { console.log(error); return; } });
+      // Checking the output of the communication with Hive
+      if(!response.success) return;
+
+      // Everything is fine
       $('.ui.share.modal.'+permlink).modal('close');
-    }
+    });
   }
 }
-
-// No events
-Template.sharemodal.events({ })

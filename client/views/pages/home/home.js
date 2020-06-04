@@ -61,6 +61,9 @@ Template.home.helpers({
 
 // Rendering
 Template.home.rendered = function () {
+  // Do we have a comment to post?
+  if(localStorage.connect_command) HiveConnect(JSON.parse(localStorage.connect_command), function() {});
+
   // TOS
   get('stemsocial_storage').then((k) => {
     let are_tos_read = k;
