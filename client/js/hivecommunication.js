@@ -55,7 +55,7 @@ UseHiveSigner = function(args, cb)
   switch(args.shift())
   {
     case 'comment':
-      sc2.comment(args[4],args[3],args[0],args[6],args[1],args[2],args[5], function(err, res)
+      sc2.comment(args[4],args[3],args[0],args[6],args[1],args[2],JSON.parse(args[5]), function(err, res)
         {
           if(reload)
           {
