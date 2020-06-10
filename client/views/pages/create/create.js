@@ -532,15 +532,8 @@ Template.create.helpers({
 // Submit the post
 Template.create.submit= function(project)
 {
-  // Setup
-  let comment =project[0][1];
-  let options = '';
-  if(project.length>1) { options = project[1][1]; if(options.extensions.length==0) { options=''; } }
-  if (options!='') { options = JSON.stringify(options); }
-
   // Sending the information
-  HiveConnect(['comment', comment.author, comment.title , comment.body, comment.parent_permlink, comment.parent_author,
-    comment.json_metadata, comment.permlink, options], function(response)
+  HiveConnect(['post', project], function(response)
     {
       // Updating the buttons
       $('.ui.button.submit').removeClass('loading')

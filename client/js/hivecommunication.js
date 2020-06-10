@@ -16,6 +16,14 @@ UseKeychain = function(args, cb)
       window.hive_keychain['requestPost'](args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],
         function(response) { cb(response); });
       break;
+    case 'post':
+      let comment =args[0][0][1];
+      let options = '';
+      if(args[0].length>1) { options = args[0][1][1]; if(options.extensions.length==0) { options=''; } }
+      if (options!='') { options = JSON.stringify(options); }
+      window.hive_keychain['requestPost'](comment.author, comment.title , comment.body, comment.parent_permlink,
+        comment.parent_author,comment.json_metadata, comment.permlink, options, function(response) { cb(response); });
+      break;
     case 'vote':
       window.hive_keychain['requestVote'](args[0],args[1],args[2],args[3], function(response) { cb(response); });
       break;
@@ -61,6 +69,17 @@ UseHiveSigner = function(args, cb)
           {
             let start=new Date().getTime(); for (let i=0;i<1e7;i++) { if ((new Date().getTime()-start) > 1000) break; }
             Comments.loadComments(args[4],args[3]);
+          }
+          cb(err,res);
+        });
+      break;
+    case 'post':
+      sc2.broadcast(args[0], function(err, res)
+        {
+          if(reload)
+          {
+            let start=new Date().getTime(); for (let i=0;i<1e7;i++) { if ((new Date().getTime()-start) > 1000) break; }
+            Comments.loadComments(args[0].parent_author,args[0].parent_permlink);
           }
           cb(err,res);
         });

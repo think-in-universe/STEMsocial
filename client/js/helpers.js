@@ -627,6 +627,7 @@ Template.registerHelper('ToHTML', function(text)
       if(nspaces!=[]) { new_text[i-2] = new_text[i-2] + close_all_lists(nspaces, list_natures); nspaces = []; list_natures = []; }
       // Header of the table
       let header = new_text[i-1].split('|');
+      if (header.length==1) continue;
       if (header[0].trim()=='') { header.splice(0,1); }
       if (header[header.length-1].trim()=='')    { header.splice(header.length-1,1); }
       if (header.length==splitted.length) { in_table = splitted.length; }
