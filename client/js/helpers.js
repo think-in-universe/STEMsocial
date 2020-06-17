@@ -833,11 +833,16 @@ Template.registerHelper('ToHTML', function(text)
   divs = new_text.match(/<div[^\>\<]*>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], divs[i].match(/<div[^\>\<]*>/g)[0]);
   let to_clean = ['\/ul', 'ul', '\/li', '\/h1', '\/h2', '\/h3', '\/h4', '\/h5','\/h6','tr','\/td','\/tr',
-   '\/thead', 'tbody','\/tbody', '\/ol', 'ol', 'center','\/center'];
+   '\/thead', 'tbody','\/tbody', '\/ol', 'ol', 'center','\/center','h1','h2','h3','h4','h5','h6'];
   for(let i=0; i<to_clean.length;i++)
   {
     let rep = new RegExp('<'+to_clean[i]+' ?\/?>\\s*(<br ?\/?>)+',"gm");
     new_text = new_text.replace(rep,'<'+to_clean[i]+'>');
+    if(!['center'].includes(to_clean[i]))
+    {
+      rep = new RegExp('(<br ?\/?>)+\\s*<'+to_clean[i]+' ?\/?>',"gm");
+      new_text = new_text.replace(rep,'<'+to_clean[i]+'>');
+    }
   }
 
   // code environement
