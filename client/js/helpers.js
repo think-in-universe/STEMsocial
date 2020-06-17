@@ -521,6 +521,10 @@ Template.registerHelper('ToHTML', function(text)
   let link_urls = new_text.match(/(\bhttps?:\/\/[^\s\|]+)/g);
   if(link_urls) { for (let i=0;i<link_urls.length;i++) { new_text = new_text.replace(link_urls[i], ' --ssioh--'+parseInt(i)+'- '); } }
 
+  // From markdown to HTML: horizontal lines
+  let mkd_lin = new_text.match(/(\n---\n)|(\n_{3,}\n)/g);
+  if(mkd_lin) { for (let i=0;i<mkd_lin.length; i++) { new_text = new_text.replace(mkd_lin[i], '\n\n<hr />\n'); } }
+
   // From markdown to html: bold
   let mkd_bld = new_text.match(/(\_\_[^\_]*\_\_)/g);
   if(mkd_bld)
@@ -555,10 +559,6 @@ Template.registerHelper('ToHTML', function(text)
       new_text = new_text.replace(mkd_hdr[i],tmp);
     }
   }
-
-  // From markdown to HTML: horizontal lines
-  let mkd_lin = new_text.match(/(\n---\n)|(\n\*\*\*\n)|(\n___\n)/g);
-  if(mkd_lin) { for (let i=0;i<mkd_lin.length; i++) { new_text = new_text.replace(mkd_lin[i], '\n<hr />\n'); } }
 
   let in_table = 0, cell_natures = [], nspaces = [], list_natures = [], in_quote=0;
   // Useful functions for list and tables
@@ -823,6 +823,8 @@ Template.registerHelper('ToHTML', function(text)
 
   // Cleaning
   new_text = new_text.replace(/\n/g,'<br />');
+  new_text = new_text.replace(/<hr ?\/?>(<br ?\/?>){2,}/gm,'<hr /><br />');
+  new_text = new_text.replace(/(<br ?\/?>){3,}<hr ?\/?>/gm,'<br /><br /><hr />');
   new_text = new_text.replace(/(<br ?\/?>){3,}/gm,'<br /><br />');
   new_text = new_text.replace(/<\/table><br ?\/?><br ?\/?>/gm,'</table><br />');
   new_text = new_text.replace(/<\/blockquote><br ?\/?><br ?\/?>/gm,'</blockquote><br />');
@@ -831,7 +833,7 @@ Template.registerHelper('ToHTML', function(text)
   divs = new_text.match(/<div[^\>\<]*>\s*(<br ?\/?><br ?\/?>|<br ?\/?>)/g);
   if(divs) for (let i=0;i<divs.length; i++) new_text = new_text.replace(divs[i], divs[i].match(/<div[^\>\<]*>/g)[0]);
   let to_clean = ['\/ul', 'ul', '\/li', '\/h1', '\/h2', '\/h3', '\/h4', '\/h5','\/h6','tr','\/td','\/tr',
-   '\/thead', 'hr','tbody','\/tbody', '\/ol', 'ol', 'center','\/center'];
+   '\/thead', 'tbody','\/tbody', '\/ol', 'ol', 'center','\/center'];
   for(let i=0; i<to_clean.length;i++)
   {
     let rep = new RegExp('<'+to_clean[i]+' ?\/?>\\s*(<br ?\/?>)+',"gm");
