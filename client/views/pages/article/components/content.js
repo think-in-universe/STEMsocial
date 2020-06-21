@@ -48,7 +48,22 @@ Template.content.helpers({
   },
 
   // Markdown management
-  DisplayPostBody: function () { return Blaze._globalHelpers['ToHTML'](this.body); }
+  DisplayPostBody: function ()
+  {
+    let body = Blaze._globalHelpers['ToHTML'](this.body);
+    let img  = body.match(/img src=(\"|\')http\S*(\"|\')/g);
+    if(img)
+    {
+      for (let i=0; i<img.length; i++)
+      {
+        if(img[i].includes('hive.blog')) continue;
+        let new_img = img[i].replace('src=\"','src=\"https://images.hive.blog/1280x0/');
+        new_img = new_img.replace('src=\'','src=\'https://images.hive.blog/1280x0/');
+        body = body.replace(img[i], new_img);
+      }
+    }
+    return body;
+  }
 })
 
 // Events

@@ -30,7 +30,7 @@ UseKeychain = function(args, cb)
     case 'delete': case 'claim':
       window.hive_keychain['requestBroadcast'](args[0],args[1],args[2], function(response) { cb(response); });
       break;
-    case 'reblog':
+    case 'reblog': case 'follow': case 'unfollow':
       window.hive_keychain['requestCustomJson'](args[0],args[1],args[2],args[3],args[4],
         function(response) { cb(response); });
       break;
@@ -146,6 +146,25 @@ UseHiveSigner = function(args, cb)
             FlowRouter.reload();
           }
           cb(err, res) })
+      break;
+    case 'follow':
+      let fling = JSON.parse(args[3])[1]['following'];
+      let fler  = JSON.parse(args[3])[1]['follower'];
+      sc2.follow(fler, fling, function(err,res)
+        {
+          if(reload)
+            { let json = { follower:fler, following:fling, what:["blog"]}; Followers.upsert(json, json); }
+          cb (err, res);
+        });
+      break;
+    case 'unfollow':
+      let ufling = JSON.parse(args[3])[1]['following'];
+      let ufler  = JSON.parse(args[3])[1]['follower'];
+      sc2.unfollow(ufler, ufling, function(err,res)
+        {
+          if(reload) Followers.remove({ follower:ufler, following:ufling});
+          cb (err, res);
+        });
       break;
   }
 }

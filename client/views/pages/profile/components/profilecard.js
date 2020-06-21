@@ -1,5 +1,3 @@
-Template.profilecard.rendered = function () { }
-
 // Events
 Template.profilecard.events(
 {
@@ -9,58 +7,35 @@ Template.profilecard.events(
   // Follow a user
   'click .follow-action': function(event)
   {
-    if (localStorage.kc)
+    // Updating the button
+    $('.ui.button.follow').addClass('loading');
+    // Call to Hive
+    let js_res = { follower: localStorage.username, following: this.name, what:["blog"]};
+    let json = JSON.stringify(['follow', js_res]);
+    HiveConnect(['follow', localStorage.username, "follow", "Posting", json, "follow"], function(response)
     {
-      let json = JSON.stringify(['follow', { follower: localStorage.username, following: this.name, what:["blog"]}]);
-      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
-      {
-        $('.ui.button.follow').removeClass('loading');
-        document.getElementsByClassName('follow-action')[0].style.display = "none";
-        document.getElementsByClassName('unfollow-action')[0].style.display = "";
-      });
-    }
-    else
-    {
-      $('.ui.button.follow').addClass('loading');
-      hivesigner.follow(this.name, function (error)
-      {
-        // Error
-        if (error) { console.log('Following with hivesigner', error); return; }
-        // Everything is fine
-        Followers.loadFollowers(name);
-        $('.ui.button.follow').removeClass('loading');
-        document.getElementsByClassName('follow-action')[0].style.display = "none";
-        document.getElementsByClassName('unfollow-action')[0].style.display = "";
-      });
-    }
+      // Updating the buttons
+      $('.ui.button.follow').removeClass('loading');
+      // Updating the DB
+      Followers.upsert(js_res, js_res);
+    });
   },
+
   // Unfollow a user
   'click .unfollow-action': function(event)
   {
-    if (localStorage.kc)
+    // Updating the button
+    $('.ui.button.follow').addClass('loading');
+    // Call to Hive
+    let js_res = { follower: localStorage.username, following: this.name, what:[]};
+    let json = JSON.stringify(['follow', js_res]);
+    HiveConnect(['unfollow', localStorage.username, "follow", "Posting", json, "follow"], function(response)
     {
-      let json = JSON.stringify(['follow', { follower: localStorage.username, following: this.name, what:[]}]);
-      window.hive_keychain.requestCustomJson(localStorage.username, "follow", "Posting", json, "follow", function(response)
-      {
-        $('.ui.button.follow').removeClass('loading');
-        document.getElementsByClassName('unfollow-action')[0].style.display = "none";
-        document.getElementsByClassName('follow-action')[0].style.display = "";
-      });
-    }
-    else
-    {
-      $('.ui.button.unfollow').addClass('loading');
-      hivesigner.unfollow(this.name, function (error)
-      {
-        // Error
-        if (error) { console.log('Unfollowing with hivesigner', error); return; }
-        // Everything is fine
-        Followers.loadFollowers(name);
-        $('.ui.button.unfollow').removeClass('loading');
-        document.getElementsByClassName('unfollow-action')[0].style.display = "none";
-        document.getElementsByClassName('follow-action')[0].style.display = "";
-      });
-    }
+      // Updating the buttons
+      $('.ui.button.follow').removeClass('loading');
+      // Updating the DB
+      Followers.remove({follower:js_res['follower'], following:js_res['following']});
+    });
   }
 });
 

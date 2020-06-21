@@ -1,25 +1,30 @@
 MainUser = new Mongo.Collection(null)
 User = new Mongo.Collection(null)
 
-MainUser.add = function (username, cb) {
-    hive.api.getAccounts([username], function (error, result) {
-        if (!result || result.length < 1) {
-            cb(true)
-            return
-        }
-        for (var i = 0; i < result.length; i++) {
-            try {
-                result[i].json_metadata = JSON.parse(result[i].json_metadata)
-            } catch (error) {
+MainUser.add = function (username, cb)
+{
+  hive.api.getAccounts([username], function (error, result)
+  {
+    // Error
+    if (!result || result.length < 1) { cb(true); return; }
 
-            }
-            if (MainUser.findOne()) {
-                MainUser.remove({})
-            }
-            MainUser.insert(result[i])
-        }
-        cb(null)
-    });
+    // Everything is alright
+    for (let i=0; i<result.length; i++)
+    {
+      if(typeof result[i].json_metadata==='string' || result[i].json_metadata instanceof String)
+        result[i].json_metadata = JSON.parse(result[i].json_metadata);
+
+      // Another user has already been saved
+      if (MainUser.findOne()) { MainUser.remove({}); }
+
+      // Saving
+      MainUser.insert(result[i])
+
+      // Getting followers
+      Followers.loadFollowing(username);
+    }
+    cb(null);
+  });
 }
 
 User.add = function (username, cb) {

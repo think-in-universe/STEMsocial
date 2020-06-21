@@ -29,13 +29,14 @@ Template.registerHelper('translator', function (code) {
 });
 
 
-
-Template.registerHelper('isFollowing', function (following) {
-    if(!MainUser.findOne()) return false;
-    var followers = Followers.findOne({ follower: MainUser.find().fetch()[0].name, following: following })
-    if (followers) return true
-    return false;
-})
+// If the logged-in user follows the current user
+Template.registerHelper('isFollowing', function (following)
+{
+  if(!MainUser.findOne()) return false;
+  let followers = Followers.findOne({ follower: MainUser.find().fetch()[0].name, following: following })
+  if (followers) return true
+  return false;
+});
 
 // Formatter for the posts description
 Template.registerHelper('shortDescription', function (string) { return string.slice(0, 225) + " ..." });
@@ -815,7 +816,7 @@ Template.registerHelper('ToHTML', function(text)
   if(img_urls)
   {
     for (let i=0;i<img_urls.length;i++)
-      new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<br /><img src=\"https://images.hive.blog/1280x0/'+img_urls[i]+'\" /><br />');
+      new_text = restore(new_text,'--ssiog--'+parseInt(i)+'-','<br /><img src=\"'+img_urls[i]+'\" /><br />');
   }
 
   if(link_urls) { for (let i=0;i<link_urls.length;i++) { new_text = restore(new_text,'--ssioh--'+parseInt(i)+'-',

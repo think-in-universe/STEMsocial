@@ -5,7 +5,6 @@ import { Session } from "meteor/session";
 FlowRouter.route('/', {
   name: 'home',
   action: function (params, queryParams) {
-      DocHead.removeDocHeadAddedTags();
       BlazeLayout.render('mainlayout', { sidebar: "sidebar", main: "home", topmenu: "topmenu" });
       $('.actived').removeClass('actived');
       $('.stemsocial.home').addClass('actived');
@@ -80,13 +79,11 @@ FlowRouter.route('/edit/@:user/:permlink',
   }
 });
 
-// Login to the app + implementation of the redirection to the previous page
-// (if the connection happens after trying to do something with an expired or non-existing token)
+// Login to the app via HiveSigner + redirection to the previous page if needed
 FlowRouter.route('/login', {
     name: 'login',
     action: function (params, queryParams) {
         // Setting the token information
-        DocHead.removeDocHeadAddedTags()
         localStorage.setItem('accesstoken', queryParams.access_token);  sc2.setAccessToken(localStorage.accesstoken);
         localStorage.setItem('username', queryParams.username);
         let time = new Date(); time = new Date(time.getTime() + 1000 * (parseInt(queryParams.expires_in) - 10000));
@@ -95,31 +92,6 @@ FlowRouter.route('/login', {
 
         // Checking whether a command has to be submitted
         if(localStorage.connect_command) { FlowRouter.go(localStorage.connect_route); return; }
-
-        var state=''
-        var command =''
-        if(queryParams.state)
-        {
-          state = queryParams.state
-          command = state.substring(state.indexOf('----ssio----')+12).split('_')
-          state = state.substring(0,state.indexOf('----ssio----'))
-        }
-        if(command!='')
-        {
-          sc2.setAccessToken(localStorage.accesstoken);
-          switch(command[0])
-          {
-            case 'follow':
-              sc2.follow(localStorage.username, command[1],  function (err, result) { if(err) { console.log(err)} });
-              if (state=='undefined') { state='' }
-              break;
-            case 'unfollow':
-              sc2.unfollow(localStorage.username, command[1],  function (err, result) { if(err) { console.log(err)} });
-              if (state=='undefined') { state='' }
-              break;
-          }
-        }
-        FlowRouter.go('/'+state)
     }
 });
 
